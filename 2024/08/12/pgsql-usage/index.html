@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Hexo-Blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Hexo-Blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Hexo-Blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/Hexo-Blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/Hexo-Blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","images":"/Hexo-Blog/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/Hexo-Blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/Hexo-Blog/js/config.js"></script>
+
+    <meta name="description" content="PostgreSQL数据库中的一些常用SQL。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL常用SQL语句">
+<meta property="og:url" content="https://jocoboy.github.io/Hexo-Blog/2024/08/12/pgsql-usage/index.html">
+<meta property="og:site_name" content="Jocoboy&#39;s Blog">
+<meta property="og:description" content="PostgreSQL数据库中的一些常用SQL。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-12T14:54:01.000Z">
+<meta property="article:modified_time" content="2024-12-02T09:59:25.800Z">
+<meta property="article:author" content="Jocoboy">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jocoboy.github.io/Hexo-Blog/2024/08/12/pgsql-usage/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://jocoboy.github.io/Hexo-Blog/2024/08/12/pgsql-usage/","path":"2024/08/12/pgsql-usage/","title":"PostgreSQL常用SQL语句"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PostgreSQL常用SQL语句 | Jocoboy's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/Hexo-Blog/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/Hexo-Blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jocoboy's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/Hexo-Blog/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/Hexo-Blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/Hexo-Blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/Hexo-Blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PGSQL%E5%B8%B8%E7%94%A8%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.</span> <span class="nav-text">PGSQL常用语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">扩展安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT"><span class="nav-number">2.2.</span> <span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INSERT"><span class="nav-number">2.3.</span> <span class="nav-text">INSERT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UPDATE"><span class="nav-number">2.4.</span> <span class="nav-text">UPDATE</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FOR-UPDATE-%E8%A1%8C%E7%BA%A7%E9%94%81"><span class="nav-number">2.4.1.</span> <span class="nav-text">FOR UPDATE(行级锁)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TRUNCATE-DROP-DELETE"><span class="nav-number">2.5.</span> <span class="nav-text">TRUNCATE&#x2F;DROP&#x2F;DELETE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ALTER"><span class="nav-number">2.6.</span> <span class="nav-text">ALTER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LEFT-JOIN-%E8%A7%86%E5%9B%BE"><span class="nav-number">2.7.</span> <span class="nav-text">LEFT JOIN(视图)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%B8%8E%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">2.8.</span> <span class="nav-text">函数与存储过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="nav-number">2.8.1.</span> <span class="nav-text">存储函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">2.8.2.</span> <span class="nav-text">存储过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97"><span class="nav-number">2.9.</span> <span class="nav-text">序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0%E5%92%8C%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-number">2.10.</span> <span class="nav-text">窗口函数和聚合函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">2.11.</span> <span class="nav-text">事务隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E4%BC%9A%E8%AF%9D"><span class="nav-number">2.12.</span> <span class="nav-text">进程与会话</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jocoboy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/Hexo-Blog/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/Hexo-Blog/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/Hexo-Blog/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jocoboy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jocoboy" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jocoboy@outlook.com" title="E-Mail → mailto:jocoboy@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jocoboy.github.io/Hexo-Blog/2024/08/12/pgsql-usage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/Hexo-Blog/images/avatar.gif">
+      <meta itemprop="name" content="Jocoboy">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PostgreSQL常用SQL语句 | Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PostgreSQL常用SQL语句
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-08-12 22:54:01" itemprop="dateCreated datePublished" datetime="2024-08-12T22:54:01+08:00">2024-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/Hexo-Blog/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>1.1k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>4 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>PostgreSQL数据库中的一些常用SQL。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>PostgreSQL相较于MySQL而言，具有更强的事务处理能力，能够处理更复杂的数据操作和高并发访问。同时其提供了更丰富的索引类型，能够进行更细粒度的查询和优化。此外还支持多种数据类型和函数库，可以处理更复杂的应用程序。</p>
+<h2 id="PGSQL常用语句"><a href="#PGSQL常用语句" class="headerlink" title="PGSQL常用语句"></a>PGSQL常用语句</h2><h3 id="扩展安装"><a href="#扩展安装" class="headerlink" title="扩展安装"></a>扩展安装</h3><p>安装uuid生成函数扩展</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> EXTENSION IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> &quot;uuid-ossp&quot;;</span><br></pre></td></tr></table></figure>
+
+
+<p>注: []标注的内容必须带双引号””</p>
+<h3 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h3><p>获取uuid</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> uuid_generate_v4();</span><br></pre></td></tr></table></figure>
+
+<p>获取东八时(北京时间)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> now() <span class="keyword">AT</span> <span class="type">TIME</span> ZONE (<span class="string">&#x27;CCT&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>类型转换</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--写法一</span></span><br><span class="line"><span class="keyword">SELECT</span> t.&quot;Id&quot;::<span class="type">varchar</span>;</span><br><span class="line"><span class="comment">--写法二</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">cast</span>(t.&quot;Id&quot; <span class="keyword">AS</span> <span class="type">varchar</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="INSERT"><a href="#INSERT" class="headerlink" title="INSERT"></a>INSERT</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> public.[table_name] </span><br><span class="line">([column_name], ...) </span><br><span class="line"><span class="keyword">VALUES</span>(column_value, ...);</span><br></pre></td></tr></table></figure>
+
+<h3 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> public.[table_name]  </span><br><span class="line"><span class="keyword">SET</span> [column_name]  <span class="operator">=</span> column_value</span><br><span class="line"><span class="keyword">WHERE</span> ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="FOR-UPDATE-行级锁"><a href="#FOR-UPDATE-行级锁" class="headerlink" title="FOR UPDATE(行级锁)"></a>FOR UPDATE(行级锁)</h4><p>更新表时跳过被锁定的行</p>
+<p>注: <code>[column_a_id]</code>代表外键列，依赖于表a</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> public.[table_b]    </span><br><span class="line"><span class="keyword">SET</span> [column_3]  <span class="operator">=</span> column_value</span><br><span class="line"><span class="keyword">FROM</span> </span><br><span class="line">(</span><br><span class="line">        	<span class="keyword">SELECT</span> b.<span class="operator">*</span>, a.[column_1]</span><br><span class="line">        	<span class="keyword">FROM</span> [table_b] b</span><br><span class="line">        	<span class="keyword">JOIN</span> [table_a] a <span class="keyword">ON</span> b.[column_a_id] <span class="operator">=</span> a.&quot;Id&quot;</span><br><span class="line">        	<span class="keyword">WHERE</span> ...</span><br><span class="line">        	<span class="keyword">AND</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> </span><br><span class="line">        	(</span><br><span class="line">        		<span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line">        		<span class="keyword">FROM</span> [table_b] b2</span><br><span class="line">        		<span class="keyword">WHERE</span> b2.[column_a_id] <span class="operator">=</span> b.[column_a_id] </span><br><span class="line">                <span class="keyword">AND</span> b2.[column_3] <span class="operator">=</span> column_value</span><br><span class="line">        	) </span><br><span class="line">        	<span class="keyword">ORDER</span> <span class="keyword">BY</span> a.[column_2]</span><br><span class="line">        	LIMIT <span class="number">1</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span> <span class="keyword">OF</span> b <span class="keyword">SKIP</span> LOCKED</span><br><span class="line">) <span class="keyword">AS</span> t</span><br><span class="line"><span class="keyword">where</span>  t.&quot;Id&quot; <span class="operator">=</span> b.&quot;Id&quot;  </span><br><span class="line">returning t.[column_1]</span><br></pre></td></tr></table></figure>
+
+<h3 id="TRUNCATE-DROP-DELETE"><a href="#TRUNCATE-DROP-DELETE" class="headerlink" title="TRUNCATE&#x2F;DROP&#x2F;DELETE"></a>TRUNCATE&#x2F;DROP&#x2F;DELETE</h3><p>TRUNCATE常用于清理数据，可重置自增键，不破坏表结构，但无法回滚也无法携带WHERE语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TRUNCATE</span> <span class="keyword">TABLE</span> [table_name] CASCADE</span><br></pre></td></tr></table></figure>
+
+<p>DROP会删除表结构及其依赖的索引、外键约束，无法回滚</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> [table_name]</span><br></pre></td></tr></table></figure>
+
+<p>DELETE可以携带WHERE语句，可以回滚，但不会重置自增键也不会释放表或索引占用的空间</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> [table_name]</span><br><span class="line"><span class="keyword">WHERE</span> ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="ALTER"><a href="#ALTER" class="headerlink" title="ALTER"></a>ALTER</h3><p>更新表字段排序规则</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> [table_name]  <span class="keyword">ALTER</span> <span class="keyword">COLUMN</span> [column_name] </span><br><span class="line"><span class="keyword">SET</span> DATA TYPE CHARACHTER VARING(<span class="number">50</span>) <span class="keyword">COLLATE</span> &quot;zh-x-icu&quot;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="LEFT-JOIN-视图"><a href="#LEFT-JOIN-视图" class="headerlink" title="LEFT JOIN(视图)"></a>LEFT JOIN(视图)</h3><p>注: <code>[column_a_id]</code>代表外键列，依赖于表a；<code>[column_c_id]</code>代表外键列，依赖于表c</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> public.[view_name] </span><br><span class="line"><span class="keyword">AS</span> <span class="keyword">SELECT</span> </span><br><span class="line">	a.[column_name],</span><br><span class="line">    ...</span><br><span class="line">    c.[column_name],</span><br><span class="line">    ...</span><br><span class="line">    t.[column_name],</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">FROM</span> [table_a] a</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> ( </span><br><span class="line">    		<span class="keyword">SELECT</span> </span><br><span class="line">    		b.[column_name],</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">FROM</span> [table_b] b</span><br><span class="line">		  ) t </span><br><span class="line"><span class="keyword">ON</span> a.&quot;Id&quot; <span class="operator">=</span> t.[column_a_id]</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> [table_c] c</span><br><span class="line"><span class="keyword">ON</span> a.[column_c_id] <span class="operator">=</span> c.&quot;Id&quot;</span><br><span class="line"><span class="keyword">WHERE</span> ...</span><br></pre></td></tr></table></figure>
+
+<p>c#中LINQ写法，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> l <span class="keyword">in</span> leftSet</span><br><span class="line"><span class="keyword">join</span> r <span class="keyword">in</span> rightSet <span class="keyword">on</span> l.Id <span class="keyword">equals</span> r.Id <span class="keyword">into</span> groupJoin</span><br><span class="line"><span class="keyword">from</span> r <span class="keyword">in</span> groupJoin.DefaultIfEmpty() </span><br><span class="line"><span class="keyword">select</span> <span class="keyword">new</span> &#123; ... &#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数与存储过程"><a href="#函数与存储过程" class="headerlink" title="函数与存储过程"></a>函数与存储过程</h3><h4 id="存储函数"><a href="#存储函数" class="headerlink" title="存储函数"></a>存储函数</h4><p>生成uuid</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">FUNCTION</span> public.uuid_generate_v4()</span><br><span class="line"><span class="keyword">RETURNS</span> uuid <span class="keyword">LANGUAGE</span> c</span><br><span class="line">PARALLEL SAFE STRICT</span><br><span class="line"><span class="keyword">AS</span> <span class="string">&#x27;$libdir/uuid-ossp&#x27;</span>, </span><br><span class="line">$<span class="keyword">function</span>$uuid_generate_v4$<span class="keyword">function</span>$;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">PROCEDURE</span> public.[procedure_name](<span class="keyword">IN</span> column_1_variable column_1_type) <span class="keyword">LANGUAGE</span> plpgsql</span><br><span class="line"><span class="keyword">AS</span> $<span class="keyword">procedure</span>$</span><br><span class="line"></span><br><span class="line"><span class="keyword">BEGIN</span> </span><br><span class="line"></span><br><span class="line">	<span class="keyword">UPDATE</span> [table_a]  a</span><br><span class="line">	<span class="keyword">SET</span> [column_2] <span class="operator">=</span> column_value,</span><br><span class="line">	<span class="keyword">WHERE</span> a.[column_1] <span class="operator">=</span> column_variable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line">$<span class="keyword">procedure</span>$;</span><br></pre></td></tr></table></figure>
+
+<h3 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h3><p>创建自增序列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> SEQUENCE task_id_seq</span><br><span class="line"><span class="keyword">START</span> <span class="keyword">WITH</span> <span class="number">1</span></span><br><span class="line">INCREMENT <span class="keyword">BY</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">NO</span> MINVALUE</span><br><span class="line"><span class="keyword">NO</span> MAXVALUE</span><br><span class="line">CACHE <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="窗口函数和聚合函数"><a href="#窗口函数和聚合函数" class="headerlink" title="窗口函数和聚合函数"></a>窗口函数和聚合函数</h3><p>在PostgreSQL中，窗口函数（Window Functions）是对一组行进行计算的函数，比如求和、平均、排名等。它们可以用于创建复杂的分析查询，并且可以对一系列的行而不仅仅是组内的行进行操作。</p>
+<p>聚合函数（Aggregate Functions）则是用于合并多个值，返回单一的值的函数，如COUNT、SUM、AVG、MIN、MAX等。</p>
+<p>例如，分组计算平均值，窗口函数可以带出额外信息<code>[column_1]</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    [column_1],</span><br><span class="line">    [column_2],</span><br><span class="line">    <span class="built_in">AVG</span>([column_2]) <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> [column_3]) <span class="keyword">AS</span> avg_value</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    [table_a]    </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">    [column_2] <span class="operator">&gt;</span> avg_value;</span><br></pre></td></tr></table></figure>
+
+<p>而聚合函数只能操作组内成员</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    [column_3]</span><br><span class="line">    <span class="built_in">AVG</span>([column_2]) <span class="keyword">AS</span> avg_value</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    [table_a]   </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> </span><br><span class="line">    [column_3]</span><br></pre></td></tr></table></figure>
+
+<p>组合用法，计算组内排名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    [column_1],</span><br><span class="line">    [column_2],</span><br><span class="line">    <span class="built_in">RANK</span>() <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> [column_3] <span class="keyword">ORDER</span> <span class="keyword">BY</span> [column_2] <span class="keyword">DESC</span>) <span class="keyword">AS</span> rank</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    [table_a] </span><br></pre></td></tr></table></figure>
+
+<h3 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h3><p>PGSQL数据库事务的隔离级别有以下四种:</p>
+<ul>
+<li>读未提交(READ UNCOMMITTED)</li>
+<li>读已提交(READ COMMITTED)</li>
+<li>重复读(REPEATABLE READ)</li>
+<li>串行化(SERIALIZABLE)</li>
+</ul>
+<p>对于并发事务，我们不希望发生的行为如下：</p>
+<ul>
+<li>脏读：一个事务读取了另一个未提交的事务写入的数据</li>
+<li>重复读：一个事务重新读取前面读取过的数据时，发现该数据已改变</li>
+<li>幻读：当某个事务在读取某个范围内的记录时，另外一个事务中又在该范围插入了新的记录，当之前的事务再次读取该范围的记录时，会产生幻行</li>
+</ul>
+<p>对于不同事务隔离级别，脏读、重复读、幻读的可能性如下</p>
+<table>
+<thead>
+<tr>
+<th>ISOLATION LEVEL</th>
+<th>脏读</th>
+<th>重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>READ UNCOMMITTED</td>
+<td>YES</td>
+<td>YES</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>READ COMMITTED</td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>NO</td>
+<td>NO</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>NO</td>
+<td>NO</td>
+<td>NO</td>
+</tr>
+</tbody></table>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ABP中配置数据库事务隔离级别为读已提交</span></span><br><span class="line">...</span><br><span class="line">Configure&lt;AbpUnitOfWorkOptions&gt;(options =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    options.IsolationLevel = IsolationLevel.ReadCommitted;</span><br><span class="line">&#125;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="进程与会话"><a href="#进程与会话" class="headerlink" title="进程与会话"></a>进程与会话</h3><p>查看进程</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> pg_locks t1</span><br><span class="line"><span class="keyword">JOIN</span>  pg_stat_activity t2</span><br><span class="line"><span class="keyword">ON</span> t1.pid  <span class="operator">=</span> t2.pid</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> t1.pid;</span><br></pre></td></tr></table></figure>
+
+<p>关闭进程</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> pg_terminate_backend(PID);</span><br></pre></td></tr></table></figure>
+
+<p>查看会话</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> pg_stat_activity <span class="keyword">WHERE</span> datname <span class="operator">=</span> <span class="string">&#x27;your_database&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>关闭当前会话</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DISCARD <span class="keyword">ALL</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://www.postgresql.org/docs/">PGSQL官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/Hexo-Blog/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/Hexo-Blog/tags/PostgreSQL/" rel="tag"># PostgreSQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/08/11/git-usage/" rel="prev" title="Git常用命令">
+                  <i class="fa fa-angle-left"></i> Git常用命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/08/13/abp-and-ddd/" rel="next" title="领域驱动设计与ABP框架">
+                  领域驱动设计与ABP框架 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jocoboy</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">23k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">1:23</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/jocoboy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/comments.js"></script><script src="/Hexo-Blog/js/utils.js"></script><script src="/Hexo-Blog/js/motion.js"></script><script src="/Hexo-Blog/js/schemes/muse.js"></script><script src="/Hexo-Blog/js/sidebar.js"></script><script src="/Hexo-Blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/Hexo-Blog/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
