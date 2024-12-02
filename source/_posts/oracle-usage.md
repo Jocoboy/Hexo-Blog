@@ -39,7 +39,7 @@ SELECT USERNAME, USER_ID, ACCOUNT_STATUS FROM DBA_USERS;
 -- 查询当前用户
 SELECT USER FROM DUAL;
 -- 授权创建模式的系统权限给用户
-GRANT CREATE SCHEMA TO test_user
+GRANT CREATE SCHEMA TO test_user;
 -- 创建模式并授权所有者
 CREATE SCHEMA new_schema AUTHORIZATION test_user;
 ```
@@ -200,6 +200,55 @@ BEGIN
 END;
 ```
 
+## 命令行工具
+
+### SQL*Plus
+
+SQL*Plus是Oracle数据库提供的一个命令行界面的工具，用于与Oracle数据库进行交互。它允许用户输入和执行SQL语句、PL/SQL块以及执行各种数据库管理和操作任务。比如查询数据、创建表、修改数据库对象结构等。
+
+#### 连接数据库
+
+方式一：使用Easy Connection Identifier连接
+
+```shell
+sqlplus system/root1234@"localhost:1521/FREEPDB1"
+```
+
+方式二：使用Full Connection Identifier连接。首先需要编辑tnsnames.ora文件(以23 ai个人免费版为例，对应目录为`C:\app\your-username\product\23ai\dbhomeFree\network\admin`)，添加以下配置
+
+```
+FREEPDB1 = 
+ (DESCRIPTION=
+   (ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))
+   (CONNECT_DATA=
+      (SERVICE_NAME=FREEPDB1)
+    )
+ )
+```
+
+```shell
+sqlplus system/root1234@FREEPDB1
+```
+
+### SQLcl
+
+SQLcl是Oracle推出的一款现代化的命令行工具，它是基于Java开发的，在功能上可以看作是SQL*Plus的增强版，提供了更加简洁易用、功能丰富的交互界面，并且融入了很多新的特性来提升开发和管理数据库的效率。
+
+### 配置
+
+SQLcl需要Java 11及以上版本的JDK，Oracle在使用过JDK后就会将JDK的配置写到配置文件中，若是Oracle的环境变量配置在JDK的变量前时将会被Oracle的配置信息加载覆盖掉。若遇到Java版本切换不生效的问题，可将PATH路径中的`C:\Program Files\Common Files\Oracle\Java\javapath`置于JDK变量之后。
+
+SQL*Plus和SQLcl可执行文件一般位于`%ORACLE_HOME%/bin`目录下，以23 ai个人免费版为例，对应目录为`C:\app\your-username\product\23ai\dbhomeFree\bin`。
+
 ## 参考文档
 
-[Oracle官方文档](https://docs.oracle.com/en/database/oracle/index.html)
+[Oracle数据库官方文档](https://docs.oracle.com/en/database/oracle/index.html)
+
+[Oracle数据库SQL语法参考(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html)
+
+[Oracle数据库命令行工具SQLcl使用参考](https://docs.oracle.com/en/database/oracle/sql-developer-command-line/24.1/sqcug/working-sqlcl.html)
+
+[Oracle数据库创建示例模式(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/comsc/installing-sample-schemas.html)
+
+[Oracle数据库SQL报错帮助](https://docs.oracle.com/en/error-help/db/)
+
