@@ -123,6 +123,20 @@ DISABLE ROW MOVEMENT -- 禁止行移动功能
 ;
 ```
 
+### 窗口函数
+
+场景：表中某个字段可能有重复值出现，对于重复出现的记录，根据创建时间只选取首次出现的记录
+
+```sql
+SELECT NAME, P_ID
+FROM (
+    SELECT t.*,
+            ROW_NUMBER() OVER (PARTITION BY P_ID ORDER BY CRT_TIME) AS row_num
+    FROM [schema_name].[table_name] t
+)
+WHERE row_num = 1 
+```
+
 ## PL/SQL语句
 
 ### 概述
