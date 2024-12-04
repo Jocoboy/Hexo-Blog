@@ -15,6 +15,20 @@ PostgreSQL数据库中的一些常用SQL。
 
 PostgreSQL相较于MySQL而言，具有更强的事务处理能力，能够处理更复杂的数据操作和高并发访问。同时其提供了更丰富的索引类型，能够进行更细粒度的查询和优化。此外还支持多种数据类型和函数库，可以处理更复杂的应用程序。
 
+## 数据库连接
+
+.NET项目配置文件中数据库连接字符串如下，
+
+```json
+{
+    "ConnectionStrings": {
+        "PgsqlConnection": "Host=localhost;Database=your-database;Username=postgres;Password=your-password;Persist Security Info=True;"
+    }
+}
+```
+
+备注：PGSQL默认监听的端口号为5432，因此连接字符串可以不指定端口号
+
 ## PGSQL常用语句
 
 

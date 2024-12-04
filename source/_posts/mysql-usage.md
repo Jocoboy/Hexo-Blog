@@ -15,6 +15,18 @@ MySQL 数据库中的一些常用 SQL、CLI 命令，以及配置文件。
 
 MySQL 采用多种存储引擎，如 InnoDB 和 MyISAM 等。InnoDB 是 MySQL 默认的存储引擎，支持事务处理、行级锁和外键约束。MyISAM 存储引擎则更侧重于性能，适合以读为主的应用场景。MySQL 在简单的查询操作和高并发的读场景下，性能表现较好，但在处理复杂的嵌套查询和大规模数据写入时，性能可能会受到一定影响。MySQL 广泛应用于互联网行业的中小型应用、网站开发和云计算环境，因为它易于安装、配置和维护，能够满足大多数网站的基本数据存储和查询需求，同时拥有庞大的用户社区和丰富的文档资源及第三方工具和插件支持。
 
+## 数据库连接
+
+.NET项目配置文件中数据库连接字符串如下，
+
+```json
+{
+    "ConnectionStrings": {
+        "MysqlConnection": "Server=localhost;userid=root;password=your-password;database=your-database;port=3306;"
+    }
+}
+```
+
 ## MySQL 常用 CLI 命令
 
 ### mysqld

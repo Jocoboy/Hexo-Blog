@@ -230,6 +230,16 @@ FREEPDB1 =
 sqlplus system/root1234@FREEPDB1
 ```
 
+.NET项目配置文件中数据库连接字符串如下，
+
+```json
+{
+    "ConnectionStrings": {
+        "OracleConnection": "User Id=system;Password=your-password;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)));"
+    }
+}
+```
+
 ### SQLcl
 
 SQLcl是Oracle推出的一款现代化的命令行工具，它是基于Java开发的，在功能上可以看作是SQL*Plus的增强版，提供了更加简洁易用、功能丰富的交互界面，并且融入了很多新的特性来提升开发和管理数据库的效率。
