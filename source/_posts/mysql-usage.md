@@ -17,13 +17,13 @@ MySQL 采用多种存储引擎，如 InnoDB 和 MyISAM 等。InnoDB 是 MySQL �
 
 ## 数据库连接
 
-.NET项目配置文件中数据库连接字符串如下，
+.NET 项目配置文件中数据库连接字符串如下，
 
 ```json
 {
-    "ConnectionStrings": {
-        "MysqlConnection": "Server=localhost;userid=root;password=your-password;database=your-database;port=3306;"
-    }
+  "ConnectionStrings": {
+    "MysqlConnection": "Server=localhost;userid=root;password=your-password;database=your-database;port=3306;"
+  }
 }
 ```
 
@@ -133,6 +133,91 @@ DELETE 将表中数据全部删除，但是不会释放表空间，可以回滚�
 
 ```sql
 DELETE FROM TABLE [table_name]
+```
+
+### 存储函数
+
+举例，对 int 类型的字段值进行转换
+
+```sql
+-- 创建存储函数
+DELIMITER  //
+DROP FUNCTION IF EXISTS convert_function //
+CREATE FUNCTION convert_function([var_name] INT) RETURNS INT
+BEGIN
+	DECLARE res INT;
+	IF [var_name]  = 100 THEN
+		SET res = 0;
+	END IF;
+    RETURN res;
+END;
+
+-- 执行存储函数
+SELECT convert_function(100);
+```
+
+### 存储过程
+
+mysql支持对类型为json的字段值进行操作，例如修改类型为**json**的字段中的某个属性值，需要调用JSON_SET和JSON_EXTRACT
+
+```sql
+UPDATE [table_name] t
+SET t.json = JSON_SET(t.json, '$.myProperty', convert_function(JSON_EXTRACT(t.json, '$.myProperty')));
+```
+
+举例，修改类型为**json数组**的字段中的某个属性值
+
+```sql
+-- 创建存储过程
+DELIMITER //
+DROP PROCEDURE IF EXISTS update_json_array //
+CREATE PROCEDURE update_json_array()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE json_index INT DEFAULT 0;
+    DECLARE json_length INT;
+    DECLARE current_id char(36);
+    DECLARE current_json JSON;
+    DECLARE cursor_json CURSOR FOR
+        SELECT id, json FROM [table_name];
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cursor_json;
+    read_loop: LOOP
+        FETCH cursor_json INTO current_id, current_json;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SET json_length = JSON_LENGTH(current_json);
+        WHILE json_index < json_length DO
+            -- 更新json数组中每个对象的属性值
+            SET current_json = JSON_SET(current_json,
+                CONCAT('$[', json_index, '].myProperty'), convert_function(JSON_EXTRACT(current_json, CONCAT('$[', json_index, '].myProperty'))));
+            SET json_index = json_index + 1;
+        END WHILE;
+
+        -- 更新表中的记录
+        UPDATE [table_name]
+        SET files = current_json
+        WHERE id = current_id;
+        SET json_index = 0;
+    END LOOP;
+    CLOSE cursor_json;
+END //
+DELIMITER ;
+
+-- 执行存储过程
+CALL update_json_array();
+```
+
+### 全局参数修改
+
+>Error Code: 1418. This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+
+出现如上报错，需要修改`log_bin_trust_function_creators`的值为true，`log_bin_trust_function_creators`控制是否可以信任存储函数创建者，不会创建写入二进制日志引起不安全事件的存储函数。
+
+```sql
+SET global log_bin_trust_function_creators=TRUE;
 ```
 
 ## 参考文档
