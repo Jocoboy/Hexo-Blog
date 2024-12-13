@@ -51,7 +51,7 @@ MBSA（Microsoft Baseline Security Analyzer）是一款针对Windows系统的漏
 
 IIS服务器端返回信息中包含有软件版本等详细信息，攻击者利用这些信息可以实现更有目的性的攻击。因此隐藏server版本信息，在一定程度上能够提高服务器的安全性。
 
-可通过下载[Rewite插件](https://www.iis.net/downloads/microsoft/url-rewrite)，然后修改`C:\Windows\System32\inetsrv\config\applicationHost.config`配置文件来实现，配置必须写在system.webServer节点内。
+可通过下载[Rewrite插件](https://www.iis.net/downloads/microsoft/url-rewrite)，然后修改`C:\Windows\System32\inetsrv\config\applicationHost.config`配置文件来实现，配置必须写在system.webServer节点内。
 
 ```xml
 <rewrite>
