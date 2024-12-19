@@ -266,13 +266,13 @@ SQL*Plus和SQLcl可执行文件一般位于`%ORACLE_HOME%/bin`目录下，以23 
 
 ## 参考文档
 
-[Oracle数据库官方文档](https://docs.oracle.com/en/database/oracle/index.html)
+- [Oracle数据库官方文档](https://docs.oracle.com/en/database/oracle/index.html)
 
-[Oracle数据库SQL语法参考(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html)
+- [Oracle数据库SQL语法参考(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html)
 
-[Oracle数据库命令行工具SQLcl使用参考](https://docs.oracle.com/en/database/oracle/sql-developer-command-line/24.1/sqcug/working-sqlcl.html)
+- [Oracle数据库命令行工具SQLcl使用参考](https://docs.oracle.com/en/database/oracle/sql-developer-command-line/24.1/sqcug/working-sqlcl.html)
 
-[Oracle数据库创建示例模式(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/comsc/installing-sample-schemas.html)
+- [Oracle数据库创建示例模式(23ai)](https://docs.oracle.com/en/database/oracle/oracle-database/23/comsc/installing-sample-schemas.html)
 
-[Oracle数据库SQL报错帮助](https://docs.oracle.com/en/error-help/db/)
+- [Oracle数据库SQL报错帮助](https://docs.oracle.com/en/error-help/db/)
 

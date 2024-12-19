@@ -222,4 +222,4 @@ SET global log_bin_trust_function_creators=TRUE;
 
 ## 参考文档
 
-[MySQL 官方中文文档](https://mysql.net.cn/doc/refman/8.0/en/)
+- [MySQL 官方中文文档](https://mysql.net.cn/doc/refman/8.0/en/)

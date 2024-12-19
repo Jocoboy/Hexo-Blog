@@ -219,6 +219,6 @@ END
 
 ## 参考文档
 
-[SQL Server官方中文文档](https://learn.microsoft.com/zh-cn/sql/sql-server)
+- [SQL Server官方中文文档](https://learn.microsoft.com/zh-cn/sql/sql-server)
 
-[sqlcmd使用参考](https://learn.microsoft.com/zh-cn/sql/tools/sqlcmd/sqlcmd-utility)
+- [sqlcmd使用参考](https://learn.microsoft.com/zh-cn/sql/tools/sqlcmd/sqlcmd-utility)

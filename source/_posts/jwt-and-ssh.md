@@ -23,6 +23,89 @@ tags:
 
 对称加密通常与其他的加密技术(如数字签名、消息认证码等)结合使用，以提供更高的安全性保护。
 
+#### AES
+
+高级加密标准(Advanced Encryption Standard, 简称AES)为最常见的对称加密算法，在密码学中又称Rijndael加密法。AES算是Rijndael算法的一种特殊实现，选的分组为128bit（16字节），密钥可以使用128、192和256bit三种，而Rijndael使用的密钥和区块长度可以是32位的整数倍，以128位为下限，256比特为上限。加密过程中使用的密钥是由Rijndael密钥生成方案产生。
+
+在AES加密中，密钥(key)、初始化向量(Initialization Vector, 简称IV)是两个重要的组成部分。此外，还可设置加密方式(Mode, 默认为CBC)和填充方式(Padding, 默认为PKCS7)，其中CBC模式需要有IV，ECB模式不需要IV。
+
+- key
+    - 定义：key是用于AES加密和解密的密钥，它是双方协商或生成的秘密信息，用于确保加密数据的安全性。
+    - 长度：AES支持多种长度的密钥，包括128位（16字节）、192位（24字节）和256位（32字节）。选择哪种长度的密钥取决于安全需求和性能考虑。
+    - 重要性：密钥的保密性至关重要，如果密钥被泄露，加密的数据就可能被解密，从而失去保护。
+
+- iv
+    - 定义：iv是一个随机或伪随机的值，它与密钥一起用于加密过程中的初始化。它确保了即使使用相同的密钥加密相同的明文，每次加密得到的密文也会不同，从而增强了加密的安全性。
+    - 长度：AES的iv长度通常是128位（16字节），这与AES的数据块长度相同。
+    - 重要性：iv的随机性对于防止重放攻击和统计分析攻击至关重要。使用固定的iv或可预测的iv会降低加密的安全性。
+
+在AES加密过程中，首先会将明文分成多个128位的数据块（如果最后一个数据块不足128位，则需要进行填充，常用的填充方式包括PKCS5Padding、PKCS7Padding和ZeroPadding等）。然后，使用密钥和iv对数据进行加密。加密过程通常包括多个轮次，每轮都会执行一系列复杂的操作，如字节替换、行移位、列混合和轮密钥加等。最终，所有的数据块都被加密成密文。
+
+以下是c#中AES加密与解密的实现方式，
+
+```c#
+/// <summary>
+/// ASE加密
+/// </summary>
+public static string AESEncrypt(string plainText, string key, string iv)
+{
+    byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+    byte[] ivBytes = Encoding.UTF8.GetBytes(iv);
+    using (Aes aesAlg = Aes.Create())
+    {
+        aesAlg.Key = keyBytes;
+        aesAlg.IV = ivBytes;
+        aesAlg.Mode = CipherMode.CBC;
+        aesAlg.Padding = PaddingMode.PKCS7;
+
+        ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+            {
+                using (StreamWriter sw = new StreamWriter(cs))
+                {
+                    sw.Write(plainText);
+                }
+                return Convert.ToBase64String(ms.ToArray());
+            }
+        }
+    }
+}
+
+/// <summary>
+/// ASE解密
+/// </summary>
+public static string AESDecrypt(string cipherText, string key, string iv)
+{
+    byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+    byte[] ivBytes = Encoding.UTF8.GetBytes(iv);
+    byte[] cipherBytes = Convert.FromBase64String(cipherText);
+
+    using (Aes aesAlg = Aes.Create())
+    {
+        aesAlg.Key = keyBytes;
+        aesAlg.IV = ivBytes;
+        aesAlg.Mode = CipherMode.CBC;
+        aesAlg.Padding = PaddingMode.PKCS7;
+
+        ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+        using (MemoryStream ms = new MemoryStream(cipherBytes))
+        {
+            using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+            {
+                using (StreamReader sr = new StreamReader(cs))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
+        }
+    }
+}
+```
+
 ### 非对称加密
 
 非对称加密是一种加密算法，与对称加密不同，非对称加密使用一对不同的密钥来进行加密和解密。这对密钥中的一个被称为私钥(private key)，另一个被称为公钥(public key)。私钥只能由密钥的拥有者持有并保密，不对外公开，而公钥可以向任何人公开。常见的非对称加密算法包括RSA、ECC等。
@@ -158,6 +241,8 @@ Linux系统中以用户名username，登录远程主机remote_host的命令如�
 `ssh-copy-id username@remote_host`
 
 ## 参考文档
+
+- [.NET中的AES类](https://learn.microsoft.com/zh-cn/dotnet/api/system.security.cryptography.aes)
 
 - [JWT官方文档](https://jwt.io/introduction)
 

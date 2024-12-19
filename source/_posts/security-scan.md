@@ -187,6 +187,6 @@ public void Configure(IApplicationBuilder app)
 
 ## 参考文档
 
-[字符串编码和解码在线工具](https://www.toolhelper.cn/EncodeDecode/EncodeDecode)
+- [字符串编码和解码在线工具](https://www.toolhelper.cn/EncodeDecode/EncodeDecode)
 
-[.NET Core中间件使用参考](https://learn.microsoft.com/zh-cn/aspnet/core/migration/http-modules)
+- [.NET Core中间件使用参考](https://learn.microsoft.com/zh-cn/aspnet/core/migration/http-modules)
