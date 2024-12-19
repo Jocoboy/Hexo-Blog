@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Hexo-Blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Hexo-Blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Hexo-Blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/Hexo-Blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/Hexo-Blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","images":"/Hexo-Blog/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/Hexo-Blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/Hexo-Blog/js/config.js"></script>
+
+    <meta name="description" content="基于.NET的MSBuild常用命令记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于.NET的MSBuild常用命令">
+<meta property="og:url" content="https://jocoboy.github.io/Hexo-Blog/2024/12/02/msbuild/index.html">
+<meta property="og:site_name" content="Jocoboy&#39;s Blog">
+<meta property="og:description" content="基于.NET的MSBuild常用命令记录。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-02T08:01:11.000Z">
+<meta property="article:modified_time" content="2024-12-19T06:48:06.447Z">
+<meta property="article:author" content="Jocoboy">
+<meta property="article:tag" content="MSBuild">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jocoboy.github.io/Hexo-Blog/2024/12/02/msbuild/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://jocoboy.github.io/Hexo-Blog/2024/12/02/msbuild/","path":"2024/12/02/msbuild/","title":"基于.NET的MSBuild常用命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基于.NET的MSBuild常用命令 | Jocoboy's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/Hexo-Blog/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/Hexo-Blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jocoboy's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/Hexo-Blog/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/Hexo-Blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/Hexo-Blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/Hexo-Blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">环境设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">项目配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%9E%84%E5%BB%BA"><span class="nav-number">4.</span> <span class="nav-text">命令行构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E5%A4%84%E7%90%86%E6%9E%84%E5%BB%BA"><span class="nav-number">5.</span> <span class="nav-text">批处理构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jocoboy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/Hexo-Blog/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/Hexo-Blog/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/Hexo-Blog/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jocoboy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jocoboy" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jocoboy@outlook.com" title="E-Mail → mailto:jocoboy@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jocoboy.github.io/Hexo-Blog/2024/12/02/msbuild/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/Hexo-Blog/images/avatar.gif">
+      <meta itemprop="name" content="Jocoboy">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="基于.NET的MSBuild常用命令 | Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于.NET的MSBuild常用命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-12-02 16:01:11" itemprop="dateCreated datePublished" datetime="2024-12-02T16:01:11+08:00">2024-12-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/Hexo-Blog/categories/Package-Tool/" itemprop="url" rel="index"><span itemprop="name">Package-Tool</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>517</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>2 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>基于.NET的MSBuild常用命令记录。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Microsoft生成引擎是一个用于生成应用程序的平台。此引擎（也称为 MSBuild）为项目文件提供了一个XML架构，用于控制生成平台处理和生成软件的方式。Visual Studio会使用MSBuild，但MSBuild不依赖于Visual Studio。通过在项目或解决方案文件中调用msbuild.exe或dotnet build，可以在未安装Visual Studio的环境中安排和生成产品。</p>
+<h2 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h2><p>以VS 2022为例，MSBuild可执行文件路径为<code>C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin</code></p>
+<h2 id="项目配置文件"><a href="#项目配置文件" class="headerlink" title="项目配置文件"></a>项目配置文件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--回车符\r &amp;#xD; 换行符\n &amp;#xA; 双引号&quot; &amp;quot;--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;PostBuild&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;PostBuildEvent&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;if &#x27;$(IS_Integrated)&#x27; == &#x27;true&#x27; (<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>  xcopy $(TargetPath) $(SolutionDir)..\Outputs\  /R /Y<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>  xcopy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Outputs\  /R /Y<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;CopyDirectory&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;Build&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CopyCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; == &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>xcopy <span class="symbol">&amp;quot;</span>$(SolutionDir)..\Outputs\*.dll<span class="symbol">&amp;quot;</span> <span class="symbol">&amp;quot;</span>$(ProjectDir)bin\$(Configuration)\netcoreapp3.1\<span class="symbol">&amp;quot;</span> /E /D /I /Y</span><br><span class="line">        <span class="tag">&lt;/<span class="name">CopyCommand</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CopyCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; != &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>cp -r <span class="symbol">&amp;quot;</span>$(SolutionDir)..\Outputs\*.dll<span class="symbol">&amp;quot;</span> <span class="symbol">&amp;quot;</span>$(ProjectDir)bin\$(Configuration)\netcoreapp3.1\<span class="symbol">&amp;quot;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">CopyCommand</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;$(CopyCommand)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;CreateFolderIfNotExists&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;Build&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">uploadPath</span>&gt;</span>$(ProjectDir)bin\$(Configuration)\upload<span class="tag">&lt;/<span class="name">uploadPath</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CreateCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; == &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>if not exist <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span> md <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span><span class="tag">&lt;/<span class="name">CreateCommand</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CreateCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27;!= &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>if [! -d <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span> ]; then mkdir -p <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span>; fi<span class="tag">&lt;/<span class="name">CreateCommand</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;$(CreateCommand)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行构建"><a href="#命令行构建" class="headerlink" title="命令行构建"></a>命令行构建</h2><p>对于单个dotnet项目，可使用以下命令构建</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">项目文件携带环境变量的情况</span></span><br><span class="line">MSBuild [project file] /p:PropertyName=Value</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">举例</span></span><br><span class="line">MSBuild test.csproj /p:IS_Integrated = true</span><br></pre></td></tr></table></figure>
+
+<h2 id="批处理构建"><a href="#批处理构建" class="headerlink" title="批处理构建"></a>批处理构建</h2><p>对于模块较多的dotnet项目，可使用批处理脚本批量构建，并跟踪构建情况</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">set</span> totalCount=<span class="number">14</span></span><br><span class="line"><span class="built_in">set</span> failCount=<span class="number">0</span></span><br><span class="line"><span class="built_in">set</span> failList=&quot;&quot;</span><br><span class="line"><span class="built_in">chcp</span> <span class="number">65001</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> your/test.sln/<span class="built_in">path</span></span><br><span class="line"><span class="built_in">echo</span> 正在构建test模块[进度 <span class="number">1</span>/<span class="variable">%totalCount%</span>]...</span><br><span class="line">dotnet build test.sln  &gt; <span class="built_in">nul</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> <span class="variable">%errorlevel%</span> <span class="keyword">neq</span> <span class="number">0</span> (</span><br><span class="line">    <span class="built_in">echo</span> test模块构建失败</span><br><span class="line">    <span class="built_in">set</span> /a failCount=failCount + <span class="number">1</span></span><br><span class="line">    <span class="built_in">set</span> failList=&quot;<span class="variable">%failList%</span> test&quot;</span><br><span class="line">) <span class="keyword">else</span> (</span><br><span class="line">    <span class="built_in">echo</span> test模块已构建成功！</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> /a successCount=<span class="variable">%totalCount%</span> - <span class="variable">%failCount%</span></span><br><span class="line"><span class="built_in">set</span> /p DUMMY=构建成功<span class="variable">%successCount%</span>个，失败<span class="variable">%failCount%</span>个，失败的模块有[<span class="variable">%failList%</span>]，请尝试手动构建，按回车键继续...</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/reference/common-macros-for-build-commands-and-properties">用于MSBuild命令和属性的常用宏</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/visualstudio/msbuild/msbuild-properties">MSBuild 属性说明</a></p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-server/administration/windows-commands/xcopy">xcopy命令参数说明</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/Hexo-Blog/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/Hexo-Blog/tags/MSBuild/" rel="tag"># MSBuild</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/11/29/oracle-usage/" rel="prev" title="Oracle常用SQL、PL/SQL语句">
+                  <i class="fa fa-angle-left"></i> Oracle常用SQL、PL/SQL语句
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/12/04/sqlserver-usage/" rel="next" title="SQL Server常用SQL、T-SQL语句">
+                  SQL Server常用SQL、T-SQL语句 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jocoboy</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">27k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">1:40</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/jocoboy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/comments.js"></script><script src="/Hexo-Blog/js/utils.js"></script><script src="/Hexo-Blog/js/motion.js"></script><script src="/Hexo-Blog/js/schemes/muse.js"></script><script src="/Hexo-Blog/js/sidebar.js"></script><script src="/Hexo-Blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/Hexo-Blog/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

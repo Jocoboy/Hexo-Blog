@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Hexo-Blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Hexo-Blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Hexo-Blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/Hexo-Blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/Hexo-Blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","images":"/Hexo-Blog/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/Hexo-Blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/Hexo-Blog/js/config.js"></script>
+
+    <meta name="description" content="Redis数据库的使用场景、使用方法、重要概念，以及一些常用的CLI命令。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据库常用CLI命令">
+<meta property="og:url" content="https://jocoboy.github.io/Hexo-Blog/2024/08/14/redis-usage/index.html">
+<meta property="og:site_name" content="Jocoboy&#39;s Blog">
+<meta property="og:description" content="Redis数据库的使用场景、使用方法、重要概念，以及一些常用的CLI命令。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-14T02:58:38.000Z">
+<meta property="article:modified_time" content="2024-12-19T06:48:06.451Z">
+<meta property="article:author" content="Jocoboy">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="NoSQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jocoboy.github.io/Hexo-Blog/2024/08/14/redis-usage/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://jocoboy.github.io/Hexo-Blog/2024/08/14/redis-usage/","path":"2024/08/14/redis-usage/","title":"Redis数据库常用CLI命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Redis数据库常用CLI命令 | Jocoboy's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/Hexo-Blog/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/Hexo-Blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jocoboy's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/Hexo-Blog/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/Hexo-Blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/Hexo-Blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/Hexo-Blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Redis%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.1.</span> <span class="nav-text">启动Redis服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CLI%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">CLI常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.2.1.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#key-value"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">key-value</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#List"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">List</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Set"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Set</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SortedSet"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">SortedSet</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Hash"><span class="nav-number">2.2.1.5.</span> <span class="nav-text">Hash</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.2.</span> <span class="nav-text">发布订阅模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Stream"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">Stream</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.2.3.</span> <span class="nav-text">事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">2.2.4.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF"><span class="nav-number">2.2.4.2.</span> <span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">2.2.5.</span> <span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.6.</span> <span class="nav-text">哨兵模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jocoboy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/Hexo-Blog/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/Hexo-Blog/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/Hexo-Blog/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jocoboy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jocoboy" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jocoboy@outlook.com" title="E-Mail → mailto:jocoboy@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jocoboy.github.io/Hexo-Blog/2024/08/14/redis-usage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/Hexo-Blog/images/avatar.gif">
+      <meta itemprop="name" content="Jocoboy">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Redis数据库常用CLI命令 | Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis数据库常用CLI命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-08-14 10:58:38" itemprop="dateCreated datePublished" datetime="2024-08-14T10:58:38+08:00">2024-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/Hexo-Blog/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>5 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Redis数据库的使用场景、使用方法、重要概念，以及一些常用的CLI命令。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis(Remote Dictionary Server)是一个高性能的(key&#x2F;value)分布式内存数据库，基于内存运行并支持持久化的NoSQL数据库，常用于数据缓存、充当消息队列等。Redis不仅仅支持简单的key-value类型的数据(如string)，同时还提供list，set，sorted set，hash等数据结构的存储。</p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>Redis在Mac&#x2F;Linux系统下可通过命令行直接安装，而在Windows系统下需要通过WSL安装一个Linux系统来安装Redis，或者通过Docker下载Redis镜像通过镜像运行Redis，也可以使用传统EXE安装包安装(不推荐)。Redis可通过CLI、API、GUI(如RedisInsight)三种方式使用。</p>
+<h3 id="启动Redis服务"><a href="#启动Redis服务" class="headerlink" title="启动Redis服务"></a>启动Redis服务</h3><p>启动Redis</p>
+<p><code>redis-server</code></p>
+<p>报错</p>
+<blockquote>
+<p>Could not create server TCP listening socket *:6379: bind: 在一个非套接字上尝试了一个操作 。</p>
+</blockquote>
+<p>Redis安装目录下，依次输入</p>
+<p><code>redis-cli.exe</code></p>
+<p><code>shutdown</code></p>
+<p><code>exit</code></p>
+<p><code>redis-server.exe redis.windows.conf</code></p>
+<h3 id="CLI常用命令"><a href="#CLI常用命令" class="headerlink" title="CLI常用命令"></a>CLI常用命令</h3><h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><h5 id="key-value"><a href="#key-value" class="headerlink" title="key-value"></a>key-value</h5><p>设置键值对</p>
+<p><code>SET [key] [value]</code></p>
+<p>获取键值</p>
+<p><code>GET [key]</code></p>
+<p>删除键值对</p>
+<p><code>DELETE [key]</code></p>
+<p>判断键值对是否存在</p>
+<p><code>EXISTS [key]</code></p>
+<p>获取所有键值对</p>
+<p><code>KEYS *</code></p>
+<p>获取所有以xx结尾的键值对</p>
+<p><code>KEYS *xx</code></p>
+<p>删除所有键值对</p>
+<p><code>FLUSHALL</code></p>
+<p>设置键值对过期时间</p>
+<p><code>EXPIRE [key] [seconds]</code></p>
+<p>获取键值对过期时间</p>
+<p><code>TTL [key]</code></p>
+<p>设置键值对并设置过期时间</p>
+<p><code>SETEX [key] [seconds] [value]</code></p>
+<p>设置不存在的键值对(若已存在则忽略执行)</p>
+<p><code>SETNX [key] [value]</code></p>
+<h5 id="List"><a href="#List" class="headerlink" title="List"></a>List</h5><p>创建列表并添加元素</p>
+<p><code>LPUSH [list] [value, ...]</code></p>
+<p><code>RPUSH [list] [value, ...]</code></p>
+<p>获取整个列表</p>
+<p><code>LRANGE [list] 0 -1</code></p>
+<p>删除列表元素</p>
+<p><code>LPOP [list] [count]</code></p>
+<p><code>RPOP [list] [count]</code></p>
+<p>获取列表长度</p>
+<p><code>LLEN [list]</code></p>
+<p>仅保留索引为n到m的部分列表</p>
+<p><code>LTRIME [list] n m</code></p>
+<h5 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h5><p>创建集合并添加元素</p>
+<p><code>SADD [set] [value, ...]</code></p>
+<p>获取集合中的元素</p>
+<p><code>SMEMBERS [set]</code></p>
+<p>判断元素是否在集合中</p>
+<p><code>SISMEMBER [set] [value]</code></p>
+<p>删除集合中的元素</p>
+<p><code>SREM [set] [value]</code></p>
+<h5 id="SortedSet"><a href="#SortedSet" class="headerlink" title="SortedSet"></a>SortedSet</h5><p>创建有序集合并添加元素</p>
+<p><code>ZADD [sortedset] [(score value), ...]</code></p>
+<p>获取有序集合全部元素</p>
+<p><code>ZRANGE [sortedset] 0 -1 WITHSCORES</code></p>
+<p>获取有序集合某个元素权值</p>
+<p><code>ZSCORE [sortedset] [value]</code></p>
+<p>获取有序集合某个元素排名</p>
+<p><code>ZRANK [sortedset] [value]</code></p>
+<p><code>ZREVRANK [sortedset] [value]</code></p>
+<p>删除有序集合某个元素</p>
+<p><code>ZREM [sortedset] [value]</code></p>
+<h5 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h5><p>创建哈希集合</p>
+<p><code>HSET [hash] [key] [value]</code></p>
+<p>获取哈希集合中的元素</p>
+<p><code>HGET [hash] [key]</code></p>
+<p>获取哈希集合中的全部元素</p>
+<p><code>HGETALL [hash]</code></p>
+<p>删除哈希集合中的某个元素</p>
+<p><code>HDEL [hash] [key]</code></p>
+<p>判断哈希集合中的某个元素是否存在</p>
+<p><code>HEXISTS [hash] [key]</code></p>
+<p>获取哈希集合中的键</p>
+<p><code>HKEYS [hash]</code></p>
+<p>获取哈希集合长度</p>
+<p><code>HLEN [hash]</code></p>
+<h4 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h4><p>订阅频道</p>
+<p><code>SUBSCRIBE [channel]</code></p>
+<p>发布频道消息</p>
+<p><code>PUBLISH [channel] [message]</code></p>
+<h5 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h5><p>向消息队列中添加一条消息</p>
+<p><code>XADD [stream] * [key] [value]</code></p>
+<p>获取消息队列中消息数量</p>
+<p><code>XLEN [stream]</code></p>
+<p>获取消息队列中的所有消息</p>
+<p><code>XRANGE [stream] - +</code></p>
+<p>删除消息队列中的某条消息</p>
+<p><code>XDEL [stream] [id]</code></p>
+<p>删除消息队列中的所有消息</p>
+<p><code>XTRIM [stream] MAXLEN 0</code></p>
+<p>读取消息队列中索引为i开始的n条消息，如不存在阻塞x秒</p>
+<p><code>XRED COUNT n BLOCK x STREAMS [stream] i</code></p>
+<p>创建消费者组</p>
+<p><code>XGROUP CREATE [stream] [group] [id]</code></p>
+<p>获取消费者组信息</p>
+<p><code>XINFO GROUPS [stream]</code></p>
+<p>向消费者组中添加消费者</p>
+<p><code>XGROUP CREATECONSUMER [stream] [group] [consumer]</code></p>
+<p>读取消费者组中某消费者的最新n条消息，如不存在阻塞x秒</p>
+<p><code>XREDGROUP [group] [consumer] COUNT n BLOCK x STREAMS [stream] &gt;</code></p>
+<h4 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h4><p>注: Redis中的事务概念与传统事务概念不同，不保证原子性</p>
+<p>标记一个事务开始</p>
+<p><code>MULTI</code></p>
+<p>提交事务</p>
+<p><code>EXEC</code></p>
+<h4 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h4><p>Redis有RDB(Redis Database)和AOF(Append Only File)两种数据持久化方式。</p>
+<h5 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h5><p>RDB相当于数据快照，可在redis.confg文件中配置自动触发，例如<u>save 60 10000</u>代表60s内如果有10000次修改则触发一次快照，也可通过CLI中的save命令手动触发。</p>
+<h5 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h5><p>AOF相当于使用日志记录操作命令，可在redis.confg文件中配置参数<u>appendonly yes</u>自动触发。</p>
+<h4 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h4><p>Redis主从复制是指将Redis主节点数据复制到从节点，数据的复制是单向的。</p>
+<p>假设主节点端口号为6379，从节点端口号为6380。在从节点的redis.confg文件中配置参数<u>replicaof 127.0.0.1 6379</u>启用主从复制功能。启动从节点6380服务后，使用CLI命令</p>
+<p><code>redis-cli -p 6380</code></p>
+<p><code>info replication</code></p>
+<p>即可看到当前节点角色已从master变为slave。</p>
+<h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>Redis主从复制存在一个问题，如果主节点宕机了，需要手动去将从节点设置为主节点。为了实现主节点的自动故障转移，Redis引入了一个独立的进程来监视主节点，通过发布订阅模式通知从节点变更为主节点。</p>
+<p>创建配置文件sentinel.conf并配置参数<u>sentinel monitor master 127.0.0.1 6379 1</u>(1代表故障转移需要同意的哨兵的个数)，使用CLI命令</p>
+<p><code>redis-sentinel sentinel.conf</code></p>
+<p>即可启动哨兵进程。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://redis.io/docs/latest/commands/">Redis CLI命令官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/Hexo-Blog/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/Hexo-Blog/tags/Redis/" rel="tag"># Redis</a>
+              <a href="/Hexo-Blog/tags/NoSQL/" rel="tag"># NoSQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/08/13/abp-and-ddd/" rel="prev" title="领域驱动设计与ABP框架">
+                  <i class="fa fa-angle-left"></i> 领域驱动设计与ABP框架
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/08/15/docker-usage/" rel="next" title="Docker虚拟化技术与容器化部署">
+                  Docker虚拟化技术与容器化部署 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jocoboy</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">27k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">1:40</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/jocoboy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/comments.js"></script><script src="/Hexo-Blog/js/utils.js"></script><script src="/Hexo-Blog/js/motion.js"></script><script src="/Hexo-Blog/js/schemes/muse.js"></script><script src="/Hexo-Blog/js/sidebar.js"></script><script src="/Hexo-Blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/Hexo-Blog/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
