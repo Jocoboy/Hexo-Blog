@@ -6,6 +6,8 @@ categories:
 tags:
 - Web Service
 - .NET Framework
+- .NET
+- ASP.NET Core
 ---
 
 Web Service远程调用技术(RPC)的基本概念及实现方式。
@@ -81,6 +83,8 @@ namespace WebApplicationDemo
 
 根据提供的Web Service地址，通过Connected Services添加WCF Web服务引用，生成cs文件，然后直接调用。
 
+以下是在控制台程序以及ASP.NET Web API项目中的调用方式。
+
 ```c#
 static void Main(string[] args)
 {
@@ -91,6 +95,32 @@ static void Main(string[] args)
     Console.WriteLine(res.Result);
 }
 ```
+
+```c#
+  [Route("api/Test")]
+  [ApiController]
+  public class TestController : ControllerBase
+  {
+      [HttpGet]
+      public string Get()
+      {
+          //创建 HTTP 绑定对象
+          var binding = new BasicHttpBinding();
+          //根据 WebService 的 URL 构建终端点对象，参数是提供的WebService地址
+          var endpoint = new EndpointAddress(@"http://localhost:8083/WebServiceTest.asmx");
+          //创建调用接口的工厂，注意这里泛型只能传入接口 泛型接口里面的参数是WebService里面定义的类名+Soap
+          var factory = new ChannelFactory<WebServiceTestSoap>(binding, endpoint);
+          //从工厂获取具体的调用实例
+          var callClient = factory.CreateChannel();
+
+          var task = callClient.SumAsync(3, 4);
+          var res = task.Result;
+
+          return $"WebService中Sum方法返回结果为{res}";
+      }
+  }
+```
+
 
 ### 反射调用
 
