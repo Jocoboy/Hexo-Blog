@@ -199,7 +199,101 @@ static void Main(string[] args)
  }
 ```
 
+### 使用HTTP方式调用
+
+Web Service还可以使用HTTP方式，通过发送SOAP请求体进行调用。
+
+```c#
+static  void Main(string[] args)
+{
+    using (HttpClient client = new HttpClient())
+    {
+        var webServiceUri = "http://localhost:8083/WebServiceTest.asmx";
+        string soapRequest = @"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:web=""http://tempuri.org/"">
+                                <soapenv:Header/>
+                                <soapenv:Body>
+                                    <web:Sum>
+                                        <web:a>1</web:a>
+                                        <web:b>2</web:b>
+                                    </web:Sum>
+                                </soapenv:Body>
+                              </soapenv:Envelope>";
+
+
+        // var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8083/WebServiceTest.asmx");
+        // request.Headers.Add("SOAPAction", "\"http://tempuri.org/Sum\"");
+        // request.Content = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
+        // HttpResponseMessage response = client.SendAsync(request).Result;
+
+        var content = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
+        var response =  client.PostAsync(webServiceUri, content).Result;
+
+        string responseContent;
+
+        if (response.IsSuccessStatusCode)
+        {
+            responseContent = response.Content.ReadAsStringAsync().Result;
+            // 解析XML响应
+            XDocument xmlResponse = XDocument.Parse(responseContent);
+            // 处理XML
+            Console.WriteLine($"{xmlResponse}");
+        }
+        else
+        {
+            Console.WriteLine($"Error: {response.StatusCode}");
+        }
+
+        Console.ReadKey();
+    }
+}
+```
+
+请求返回的soap消息如下：
+
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <SumResponse xmlns="http://tempuri.org/">
+      <SumResult>3</SumResult>
+    </SumResponse>
+  </soap:Body>
+</soap:Envelope>
+```
+
+#### xml字符串转义问题
+
+在WebService方法返回XML数据的时候，将XML处理成字符串返回，在客户端得到的XML字符串会出现被转义的情况。
+
+将已经为HTTP传输进行过HTML编码的字符串转换为已解码的字符串，可在不改动服务端代码的情况下解决转义问题。
+
+```c#
+result = System.Net.WebUtility.HtmlDecode(xmlResponse.ToString());
+```
+
+string类型和XmlDocument类型在WebService序列化过程中的处理方法不同。如果返回可序列化的标准XML对象，可从根本上解决转义问题。
+
+对应的服务端代码如下：
+
+```c#
+[WebMethod(Description = "测试方法")]
+public System.Xml.XmlDocument GetMainData()
+{
+    // your xml response
+    var res = @"<maindata>
+                 <item></item>
+                </maindata>";
+
+    System.Xml.XmlDocument xmldoc = new System.Xml.XmlDocument();
+    xmldoc.LoadXml(res);
+
+    return xmldoc;
+}
+```
 
 ## 参考文档
 
 - [.NET Framework API参考文档](https://learn.microsoft.com/zh-cn/dotnet/api/?view=netframework-4.8.1)
+
+- [使用WCF开发面向服务的应用程序](https://learn.microsoft.com/zh-cn/dotnet/framework/wcf/)
+
+- [WebUtility.HtmlDecode方法](https://learn.microsoft.com/zh-cn/dotnet/api/system.net.webutility.htmldecode)
