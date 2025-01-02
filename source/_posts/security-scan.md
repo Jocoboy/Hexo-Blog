@@ -189,4 +189,6 @@ public void Configure(IApplicationBuilder app)
 
 - [字符串编码和解码在线工具](https://www.toolhelper.cn/EncodeDecode/EncodeDecode)
 
+- [ApplicationHost.config简介](https://learn.microsoft.com/zh-cn/iis/get-started/planning-your-iis-architecture/introduction-to-applicationhostconfig)
+
 - [.NET Core中间件使用参考](https://learn.microsoft.com/zh-cn/aspnet/core/migration/http-modules)
