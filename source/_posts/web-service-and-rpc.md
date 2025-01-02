@@ -260,6 +260,56 @@ static  void Main(string[] args)
 </soap:Envelope>
 ```
 
+#### soap消息解析
+
+假设返回的soap消息包含xml数据如下，
+
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <getMqResponse xmlns="http://tempuri.org/">
+      <getMqResult>
+        <maindata table="person" disid="1" xmlns="">
+          <item opeType="insert">
+            <idno>1001</idno>
+          </item>
+        </maindata>
+      </getMqResult>
+    </getMqResponse>
+  </soap:Body>
+</soap:Envelope>
+```
+
+如果想要解析带命名空间的xml并获取其中某些节点的属性值和内容，则需要使用命名空间管理器。
+
+```c#
+// 加载SOAP响应的XML数据
+XmlDocument xmlDoc = new XmlDocument();
+xmlDoc.LoadXml(soapResponse);
+
+// 创建命名空间管理器，并添加SOAP命名空间
+XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+namespaceManager.AddNamespace("soap", "http://schemas.xmlsoap.org/soap/envelope/");
+namespaceManager.AddNamespace("ns", "http://tempuri.org/");
+
+// 使用XPath表达式提取所需的数据
+XmlNode mainDataNode = xmlDoc.SelectSingleNode("/soap:Envelope/soap:Body/ns:getMqResponse/ns:getMqResult/maindata", namespaceManager);
+
+// 获取maindata中disid的属性值
+XmlElement mainDataElement = (XmlElement)mainDataNode;
+var disid = mainDataElement.GetAttribute("disid");
+
+var childNodes = mainDataNode.SelectNodes("item");
+foreach(var itemNode in childNodes)
+{
+    XmlElement itemElement = (XmlElement)itemNode;
+    // 获取item中opeType的属性值
+    var opeType = itemElement.GetAttribute("opeType");
+    // 获取idno的文本值
+    var idno = itemElement.SelectSingleNode("idno").InnerText;
+}
+```
+
 #### xml字符串转义问题
 
 在WebService方法返回XML数据的时候，将XML处理成字符串返回，在客户端得到的XML字符串会出现被转义的情况。
