@@ -209,15 +209,15 @@ static  void Main(string[] args)
     using (HttpClient client = new HttpClient())
     {
         var webServiceUri = "http://localhost:8083/WebServiceTest.asmx";
-        string soapRequest = @"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:web=""http://tempuri.org/"">
-                                <soapenv:Header/>
-                                <soapenv:Body>
-                                    <web:Sum>
-                                        <web:a>1</web:a>
-                                        <web:b>2</web:b>
-                                    </web:Sum>
-                                </soapenv:Body>
-                              </soapenv:Envelope>";
+        string soapRequest = @"<?xml version=""1.0"" encoding=""utf-8""?>
+                              <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+                                <soap:Body>
+                                  <Sum xmlns=""http://tempuri.org/"">
+                                    <a>1</a>
+                                    <b>2</b>
+                                  </Sum>
+                                </soap:Body>
+                              </soap:Envelope>";
 
 
         // var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8083/WebServiceTest.asmx");
