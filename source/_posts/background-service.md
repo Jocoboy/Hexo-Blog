@@ -141,10 +141,19 @@ public class WorkService : IWorkService
             // 计算下一个时间节点
             var now = DateTime.Now;
             var nextDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond).AddMinutes(IntervalMinute);
-            var delay = nextDateTime - now;
+            
+            if(nextDateTime < now)
+            {
+                var delay = nextDateTime.AddDays(1) - now;
+                await Task.Delay(delay, cancellationToken);
+            }
+            else
+            {
+                var delay = nextDateTime - now;
+                await Task.Delay(delay, cancellationToken);
+                await DoWork();
+            }
 
-            await Task.Delay(delay, cancellationToken);
-            await DoWork();
         }
     }
 
