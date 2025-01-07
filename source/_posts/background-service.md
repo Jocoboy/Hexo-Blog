@@ -132,9 +132,23 @@ public class WorkService : IWorkService
         {
             var count = Interlocked.Increment(ref executionCount);
             _logger.LogInformation("Timed Hosted Service is working. Count: {Count}", count);
-            await Task.Delay(5000);
+
+            var StartHour = 0;
+            var StartMinute = 0;
+            var StartSecond = 0;
+            var IntervalMinute = 1440;
+
+            // 计算下一个时间节点
+            var now = DateTime.Now;
+            var nextDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond).AddMinutes(IntervalMinute);
+            var delay = nextDateTime - now;
+
+            await Task.Delay(delay, cancellationToken);
+            await DoWork();
         }
     }
+
+    private async Task DoWork(){}
 }
 ```
 
