@@ -45,7 +45,7 @@ tags:
 
 ```c#
 /// <summary>
-/// ASE加密
+/// AES加密
 /// </summary>
 public static string AESEncrypt(string plainText, string key, string iv)
 {
@@ -75,7 +75,7 @@ public static string AESEncrypt(string plainText, string key, string iv)
 }
 
 /// <summary>
-/// ASE解密
+/// AES加密
 /// </summary>
 public static string AESDecrypt(string cipherText, string key, string iv)
 {
