@@ -25,6 +25,18 @@ tags:
 
 Nmap是一款非常著名的端口扫描工具。它可以快速扫描目标主机上大量端口，并且能够识别端口对应的服务。例如，使用命令`nmap -p 1 - 1000 <target_ip_address>`可以扫描目标主机上1到1000号端口的开放情况。
 
+### 应用场景
+
+#### SSL/TLS协议信息泄露漏洞（CVE-2016-2183）
+
+Windows系统下使用DES、3DES、IDEA等弱加密算法会引发SSL/TLS协议信息泄露漏洞。
+
+首先下载[nmap](https://nmap.org/download#windows)，下载完成后打开命令行输入以下命令(端口以443为例)，查看套件中是否存在DES/3DES加密套件
+
+`nmap -p 443 --script ssl-enum-ciphers localhost`
+
+确认漏洞存在后，下载[IISCrypto](https://www.nartac.com/Products/IISCrypto/Download)禁用加密套件。安装完成后点击左下角推荐设置Best Practices，再取消勾选Ciphers框里的Triple DES 168，即可点击Apply并重启，此时使用nmap复查发现DES/3DES加密套件已消失，漏洞修复完成。
+
 ## 基于网络的漏洞扫描技术
 
 ### 原理

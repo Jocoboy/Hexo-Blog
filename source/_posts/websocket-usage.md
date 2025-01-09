@@ -24,8 +24,8 @@ OSI(Open System Interconnect)七层网络模型是一种将计算机网络体系
 
 - 应用层(Application Layer)，负责提供应用程序之间的通信服务，使得不同的应用程序可以在网络上进行数据交换和通信。常见协议有HTTP、HTTPS、FTP、POP3、SSH、DNS等。
 - 表示层(Presentation Layer)，负责处理数据在网络上传输时的格式和编码，以确保不同系统之间的数据交换能够有效地进行。常见协议有JPEG、PNG、MP3等。
-- 会话层(Session Layer)，负责建立、管理和终止应用程序之间的会话。常见协议有SSL等。
-- 传输层(Transport Layer)，负责在不可靠的网络上提供可靠的数据传输服务。常见协议有TCP、UDP等。TCP协议面向连接、可靠，UDP协议无连接、不可靠。
+- 会话层(Session Layer)，负责建立、管理和终止应用程序之间的会话。常见协议有NetBIOS(网络基本输入/输出系统)、RPC等。
+- 传输层(Transport Layer)，负责在不可靠的网络上提供可靠的数据传输服务。常见协议有TCP、UDP、SSL(安全套接层协议)、TLS(传输层安全性协议)等。TCP协议面向连接、可靠，UDP协议无连接、不可靠。
 - 网络层(Network Layer)，负责将数据包从源主机传输到目标主机。常见协议有IP等。
 - 数据链路层(Data Link Layer)，负责将网络层传输过来的数据包进行分帧，并在物理介质上进行传输。常见协议有IEEE802.2(逻辑链路控制标准)、PPP(点对点通信)等。
 - 物理层(Physical Layer)，负责将数字数据转换成物理信号并在网络中传输。常见协议有RS232(串行通信接口标准)、IEEE802.3(以太网标准)等。
