@@ -107,6 +107,18 @@ fi
 
 在git仓库根目录下运行后，使用`git push -f`强制推送即可。
 
+## Git配置问题
+
+### 文件路径过长
+
+git在拉取或提交代码时，文件路径名过长会报错"filename too long"。
+
+输入`git config --get core.longpaths`，发现返回结果为false。
+
+可通过`git config core.longpaths true`命令，在当前项目中启用长路径名。
+
+若想全局生效，可输入`git config --global core.longpaths true`。
+
 ## 参考文档
 
 [Git官方中文文档](https://git-scm.com/docs/git/zh_HANS-CN)
