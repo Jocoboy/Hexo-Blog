@@ -32,9 +32,24 @@ SOAP即简单对象访问协议(Simple Object Access Protocol)，是Web Service�
 - Header元素，可选，包含头部信息
 - Body元素，必选，包含所有的调用和响应信息
 
+目前WebSerivce的协议主要有SOAP1.1与SOAP1.2，二者的区别如下：
+
+| 区别 | SOAP1.1 | SOAP1.2 | 
+| ----------- | ----------- | ----------- |
+| 命名空间 | `http://schemas.xmlsoap.org/soap/envelope/` | `http://www.w3.org/2003/05/soap-envelope` |
+| 请求与响应 | 请求头包含SOAPAction，且请求与响应的Content-Type为text/xml，以soap作为前缀 | 请求头不包含SOAPAction，且请求与响应的Content-Type为application/soap+xml，以soap12作为前缀 |
+| 错误处理 | 使用SOAP Fault元素，包含faultcode, faultstring, faultactor, detail | 使用Code和Reason元素，提供更结构化的错误信息 |
+| 协议绑定 | 主要支持HTTP绑定 | 支持更多协议绑定，如SMTP、FTP等 |
+| 数据模型 | 数据模型较为简单 | 引入了更复杂的数据模型，支持更多数据类型和编码方式 |
+| 处理规则 | 处理规则较为宽松 | 处理规则更严格，要求必须忽略未知的SOAP头元素 |
+| 规范文档 | 由W3C提交，非正式推荐标准 | 由W3C正式推荐，文档更详细 |
+| 扩展性 | 扩展性有限 | 扩展性更强，支持更多扩展机制 |
+| 安全性 | 安全性较弱 | 安全性增强，支持更多安全机制 |
+| 兼容性 | 兼容性较好，广泛支持 | 兼容性稍差，部分旧系统可能不支持 |
+
 ### WSDL
 
-Web Service描述语言(SebService Definition Language，简称WSDL)就是用机器能阅读的方式提供的一个正式描述文档而基于XML的语言，用于描述Web Service及其函数、参数和返回值。
+Web Service描述语言(WebService Definition Language，简称WSDL)就是用机器能阅读的方式提供的一个正式描述文档而基于XML的语言，用于描述Web Service及其函数、参数和返回值。
 
 在WSDL说明书中，描述了
 
@@ -42,6 +57,21 @@ Web Service描述语言(SebService Definition Language，简称WSDL)就是用机
 - 接口方法名称（方法）
 - 接口参数（方法参数）
 - ​服务返回的数据类型（方法返回值）
+
+
+WSDL目前有1.1和2.0两个版本，它们在语法、结构和功能上有显著差异，二者的区别如下：
+
+| 区别 | WSDL1.1 | WSDL2.0 | 
+| ----------- | ----------- | ----------- |
+| 命名空间 | `http://schemas.xmlsoap.org/wsdl/` | `http://www.w3.org/ns/wsdl` | 
+| 文档结构 | 根元素为`<wsdl:definitions>`，主要部分包括`<wsdl:types>`、`<wsdl:message>`、`<wsdl:portType>`、`<wsdl:binding>`、`<wsdl:service>` | 根元素为`<wsdl:description>`，使用`<wsdl:interface>`替代`<wsdl:portType>` | 
+| 操作定义 | 使用`<wsdl:portType>`定义操作，操作类型包括One-way、Request-response、Solicit-response、Notification | 使用`<wsdl:interface>`定义操作，操作类型包括One-way、Request-response、Robust In-only、In-out | 
+| 消息定义 | 使用`<wsdl:message>`定义消息，消息由`<wsdl:part>`组成，每个部分可以引用类型或元素 | 取消了 `<wsdl:message>`和`<wsdl:part>`，直接在操作中定义输入和输出消息的类型| 
+| 绑定支持 | 主要支持SOAP1.1绑定，支持HTTP GET/POST和MIME绑定，但使用较少 | 支持SOAP1.1和SOAP1.2绑定，增强了对HTTP GET/POST和MIME绑定的支持，支持更多协议绑定（如JMS、SMTP等） | 
+| 错误处理 | 错误处理依赖于SOAP的Fault消息 | 引入了`<wsdl:fault>`元素，直接在操作中定义错误消息 |
+| 模块化 | 模块化支持较弱，主要通过`<wsdl:import>`引入外部WSDL或XSD文件 | 增强了模块化支持，允许更灵活地组合和重用 WSDL文档 |
+| 扩展性 | 扩展性较差，主要通过`<wsdl:documentation>`和`<wsdl:extensibility>`实现 | 增强了扩展性，支持更多的自定义元素和属性 |
+| 标准化 | 未被正式标准化，但被广泛使用 | 是WSDL1.1的改进和标准化版本 |
 
 ### UDDI
 
