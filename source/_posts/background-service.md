@@ -120,6 +120,7 @@ public class WorkService : IWorkService
 {
     private int executionCount = 0;
     private readonly ILogger<WorkService> _logger;
+    private DateTime nextDateTime;
 
     public WorkService(ILogger<WorkService> logger)
     {
@@ -140,7 +141,15 @@ public class WorkService : IWorkService
 
             // 计算下一个时间节点
             var now = DateTime.Now;
-            var nextDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond).AddMinutes(IntervalMinute);
+            nextDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond).AddMinutes(IntervalMinute);
+            if(executionCount == 0)
+            {
+                nextDateTime = FirstDateTime;
+            }
+            else
+            {
+                nextDateTime = nextDateTime.AddMinutes(IntervalMinute);
+            }
             
             if(nextDateTime < now)
             {
