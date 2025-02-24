@@ -131,9 +131,6 @@ public class WorkService : IWorkService
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var count = Interlocked.Increment(ref executionCount);
-            _logger.LogInformation("Timed Hosted Service is working. Count: {Count}", count);
-
             var StartHour = 0;
             var StartMinute = 0;
             var StartSecond = 0;
@@ -161,6 +158,9 @@ public class WorkService : IWorkService
                 var delay = nextDateTime - now;
                 await Task.Delay(delay, cancellationToken);
                 await DoWork();
+
+                var count = Interlocked.Increment(ref executionCount);
+                _logger.LogInformation("Timed Hosted Service is working. Count: {Count}", count);
             }
 
         }
