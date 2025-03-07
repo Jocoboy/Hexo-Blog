@@ -234,6 +234,68 @@ static async Task Main(string[] args)
 }
 ```
 
+#### 支持WSS
+
+若要使用WebSocket Secure(WSS)，即在WebSocket上使用TLS/SSL加密通信，则需要对服务端和客户端进行一些调整。
+
+首先服务端的uri前缀需要改为https，
+
+```c#
+static async Task Main(string[] args)
+{
+    string serverUri = "https://localhost:8182/";
+
+    var webSocketServer = new WebSocketServer(serverUri);
+
+    await webSocketServer.Start();
+}
+```
+
+然后客户端的http升级请求需要从http-ws调整为https-wss，
+
+```c#
+static async Task Main(string[] args)
+{
+    string serverUri = "https://localhost:8182/";
+
+    var webSocketClient = new WebSocketClient(serverUri.Replace("https", "wss")); // http升级请求
+
+    await webSocketClient.Start(); 
+}
+```
+
+如果服务器使用自签名证书，客户端默认会抛出SSL错误，测试环境中可通过在代码中忽略证书验证的方式解决。
+
+```c#
+public class WebSocketClient
+{
+    ...
+    public async Task Start()
+    {
+        // 忽略自签名证书验证
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+        ...
+    }
+}
+```
+
+也可以通过使用自签名证书的方式解决。首先使用OpenSSL生成自签名证书，
+
+`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes`
+
+这将生成cert.pem（证书）和key.pem（私钥），然后使用以下命令将PEM文件转换为PFX文件。
+
+`openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in cert.pem`
+
+若使用HttpListener，确保证书已绑定到服务器的端口。例如，在Windows上可以使用netsh命令，
+
+`netsh http add sslcert ipport=127.0.0.1:8181 certhash=<证书指纹> appid={<应用程序GUID>}`
+
+证书指纹可通过openssl命令获取。
+
+`openssl x509 -in cert.pem -noout -fingerprint`
+
+
 ### 第三方库实现
 
 .NET中也可以引入Nuget包来实现WebSocket通信。
