@@ -251,20 +251,20 @@ static async Task Main(string[] args)
 }
 ```
 
-然后客户端的http升级请求需要从http-ws调整为https-wss，
+然后客户端的http升级请求需要改为https，即从http-ws调整为https-wss，
 
 ```c#
 static async Task Main(string[] args)
 {
     string serverUri = "https://localhost:8182/";
 
-    var webSocketClient = new WebSocketClient(serverUri.Replace("https", "wss")); // http升级请求
+    var webSocketClient = new WebSocketClient(serverUri.Replace("https", "wss")); // https升级请求
 
     await webSocketClient.Start(); 
 }
 ```
 
-如果服务器使用自签名证书，客户端默认会抛出SSL错误，测试环境中可通过在代码中忽略证书验证的方式解决。
+如果服务器使用自签名证书(未经过CA认证)，客户端默认会抛出SSL错误，测试环境中可通过在代码中忽略证书验证的方式解决。
 
 ```c#
 public class WebSocketClient
@@ -279,22 +279,25 @@ public class WebSocketClient
 }
 ```
 
-也可以通过使用自签名证书的方式解决。首先使用OpenSSL生成自签名证书，
+自签名证书可以使用OpenSSL生成，
 
 `openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes`
 
-这将生成cert.pem（证书）和key.pem（私钥），然后使用以下命令将PEM文件转换为PFX文件。
+这将生成cert.pem(证书)和key.pem(私钥)，然后使用以下命令将PEM文件转换为PFX文件。(此PFX文件导入后颁发者默认为Internet Widgits Pty Ltd)
 
 `openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in cert.pem`
 
-若使用HttpListener，确保证书已绑定到服务器的端口。例如，在Windows上可以使用netsh命令，
+若服务端使用HttpListener，需确保证书已绑定到服务器的端口。例如，在Windows上可以使用netsh命令，(注：IP一般使用通配地址0.0.0.0)
 
-`netsh http add sslcert ipport=127.0.0.1:8181 certhash=<证书指纹> appid={<应用程序GUID>}`
+`netsh http add sslcert ipport=<IP>:<PORT> certhash=<Certificate Thumbprint> appid={<Application GUID>}`
 
-证书指纹可通过openssl命令获取。
+证书指纹可通过`win+r`输入`mmc`并添加证书单元格后在受信任的根证书颁发机构中查看，也可通过openssl命令获取。(注：通过命令获取到的指纹中的`:`需要删除，否则绑定时会报参数错误)
 
 `openssl x509 -in cert.pem -noout -fingerprint`
 
+可使用netsh命令检查证书是否绑定成功。
+
+`netsh http show sslcert`
 
 ### 第三方库实现
 
