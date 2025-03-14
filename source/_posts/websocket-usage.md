@@ -8,7 +8,7 @@ tags:
 - .NET
 ---
 
-WebSocket的基本概念、应用场景，以及服务端和客户端在C#与.NET中的简单实现。
+WebSocket的基本概念、应用场景，以及服务端和客户端在C#与.NET中的简单实现(包含心跳检测与自动重连)。
 
 <!--more-->
 
@@ -32,7 +32,7 @@ OSI(Open System Interconnect)七层网络模型是一种将计算机网络体系
 
 ### 串口通信与网口通信
 
-WebSockek有串口、网口两种通信方式。
+WebSocket有串口、网口两种通信方式。
 
 - 串口方式‌主要基于串行接口进行数据传输，采用串口通信协议(如RS232、RS485等)。这种方式适用于点对点的数据传输，使用有限连接，只能连接两台设备，不支持网络中的多台设备之间的通信。串口通信传输速度较慢，传输距离较长，比较稳定，可以确保数据传输的可靠性。
 
@@ -65,11 +65,12 @@ C#中可以通过System.Net.WebSockets命名空间提供的类来实现WebSocket
 首先创建一个WebSocket服务端类，
 
 ```c#
-public class WebSocketServer
+public class WebSocketServer: IDisposable
 {
     private readonly string _serverUri;
     private readonly HttpListener _httpListener;
     private WebSocket _webSocket;
+    private bool disposedValue;
 
     public WebSocketServer(string serverUri)
     {
@@ -77,7 +78,7 @@ public class WebSocketServer
         _httpListener = new HttpListener();
     }
 
-    public async Task Start()
+    public async Task StartAsync()
     {
         _httpListener.Prefixes.Add(_serverUri);
         _httpListener.Start();
@@ -89,7 +90,7 @@ public class WebSocketServer
 
             if (httpContext.Request.IsWebSocketRequest)
             {
-                await HandleWebSocketConnection(httpContext);
+                await HandleWebSocketConnectionAsync(httpContext);
             }
             else
             {
@@ -99,7 +100,7 @@ public class WebSocketServer
         }
     }
 
-    private async Task HandleWebSocketConnection(HttpListenerContext httpContext)
+    private async Task HandleWebSocketConnectionAsync(HttpListenerContext httpContext)
     {
         WebSocketContext webSocketContext = null;
         try
@@ -128,7 +129,7 @@ public class WebSocketServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(" WebSocket消息接收错误 :" + e.Message);
+                Console.WriteLine("WebSocket消息接收错误 :" + e.Message);
                 break;
             }
 
@@ -153,9 +154,34 @@ public class WebSocketServer
         }
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: 释放托管状态(托管对象)
+            }
+
+            // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+            // TODO: 将大型字段设置为 null
+            disposedValue = true;
+            _webSocket.Dispose();
+        }
+    }
+
+    // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
     ~WebSocketServer()
     {
-        _webSocket.Dispose();
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
 ```
@@ -169,7 +195,7 @@ static async Task Main(string[] args)
 
     var webSocketServer = new WebSocketServer(serverUri);
 
-    await webSocketServer.Start();
+    await webSocketServer.StartAsync();
 }
 ```
 
@@ -178,47 +204,73 @@ static async Task Main(string[] args)
 首先创建一个WebSocket客户端类，
 
 ```c#
- public class WebSocketClient
- {
-     private readonly string _uri;
-     private readonly ClientWebSocket _clientWebSocket;
+public class WebSocketClient: IDisposable
+{
+    private readonly string _uri;
+    private readonly ClientWebSocket _clientWebSocket;
+    private bool disposedValue;
 
-     public WebSocketClient(string uri)
-     {
-         _uri = uri;
-         _clientWebSocket = new ClientWebSocket();
-     }
+    public WebSocketClient(string uri)
+    {
+        _uri = uri;
+        _clientWebSocket = new ClientWebSocket();
+    }
 
-     public async Task Start()
-     {
-         await _clientWebSocket.ConnectAsync(new Uri(_uri), CancellationToken.None);
-         Console.WriteLine("WebSocket客户端已连接至：" + _uri);
+    public async Task StartAsync()
+    {
+        await _clientWebSocket.ConnectAsync(new Uri(_uri), CancellationToken.None);
+        Console.WriteLine("WebSocket客户端已连接至：" + _uri);
 
-         byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[1024];
 
-         var input = Console.ReadLine();
-         while (input != "exit")
-         {
-             byte[] messageBytes = Encoding.UTF8.GetBytes(input);
-             await _clientWebSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
-             Console.WriteLine("客户端发送消息: " + input);
+        var input = Console.ReadLine();
+        while (input != "exit")
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(input);
+            await _clientWebSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+            Console.WriteLine("客户端发送消息: " + input);
 
-             WebSocketReceiveResult result = await _clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-             string response = Encoding.UTF8.GetString(buffer, 0, result.Count);
-             Console.WriteLine("客户端接收到消息: " + response);
+            WebSocketReceiveResult result = await _clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            string response = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            Console.WriteLine("客户端接收到消息: " + response);
 
-             input = Console.ReadLine();
-         }
+            input = Console.ReadLine();
+        }
 
-         await _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
-         Console.WriteLine("WebSocket客户端已关闭!");
-     }
+        await _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+        Console.WriteLine("WebSocket客户端已关闭!");
+    }
 
-     ~WebSocketClient()
-     {
-         _clientWebSocket.Dispose();
-     }
- }
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: 释放托管状态(托管对象)
+            }
+
+            // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+            // TODO: 将大型字段设置为 null
+            disposedValue = true;
+            _clientWebSocket.Dispose();
+        }
+    }
+
+    // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+    ~WebSocketServer()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+}
 ```
 
 然后启动WebSocket客户端。
@@ -230,9 +282,478 @@ static async Task Main(string[] args)
 
     var webSocketClient = new WebSocketClient(serverUri.Replace("http", "ws")); // http升级请求
 
-    await webSocketClient.Start(); 
+    await webSocketClient.StartAsync(); 
 }
 ```
+
+#### 支持WSS
+
+若要使用WebSocket Secure(WSS)，即在WebSocket上使用TLS/SSL加密通信，则需要对服务端和客户端进行一些调整。
+
+首先服务端的uri前缀需要改为https，
+
+```c#
+static async Task Main(string[] args)
+{
+    string serverUri = "https://localhost:8182/";
+
+    var webSocketServer = new WebSocketServer(serverUri);
+
+    await webSocketServer.StartAsync();
+}
+```
+
+然后客户端的http升级请求需要改为https，即从http-ws调整为https-wss，
+
+```c#
+static async Task Main(string[] args)
+{
+    string serverUri = "https://localhost:8182/";
+
+    var webSocketClient = new WebSocketClient(serverUri.Replace("https", "wss")); // https升级请求
+
+    await webSocketClient.StartAsync(); 
+}
+```
+
+如果服务器使用自签名证书(未经过CA认证)，客户端默认会抛出SSL错误，测试环境中可通过在代码中忽略证书验证的方式解决。
+
+```c#
+public class WebSocketClient
+{
+    ...
+    public async Task StartAsync()
+    {
+        // 忽略自签名证书验证
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+        ...
+    }
+}
+```
+
+自签名证书可以使用OpenSSL生成，
+
+`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes`
+
+这将生成cert.pem(证书)和key.pem(私钥)，然后使用以下命令将PEM文件转换为PFX文件。(此PFX文件导入后颁发者默认为Internet Widgits Pty Ltd)
+
+`openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in cert.pem`
+
+若服务端使用HttpListener，需确保证书已绑定到服务器的端口。例如，在Windows上可以使用netsh命令，(注：IP一般使用通配地址0.0.0.0)
+
+`netsh http add sslcert ipport=<IP>:<PORT> certhash=<Certificate Thumbprint> appid={<Application GUID>}`
+
+证书指纹可通过`win+r`输入`mmc`并添加证书单元格后在受信任的根证书颁发机构中查看，也可通过openssl命令获取。(注：通过命令获取到的指纹中的`:`需要删除，否则绑定时会报参数错误)
+
+`openssl x509 -in cert.pem -noout -fingerprint`
+
+可使用netsh命令检查证书是否绑定成功。
+
+`netsh http show sslcert`
+
+#### 支持心跳检测与自动重连
+
+WebSocket心跳检测(Heartbeat)是一种机制，用于确保客户端和服务器之间的连接仍然活跃，并且能够及时检测到任何连接问题。在WebSocket连接中，由于网络不稳定或服务器重启等原因，可能会导致连接意外断开，而双方并不知情。心跳检测通过定期发送小的数据包(如Ping/Pong帧)来验证连接是否仍然存在。
+
+在ClientWebSocket中，SendAsync和ReceiveAsync是异步操作，但它们有一个重要的限制：每个操作(SendAsync和ReceiveAsync)在同一时间只能有一个未完成的任务。如果尝试同时发起多个SendAsync或ReceiveAsync调用，就会抛出异常
+
+>There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time.
+
+ClientWebSocket的设计是线程安全的，但它不允许同时发起多个SendAsync或ReceiveAsync操作。如果你在一个线程中调用SendAsync，而在同一个操作完成之前又在另一个线程中调用SendAsync，就会触发上述异常。(ReceiveAsync同理)
+
+在ServerWebSocket的心跳检测中，如果使用异步方式调用SendAsync，可能会导致服务在"Aborted"状态下仍然被用于通信(理论上只有"Open"状态下才应当执行)，从而引发异常
+
+>The 'System.Net.WebSockets.ServerWebSocket' instance cannot be used for communication because it has been transitioned into the 'Aborted' state
+
+可以通过加锁的方式确保线程安全。在异步方法中可以使用SemaphoreSlim来实现异步锁，避免阻塞线程。
+
+下面我们来实现WebSocket服务端与客户端各自的心跳检测机制，以及客户端自动重连机制。首先服务端需要启动心跳检测任务，并对客户端发送过来的Ping消息作出Pong回应。服务端完整代码如下：
+
+```c#
+public class WebSocketServer: IDisposable
+{
+    private readonly string _serverUri;
+    private readonly HttpListener _httpListener;
+    private WebSocket _webSocket;
+    private CancellationTokenSource _cancellationTokenSource;
+    private CancellationToken _cancellationToken { get { return _cancellationTokenSource == null ? CancellationToken.None : _cancellationTokenSource.Token; } }
+    private const int HeartbeatInterval = 5000;  // 心跳间隔时间
+    private const string PingMessage = "Ping";
+    private const string PongMessage = "Pong";
+    //private readonly object _sendLock = new object();
+    private readonly SemaphoreSlim _sendSemaphore = new SemaphoreSlim(1, 1);  // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+    //private readonly object _receiveLock = new object();
+    private readonly SemaphoreSlim _receiveSemaphore = new SemaphoreSlim(1, 1);  // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+    private bool disposedValue;
+
+    public WebSocketServer(string serverUri)
+    {
+        _serverUri = serverUri;
+        _httpListener = new HttpListener();
+    }
+
+    public async Task StartAsync()
+    {
+        _httpListener.Prefixes.Add(_serverUri);
+        _httpListener.Start();
+        Console.WriteLine($"WebSocket服务已启动，服务地址：{_serverUri}，等待客户端连接...");
+
+        while (true)
+        {
+            HttpListenerContext httpContext = await _httpListener.GetContextAsync();
+
+            if (httpContext.Request.IsWebSocketRequest)
+            {
+                await HandleWebSocketConnectionAsync(httpContext);
+            }
+            else
+            {
+                httpContext.Response.StatusCode = 400;
+                httpContext.Response.Close();
+            }
+        }
+    }
+
+    private async Task HandleWebSocketConnectionAsync(HttpListenerContext httpContext)
+    {
+        WebSocketContext webSocketContext = null;
+        try
+        {
+            webSocketContext = await httpContext.AcceptWebSocketAsync(subProtocol: null);
+            Console.WriteLine("接收到客户端连接，WebSocket连接已建立，等待客户端消息...");
+        }
+        catch (Exception e)
+        {
+            httpContext.Response.StatusCode = 500;
+            httpContext.Response.Close();
+            Console.WriteLine("WebSocket连接失败: " + e.Message);
+            return;
+        }
+
+        _webSocket = webSocketContext.WebSocket;
+        _cancellationTokenSource = new CancellationTokenSource();
+        byte[] buffer = new byte[1024];
+
+        // 开始心跳检测
+        var heartbeatTask = HeartbeatAsync();
+
+        while (_webSocket.State == WebSocketState.Open)
+        {
+            WebSocketReceiveResult result = null;
+
+            try
+            {
+                await _receiveSemaphore.WaitAsync(_cancellationToken); // 等待锁
+                result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("WebSocket消息接收错误 :" + e.Message);
+                break;
+            }
+            finally
+            {
+                _receiveSemaphore.Release(); // 释放锁
+            }
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", _cancellationToken);
+                Console.WriteLine("WebSocket连接已关闭!");
+            }
+            else if (result.MessageType == WebSocketMessageType.Text)
+            {
+                // 处理文本消息
+                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                Console.WriteLine("接收到来自客户端的消息: " + message);
+
+                await SendMessageAsync("服务端已成功收到消息" + message);
+
+                if (message == PingMessage)
+                {
+                    await SendMessageAsync(PongMessage);
+                    Console.WriteLine($"{PongMessage}已发送.");
+                }
+            }
+            else if (result.MessageType == WebSocketMessageType.Binary)
+            {
+                // 处理二进制消息
+            }
+        }
+
+        _cancellationTokenSource.Cancel();
+        await heartbeatTask;
+    }
+
+    private async Task SendMessageAsync(string message)
+    {
+        try
+        {
+            await _sendSemaphore.WaitAsync(_cancellationToken); // 等待锁
+            var msg = Encoding.UTF8.GetBytes(message);
+            await _webSocket.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Text, true, _cancellationToken);
+        }
+        finally
+        {
+            _sendSemaphore.Release(); // 释放锁
+        }
+    }
+
+    private async Task HeartbeatAsync()
+    {
+        while (!_cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(HeartbeatInterval, _cancellationToken); 
+                if (_webSocket.State == WebSocketState.Open)
+                {
+                    await SendMessageAsync(PingMessage);
+                    Console.WriteLine($"{PingMessage}已发送.");
+                }
+                else
+                {
+                    Console.WriteLine("WebSocket已关闭，心跳已停止.");
+                    break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // 任务被取消，跳出循环
+                Console.WriteLine("心跳检测任务被取消，跳出循环");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"心跳检测错误: {ex.Message}");
+                break;
+            }
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: 释放托管状态(托管对象)
+            }
+
+            // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+            // TODO: 将大型字段设置为 null
+            disposedValue = true;
+            _webSocket.Dispose();
+            _cancellationTokenSource.Dispose();
+        }
+    }
+
+    // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+    ~WebSocketServer()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+}
+```
+
+然后客户端同样需要启动心跳检测任务，并对服务端发送过来的Ping消息作出Pong回应。此外，客户端还需要确保在连接断开后能自动重连。客户端完整代码如下：
+
+```c#
+public class WebSocketClient : IDisposable
+{
+    private readonly string _uri;
+    private ClientWebSocket _clientWebSocket;
+    private CancellationTokenSource _cancellationTokenSource;
+    private CancellationToken _cancellationToken { get { return _cancellationTokenSource.Token; } }
+    private const int HeartbeatInterval = 5000;  // 心跳间隔时间
+    private const int ReconnectDelay = 10000; // 重连延迟时间
+    private const string PingMessage = "Ping";
+    private const string PongMessage = "Pong";
+    //private readonly object _sendLock = new object();
+    private readonly SemaphoreSlim _sendSemaphore = new SemaphoreSlim(1, 1); // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+    //private readonly object _receiveLock = new object();
+    private readonly SemaphoreSlim _receiveSemaphore = new SemaphoreSlim(1, 1); // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+    private bool disposedValue;
+
+    public WebSocketClient(string uri)
+    {
+        _uri = uri;
+    }
+
+    public async Task StartAsync()
+    {
+        // 忽略自签名证书验证
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
+        while (true)
+        {
+            try
+            {
+                _clientWebSocket = new ClientWebSocket(); // 对于每一次连接尝试，都要重新创建一个ClientWebSocket实例，否则会一直提示"The WebSocket has already been started"
+                _cancellationTokenSource = new CancellationTokenSource(); // 对于每一次连接尝试，都要重新创建一个CancellationTokenSource实例，否则会一直提示"A task was canceled"
+                await _clientWebSocket.ConnectAsync(new Uri(_uri), _cancellationToken); // 无法对一个已经启动或已经关闭的ClientWebSocket实例再次调用ConnectAsync 
+
+                // 开始心跳检测
+                var heartbeatTask = HeartbeatAsync();
+                Console.WriteLine($"客户端已连接上WebSocket服务器，握手请求后的服务地址为{_uri}");
+
+                // 接收消息
+                await ReceiveMessagesAsync();
+
+                _cancellationTokenSource.Cancel();
+                await heartbeatTask;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket错误：{ex.Message}");
+            }
+            Console.WriteLine($"在{ReconnectDelay / 1000}秒后尝试重连...");
+            await Task.Delay(ReconnectDelay);
+        }
+    }
+
+    private async Task ReceiveMessagesAsync()
+    {
+        var buffer = new byte[1024];
+
+        while (_clientWebSocket.State == WebSocketState.Open)
+        {
+            try
+            {
+                    await _receiveSemaphore.WaitAsync(_cancellationToken); // 等待锁
+
+                    var result = await _clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellationToken);
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", _cancellationToken);
+                        Console.WriteLine("WebSocket客户端已关闭!");
+                    }
+                    else
+                    {
+                        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        Console.WriteLine($"接收到来自服务端的消息: {message}");
+
+                        if (message == PingMessage)
+                        {
+                            await SendMessageAsync(PongMessage);
+                            Console.WriteLine($"{PongMessage}已发送.");
+                        }
+                    }
+            }
+            catch (OperationCanceledException)
+            {
+                // 任务被取消，跳出循环
+                Console.WriteLine("消息接收任务被取消，跳出循环");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"客户端接收消息发生错误: {ex.Message}");
+                break;
+            }
+            finally
+            {
+                _receiveSemaphore.Release(); // 释放锁
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task SendMessageAsync(string message)
+    {
+        try
+        {
+            await _sendSemaphore.WaitAsync(_cancellationToken); // 等待锁
+            var msg = Encoding.UTF8.GetBytes(message);
+            await _clientWebSocket.SendAsync(new ArraySegment<byte>(msg), WebSocketMessageType.Text, true, _cancellationToken);
+        }
+        finally
+        {
+            _sendSemaphore.Release(); // 释放锁
+        }
+    }
+
+    private async Task HeartbeatAsync()
+    {
+        while (!_cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(HeartbeatInterval, _cancellationToken);
+                if (_clientWebSocket.State == WebSocketState.Open)
+                {
+                    await SendMessageAsync(PingMessage);
+                    Console.WriteLine($"{PingMessage}已发送.");
+                }
+                else
+                {
+                    Console.WriteLine("WebSocket已关闭，心跳已停止.");
+                    break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // 任务被取消，跳出循环
+                Console.WriteLine("心跳检测任务被取消，跳出循环");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"心跳检测错误: {ex.Message}");
+                break;
+            }
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: 释放托管状态(托管对象)
+            }
+
+            // TODO: 释放未托管的资源(未托管的对象)并重写终结器
+            // TODO: 将大型字段设置为 null
+            disposedValue = true;
+            _clientWebSocket.Dispose();
+            _cancellationTokenSource.Dispose();
+        }
+    }
+
+    // TODO: 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+    ~WebSocketClient()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+}
+```
+
+下图展示了客户端反复掉线重连时，服务端控制台的输出情况。
+
+{% asset_img websocket_server_console.png  服务端控制台的输出情况 %}
+
+下图展示了服务端反复重启时，客户端控制台的输出情况。
+
+{% asset_img websocket_client_console.png  客户端控制台的输出情况 %}
 
 ### 第三方库实现
 
@@ -330,6 +851,21 @@ class Program
         webSocket4Net.Dispose();
     }
 }
+```
+
+#### 支持WSS
+
+首先在基于Fleck实现的服务端中加载域名证书和密码，
+
+```c#
+var server = new WebSocketServer("wss://127.0.0.1:8182");
+server.Certificate = new X509Certificate2("certificate.pfx", "", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet); // 自签名证书密码默认为""
+```
+
+然后在基于WebSocket4Net实现的客户端中修改握手后的升级请求(ws前缀改为wss)。
+
+```c#
+webSocket4Net = new WebSocket("wss://127.0.0.1:8182");
 ```
 
 ## 参考文档
