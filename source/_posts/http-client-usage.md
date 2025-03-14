@@ -1,5 +1,5 @@
 ---
-title: HttpClient使用详解
+title: .NET HttpClient使用详解
 date: 2025-03-04 17:03:08
 categories:
 - Network-Protocol
@@ -9,7 +9,7 @@ tags:
 - ASP.NET Core
 ---
 
-使用HttpClient发送HTTP请求的方式介绍。
+.NET中使用HttpClient发送HTTP请求的方式介绍。
 
 <!--more-->
 
