@@ -7,13 +7,13 @@ tags:
 - c#
 ---
 
-c#进阶语法，包含委托与事件、动态类型与泛型等。
+c#进阶语法，包含委托与事件、动态类型与泛型、信号量等。
 
 <!--more-->
 
 ## 前言
 
-c#中的一些进阶语法使用记录，包含委托(Delegate)与事件(Event)、动态类型(Dynamic Types)与泛型(Generics)等。 
+c#中的一些进阶语法使用记录，包含委托(Delegate)与事件(Event)、动态类型(Dynamic Types)与泛型(Generics)、信号量(Semaphore/SemaphoreSlim)等。 
 
 ## 委托与事件
 
@@ -277,8 +277,220 @@ expandoList = expandoList.Where(item =>
 | 灵活性 | 较低(类型在编译时确定) | 高(类型在运行时确定) | 
 | 适用场景 | 类型安全的通用代码、集合类、高性能场景 | 动态语言交互、未知类型处理、灵活性需求 | 
 
+## 信号量Semaphore与SemaphoreSlim
+
+Semaphore和SemaphoreSlim是.NET中用于控制并发访问的同步原语，他们的主要区别如下：
+
+| 区别 | Semaphore | SemaphoreSlim | 
+| ----------- | ----------- | ----------- |
+| 跨进程支持 | 支持跨进程同步，可以用于不同进程之间的线程同步 | 仅支持单进程内的线程同步 | 
+| 性能 | 性能相对较低，因为它依赖于操作系统内核对象 | 性能更高，因为它完全基于.NET运行时 | 
+| 异步支持 | 不支持异步操作 | 支持异步操作 |
+| 适用场景 | 适用于需要跨进程同步的场景 | 适用于单进程内需要高性能同步的场景 |
+
+### Semaphore
+
+Semaphore用于限制可同时访问某一资源或资源池的线程数。下面是一个简单的使用示例：
+
+```c#
+// 创建一个信号量，初始计数为0，最大计数为3
+Semaphore semaphore = new Semaphore(0, 3);
+semaphore.WaitOne();
+// 临界区代码
+semaphore.Release();
+```
+
+- Semaphore第一个参数是初始计数initialCount，代表未执行Release方法之前允许通过的信号量
+- Semaphore第二个参数是最大计数maximumCount，代表执行Release方法之后允许通过的最大信号量
+- 释放之前的数量加上释放数量releaseCount应当不超过最大计数，即Release(releaseCount) + releaseCount <= maximumCount，其中Release(releaseCount)初始值为initialCount
+
+以下示例展示了信号量Semaphore是如何控制并发访问的：
+
+```c#
+public class Program
+{
+    private static Semaphore _semaphore;
+    private static int _padding;
+
+    private static void Worker(object num)
+    {
+        Console.WriteLine("线程 {0} 开始并等待进入信号量.", num);
+        _semaphore.WaitOne();
+
+        int padding = Interlocked.Add(ref _padding, 100);
+
+        Console.WriteLine("线程 {0} 进入信号量.", num);
+
+        Thread.Sleep(1000 + padding);
+
+        Console.WriteLine("线程 {0} 从信号量中释放.", num);
+
+        try
+        {
+            Console.WriteLine("线程 {0} 释放之前信号量中的可用资源数: {1}",
+            num, _semaphore.Release());
+        }
+        catch (SemaphoreFullException)
+        {
+            Console.WriteLine("警告: 释放数量超过信号量最大计数！");
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        _semaphore = new Semaphore(initialCount: 1, maximumCount: 4);
+
+        for (int i = 1; i <= 5; i++)
+        {
+            Thread t = new Thread(new ParameterizedThreadStart(Worker));
+
+            t.Start(i);
+        }
+
+        Thread.Sleep(500);
+
+        int releaseCount = 4;
+        Console.WriteLine($"主线程尝试释放{releaseCount}个资源");
+
+        try
+        {
+            _semaphore.Release(releaseCount);
+        }
+        catch (SemaphoreFullException)
+        {
+            Console.WriteLine("警告: 释放数量超过信号量最大计数！");
+        }
+
+        Console.WriteLine("主线程退出");
+    }
+}
+```
+
+控制台输出内容如下：
+
+> 线程 2 开始并等待进入信号量.
+线程 5 开始并等待进入信号量.
+线程 3 开始并等待进入信号量.
+线程 1 开始并等待进入信号量.
+线程 4 开始并等待进入信号量.
+线程 2 进入信号量.
+主线程尝试释放4个资源
+主线程退出
+线程 3 进入信号量.
+线程 5 进入信号量.
+线程 4 进入信号量.
+线程 1 进入信号量.
+线程 2 从信号量中释放.
+线程 2 释放之前信号量中的可用资源数: 0
+线程 5 从信号量中释放.
+线程 5 释放之前信号量中的可用资源数: 1
+线程 1 从信号量中释放.
+线程 1 释放之前信号量中的可用资源数: 2
+线程 3 从信号量中释放.
+线程 3 释放之前信号量中的可用资源数: 3
+线程 4 从信号量中释放.
+警告: 释放数量超过信号量最大计数！
+
+### SemaphoreSlim
+
+SemaphoreSlim是对可同时访问资源或资源池的线程数加以限制的Semaphore的轻量替代。下面是一个简单的使用示例：
+
+```c#
+// 创建一个信号量，初始计数为0，最大计数为3
+SemaphoreSlim semaphoreSlim = new SemaphoreSlim(0, 3);
+await semaphoreSlim.WaitAsync();
+// 临界区代码
+semaphoreSlim.Release();
+```
+
+以下示例展示了信号量SemaphoreSlim是如何控制并发访问的：
+
+```c#
+public class Program
+{
+    private static SemaphoreSlim _semaphoreSlim;
+    private static int _padding;
+
+    private static void Worker()
+    {
+        Console.WriteLine("线程 {0} 开始并等待进入信号量.", Task.CurrentId);
+        _semaphoreSlim.Wait();
+
+        int semaphoreCount;
+
+        Interlocked.Add(ref _padding, 100);
+
+        Console.WriteLine("线程 {0} 进入信号量.", Task.CurrentId);
+
+        Thread.Sleep(1000 + _padding);
+
+        try
+        {
+            Console.WriteLine("线程 {0} 从信号量中释放.", Task.CurrentId);
+            semaphoreCount = _semaphoreSlim.Release();
+            Console.WriteLine("线程 {0} 释放之前信号量中的可用资源数: {1}", Task.CurrentId, semaphoreCount);
+        }
+        catch (SemaphoreFullException)
+        {
+            Console.WriteLine("警告: 释放数量超过信号量最大计数！");
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        _semaphoreSlim = new SemaphoreSlim(1, 4);
+        Task[] tasks = new Task[5];
+
+        for (int i = 0; i <= 4; i++)
+        {
+            tasks[i] = Task.Run(Worker);
+        }
+
+        Thread.Sleep(500);
+
+        int releaseCount = 4;
+        Console.WriteLine($"主线程尝试释放{releaseCount}个资源");
+        try
+        {
+            _semaphoreSlim.Release(releaseCount);
+        }
+        catch (SemaphoreFullException)
+        {
+            Console.WriteLine("警告: 释放数量超过信号量最大计数！");
+        }
+
+        Task.WaitAll(tasks);
+
+        Console.WriteLine("主线程退出");
+    }
+}
+```
+
+控制台输出内容与Semaphore类似，此处不再展示。
+
+SemaphoreSlim还可用于异步锁，避免线程阻塞，下面是一个简单示例：
+
+```c#
+private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);  // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+
+public async Task DoWork()
+{
+    try
+    {
+        await _semaphoreSlim.WaitAsync(); // 等待锁
+        // TODO
+    }
+    finally
+    {
+        _semaphoreSlim.Release(); // 释放锁
+    }
+}
+```
+
 ## 参考文档
 
 - [C#编程指南](https://learn.microsoft.com/zh-cn/dotnet/csharp/programming-guide)
+
+- [.NET API参考文档](https://learn.microsoft.com/zh-cn/dotnet/api/)
 
 - [System.Dynamic.ExpandoObject类使用说明](https://learn.microsoft.com/zh-cn/dotnet/fundamentals/runtime-libraries/system-dynamic-expandoobject)
