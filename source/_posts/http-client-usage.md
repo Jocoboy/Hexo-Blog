@@ -183,7 +183,7 @@ var res = JsonConvert.DeserializeObject<TData>(responseContent);
 var downloadUrl = Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.FullName, "Upload", fileMd5);
 using FileStream stream = System.IO.File.OpenRead(downloadUrl);
 using var memoryStream = new MemoryStream();
-stream.CopyTo(memoryStream);
+await stream.CopyToAsync(memoryStream);
 byte[] fileBytes = memoryStream.ToArray();
 
 formData.Add(new ByteArrayContent(fileBytes), "parameter3", Path.GetFileName(fileName));
