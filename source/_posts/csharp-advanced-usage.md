@@ -7,13 +7,13 @@ tags:
 - c#
 ---
 
-c#进阶语法，包含委托与事件、动态类型与泛型、信号量等。
+c#进阶语法，包含委托与事件、动态类型与泛型、并发访问控制等。
 
 <!--more-->
 
 ## 前言
 
-c#中的一些进阶语法使用记录，包含委托(Delegate)与事件(Event)、动态类型(Dynamic Types)与泛型(Generics)、信号量(Semaphore/SemaphoreSlim)等。 
+c#中的一些进阶语法使用记录，包含委托(Delegate)与事件(Event)、动态类型(Dynamic Types)与泛型(Generics)、并发访问控制(信号量、并发字典)等。 
 
 ## 委托与事件
 
@@ -277,7 +277,9 @@ expandoList = expandoList.Where(item =>
 | 灵活性 | 较低(类型在编译时确定) | 高(类型在运行时确定) | 
 | 适用场景 | 类型安全的通用代码、集合类、高性能场景 | 动态语言交互、未知类型处理、灵活性需求 | 
 
-## 信号量Semaphore与SemaphoreSlim
+## 并发访问控制
+
+### 信号量Semaphore与SemaphoreSlim
 
 Semaphore和SemaphoreSlim是.NET中用于控制并发访问的同步原语，他们的主要区别如下：
 
@@ -288,7 +290,7 @@ Semaphore和SemaphoreSlim是.NET中用于控制并发访问的同步原语，他
 | 异步支持 | 不支持异步操作 | 支持异步操作 |
 | 适用场景 | 适用于需要跨进程同步的场景 | 适用于单进程内需要高性能同步的场景 |
 
-### Semaphore
+#### Semaphore
 
 Semaphore用于限制可同时访问某一资源或资源池的线程数。下面是一个简单的使用示例：
 
@@ -391,7 +393,7 @@ public class Program
 线程 4 从信号量中释放.
 警告: 释放数量超过信号量最大计数！
 
-### SemaphoreSlim
+#### SemaphoreSlim
 
 SemaphoreSlim是对可同时访问资源或资源池的线程数加以限制的Semaphore的轻量替代。下面是一个简单的使用示例：
 
@@ -486,6 +488,126 @@ public async Task DoWork()
     }
 }
 ```
+
+### 并发字典ConcurrentDictionary
+
+在C#中，线程安全集合是一种特殊的数据结构，能够在多线程环境下安全地访问和修改集合元素。线程安全集合通常是通过加锁或者使用其他同步机制来实现线程安全。C#中提供了多种线程安全集合，包括ConcurrentDictionary、ConcurrentQueue、ConcurrentStack、ConcurrentBag等。
+
+ConcurrentDictionary是C#中用于处理多线程并发访问的线程安全字典。它的设计目标是高效地支持多个线程同时读写数据，而无需显式加锁。它的核心特性使其在高并发场景下表现出色，以下是它的主要特性：
+
+- 线程安全：允许多个线程同时读取和写入数据，而不会导致数据损坏或抛出异常。它通过内部锁和无锁技术(如CAS操作)来实现高效的并发访问
+- 原子操作：提供了一系列原子操作方法(TryAdd、TryUpdate、TryRemove、AddOrUpdate、GetOrAdd等)，确保在多线程环境下的操作是线程安全的，避免了手动加锁的复杂性
+- 高性能：针对高并发场景进行了优化，使用了分区锁(lock striping)技术，将字典分成多个段(segments)，每个段使用独立的锁。这样可以减少锁竞争，提高并发性能
+- 无锁读取：大多数情况下读取操作是无锁的(lock-free)，这意味着多个线程可以同时读取数据而不会阻塞。这使得读取操作非常高效
+
+#### 应用场景
+
+ConcurrentDictionary的应用场景很多，例如缓存系统、共享数据存储、统计和聚合数据、任务调度和状态管理、并发日志记录、分布式锁或资源管理、实时数据处理等。
+
+##### 统计和聚合数据
+
+在并发任务中，ConcurrentDictionary可以用于统计或聚合数据，例如计数、求和等。
+
+下面这个示例使用了常规字典Dictionary对字符串列表进行统计，由于Dictionary是线程不安全的，统计结果将会不可预知。
+
+```c#
+var dict = new Dictionary<string, int>();
+string[] words = { "apple", "banana", "apple", "orange", "banana", "apple" };
+
+// 模拟多线程环境
+Parallel.ForEach(words, word =>
+{
+    if (dict.ContainsKey(word))
+    {
+        dict[word] += 1;
+    }
+    else
+    {
+        dict[word] = 1;
+    }
+});
+
+foreach (var kvp in dict)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}
+```
+
+上面的代码运行后有概率会出现以下错误提示：
+
+>1.`Object reference not set to an instance of an object`.
+>2.`Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection's state is no longer correct.`
+
+更改非并发集合的操作必须具有独占访问权限。对非并发集合执行并发更新将会损坏其状态，集合的状态将不再正确。可以使用lock关键字手动添加互斥锁避免竞态条件，也可以直接使用ConcurrentDictionary。
+
+```c#
+var concurrentDict = new ConcurrentDictionary<string, int>();
+string[] words = { "apple", "banana", "apple", "orange", "banana", "apple" };
+
+// 模拟多线程环境
+Parallel.ForEach(words, word =>
+{
+    concurrentDict.AddOrUpdate(word, 1, (key, oldValue) => oldValue + 1);
+});
+
+foreach (var kvp in concurrentDict)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}
+```
+
+##### 并发日志记录
+
+在并发环境中，ConcurrentDictionary可以用于记录日志或事件。
+
+```c#
+var log = new ConcurrentDictionary<DateTime, string>();
+
+void LogEvent(string message)
+{
+    log.TryAdd(DateTime.Now, message);
+}
+
+// 模拟多线程环境
+Parallel.For(0, 10, i =>
+{
+    LogEvent($"Event {i} occurred");
+});
+
+foreach (var kvp in log)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}
+```
+
+上述代码输出的日志记录个数是不确定的，因为同一时间只会记录一条记录。
+
+##### 分布式锁或资源管理
+
+ConcurrentDictionary可以用于实现简单的分布式锁或资源管理。
+
+```c#
+var resourceLocks = new ConcurrentDictionary<int, object>();
+var lockObj = new object();
+
+void AccessResource(int resourceId)
+{
+    var resourceLock = resourceLocks.GetOrAdd(resourceId, id => new object());
+    lock(resourceLock)
+    {
+        Console.WriteLine($"Resource {resourceId} is being accessed by thread {Task.CurrentId}");
+        Task.Delay(1000).Wait(); // 模拟资源访问
+    }
+}
+
+// 多线程访问资源
+Parallel.For(1, 10, i =>
+{
+    AccessResource(i % 3); // 重复访问相同的资源
+});
+```
+
+上述代码对于同一资源的访问赋予了独占访问权限，若使用普通锁(将resourceLock改为lockObj)，那么某个进程访问资源池中的某个资源时，将会导致资源池中的其他资源也无法被访问。
 
 ## 参考文档
 
