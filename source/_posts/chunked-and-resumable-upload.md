@@ -9,7 +9,7 @@ tags:
 - WinForm
 ---
 
-基于.NET实现大文件上传中的分片上传与断点续传功能，并在WinForm中实现上传进度反馈等辅助功能。
+基于.NET实现大文件上传中的分片上传与断点续传功能，并在WinForm中实现上传进度反馈、并行上传等辅助功能。
 
 <!--more-->
 
@@ -313,7 +313,7 @@ await uploader.UploadWithResumeAsync(filePath, CancellationToken.None);
 
 ### 服务端实现
 
-服务端代码延用断点续传，不再展示。
+服务端代码延用[断点续传](#断点续传)，不再展示。
 
 ### 客户端实现
 
@@ -487,6 +487,110 @@ public partial class MainForm : Form
 最终实现的效果如下：
 
 {% asset_img resumable_upload_in_winform.png  在WinForm中实现断点续传 %}
+
+## 并行上传
+
+并行上传是提升大文件传输效率的有效手段，并行上传可将总时间缩短为单线程上传时间/N(N为并行度)。并行上传适合在不稳定的网络环境(如高延迟)中使用，可充分利用间歇性网络带宽。
+
+并行上传时多个分片同时上报上传进度，进度条呈现更平滑，更适合需要实时进度反馈的场景。
+
+### 服务端实现
+
+服务端代码延用[断点续传](#断点续传)，不再展示。
+
+### 客户端实现
+
+客户端基于ResumableUploader，创建了一个并行上传服务类ParallelUploader，使用`Parallel.ForEachAsync`实现并行上传，并设置了最大并行度(默认为4)。
+
+```c#
+public class ParallelUploader
+{
+    ...
+    private readonly int _maxDegreeOfParallelism;
+
+    public ParallelUploader(string serviceUri, int maxDegreeOfParallelism = 4)
+    {
+        ...
+        _maxDegreeOfParallelism = maxDegreeOfParallelism;
+    }
+
+    public async Task ParallelUploadFileAsync(string filePath, CancellationToken cancellationToken)
+    {
+        try
+        {
+            StatusChanged?.Invoke("正在准备上传...");
+
+            var fileInfo = new FileInfo(filePath);
+            var totalChunks = (int)Math.Ceiling((double)fileInfo.Length / ChunkSize);
+            var fileId = GetFileMD5(filePath); // 基于文件内容生成唯一ID
+
+            StatusChanged?.Invoke("正在检查已上传分片...");
+
+            // 获取已上传的分片信息
+            var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
+
+            var chunksToUpload = Enumerable.Range(0, totalChunks).Where(chunk => !uploadedChunks.Contains(chunk)).ToList();
+
+            var progressLock = new object();
+            var uploadedCount = 0;
+            var totalToUpload = chunksToUpload.Count;
+
+            StatusChanged?.Invoke($"准备上传 {totalToUpload} 个分片...");
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxDegreeOfParallelism,
+                CancellationToken = cancellationToken
+            };
+
+            using var fileStream = File.OpenRead(filePath);
+
+            await Parallel.ForEachAsync(chunksToUpload, parallelOptions, async (chunkNumber, cancellationToken) =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                fileStream.Seek(chunkNumber * ChunkSize, SeekOrigin.Begin);
+
+                var chunkData = new byte[ChunkSize];
+                var bytesRead = await fileStream.ReadAsync(chunkData, 0, ChunkSize, cancellationToken);
+
+                var actualChunkData = new byte[bytesRead];
+                Array.Copy(chunkData, actualChunkData, bytesRead);
+
+                StatusChanged?.Invoke($"正在上传分片 {chunkNumber + 1}/{totalChunks}");
+
+                await UploadChunkAsync(fileId, chunkNumber, totalChunks, fileInfo.Name, actualChunkData, cancellationToken);
+
+                // 使用锁保证进度更新的原子性
+                lock (progressLock)
+                {
+                    uploadedCount++;
+                    var progress = (int)((double)uploadedCount / totalToUpload * 100);
+                    ProgressChanged?.Invoke(progress);
+                }
+            });
+
+            StatusChanged?.Invoke("上传完成！");
+            UploadCompleted?.Invoke(true);
+        }
+        catch (OperationCanceledException)
+        {
+            StatusChanged?.Invoke("上传已取消");
+            UploadCompleted?.Invoke(false);
+        }
+        catch (Exception ex)
+        {
+            StatusChanged?.Invoke($"上传失败: {ex.Message}");
+            UploadCompleted?.Invoke(false);
+        }
+    }
+
+    ...
+}
+```
+
+主窗体MainForm中对于ParallelUploader服务类的调用方式与ResumableUploader类似，不再展示。
+
 
 ## 参考文档
 
