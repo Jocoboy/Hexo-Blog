@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Hexo-Blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Hexo-Blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Hexo-Blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/Hexo-Blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/Hexo-Blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","images":"/Hexo-Blog/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/Hexo-Blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/Hexo-Blog/js/config.js"></script>
+
+    <meta name="description" content="Oracle数据库的适用场景，以及一些常用SQL、PL&#x2F;SQL语句。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle常用SQL、PL&#x2F;SQL语句">
+<meta property="og:url" content="https://jocoboy.github.io/Hexo-Blog/2024/11/29/oracle-usage/index.html">
+<meta property="og:site_name" content="Jocoboy&#39;s Blog">
+<meta property="og:description" content="Oracle数据库的适用场景，以及一些常用SQL、PL&#x2F;SQL语句。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-29T07:48:14.000Z">
+<meta property="article:modified_time" content="2025-03-28T09:37:58.295Z">
+<meta property="article:author" content="Jocoboy">
+<meta property="article:tag" content="Oracle">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jocoboy.github.io/Hexo-Blog/2024/11/29/oracle-usage/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://jocoboy.github.io/Hexo-Blog/2024/11/29/oracle-usage/","path":"2024/11/29/oracle-usage/","title":"Oracle常用SQL、PL/SQL语句"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Oracle常用SQL、PL/SQL语句 | Jocoboy's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/Hexo-Blog/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/Hexo-Blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Jocoboy's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/Hexo-Blog/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/Hexo-Blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/Hexo-Blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/Hexo-Blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8SQL%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.</span> <span class="nav-text">常用SQL语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8CREATE-SCHEMA%E8%AF%AD%E5%8F%A5%E7%9B%B4%E6%8E%A5%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.1.</span> <span class="nav-text">使用CREATE SCHEMA语句直接创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E9%9A%90%E5%BC%8F%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.2.</span> <span class="nav-text">通过创建用户隐式创建模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="nav-number">3.2.</span> <span class="nav-text">表空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E7%A9%BA%E9%97%B4%E6%93%8D%E4%BD%9C"><span class="nav-number">3.2.1.</span> <span class="nav-text">表空间操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">窗口函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PL-SQL%E8%AF%AD%E5%8F%A5"><span class="nav-number">4.</span> <span class="nav-text">PL&#x2F;SQL语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">4.2.</span> <span class="nav-text">基本结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9D%97%E7%BB%93%E6%9E%84"><span class="nav-number">4.2.1.</span> <span class="nav-text">块结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84"><span class="nav-number">4.2.2.</span> <span class="nav-text">控制结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">4.3.</span> <span class="nav-text">存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="nav-number">4.4.</span> <span class="nav-text">存储函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">5.</span> <span class="nav-text">命令行工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL-Plus"><span class="nav-number">5.1.</span> <span class="nav-text">SQL*Plus</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">5.1.1.</span> <span class="nav-text">连接数据库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLcl"><span class="nav-number">5.2.</span> <span class="nav-text">SQLcl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">5.3.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jocoboy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/Hexo-Blog/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/Hexo-Blog/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/Hexo-Blog/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jocoboy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jocoboy" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jocoboy@outlook.com" title="E-Mail → mailto:jocoboy@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jocoboy.github.io/Hexo-Blog/2024/11/29/oracle-usage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/Hexo-Blog/images/avatar.gif">
+      <meta itemprop="name" content="Jocoboy">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Oracle常用SQL、PL/SQL语句 | Jocoboy's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Oracle常用SQL、PL/SQL语句
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-11-29 15:48:14" itemprop="dateCreated datePublished" datetime="2024-11-29T15:48:14+08:00">2024-11-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/Hexo-Blog/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>2.7k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>10 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Oracle数据库的适用场景，以及一些常用SQL、PL&#x2F;SQL语句。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Oracle是由Oracle公司开发和维护的商业数据库管理系统，使用Oracle数据库通常需要购买许可证，价格因版本、功能、用户数量等因素而异。它主要面向对数据安全、性能和稳定性要求极高的大型企业、金融机构、电信公司等，这些企业愿意为高端的数据库解决方案支付较高的成本。Oracle在数据库技术和Java之间进行了大量的技术整合，Java是Oracle生态系统中企业级应用开发的核心语言，在企业资源规划（ERP）系统、客户关系管理（CRM）系统等大型企业应用中具有重要地位。</p>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>Oracle数据库有以下性能特点和功能特性：</p>
+<ul>
+<li>处理复杂查询：Oracle在处理复杂的企业级查询和大规模数据操作方面表现卓越。</li>
+<li>并发处理：Oracle采用多版本并发控制（MVCC）机制来处理高并发事务，同时还具备强大的锁机制来确保数据的一致性和完整性。在高并发的 OLTP（联机事务处理）环境下，如银行的网上交易系统，大量用户同时进行账户查询、转账等操作时，Oracle 能够有效地协调并发事务，避免数据冲突。</li>
+<li>数据存储和读写性能：Oracle在存储结构上有多种存储选项，如自动存储管理（ASM）等，可以根据不同的应用场景和数据类型优化存储性能。</li>
+<li>数据类型和扩展性：Oracle支持丰富的内置数据类型，包括基本数据类型以及复杂的数据类型（如XMLTYPE用于处理XML数据）。在扩展性方面，Oracle 提供了诸如分区表、索引组织表等功能来提高数据管理的效率。</li>
+<li>备份和恢复功能：Oracle提供了一套完整的备份和恢复解决方案，包括物理备份和逻辑备份。它还支持闪回技术，可以在一定程度上快速恢复数据到某个时间点，这在应对数据误操作等情况时非常有用。</li>
+<li>安全机制：Oracle具有高度复杂的安全体系，包括用户认证、授权、角色管理、数据加密等多个层面。它可以通过细粒度的权限控制，对不同用户和角色访问不同的数据对象和操作进行严格的限制。</li>
+</ul>
+<h2 id="常用SQL语句"><a href="#常用SQL语句" class="headerlink" title="常用SQL语句"></a>常用SQL语句</h2><h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p>在Oracle数据库中，模式是一个逻辑概念，它是一组数据库对象（如表、视图、存储过程、函数、序列等）的集合。可以将模式看作是一个用户所拥有的对象的容器，每个模式都与一个数据库用户相关联。</p>
+<h4 id="使用CREATE-SCHEMA语句直接创建"><a href="#使用CREATE-SCHEMA语句直接创建" class="headerlink" title="使用CREATE SCHEMA语句直接创建"></a>使用CREATE SCHEMA语句直接创建</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询所有用户</span></span><br><span class="line"><span class="keyword">SELECT</span> USERNAME, USER_ID, ACCOUNT_STATUS <span class="keyword">FROM</span> DBA_USERS;</span><br><span class="line"><span class="comment">-- 查询当前用户</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">USER</span> <span class="keyword">FROM</span> DUAL;</span><br><span class="line"><span class="comment">-- 授权创建模式的系统权限给用户</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SCHEMA <span class="keyword">TO</span> test_user;</span><br><span class="line"><span class="comment">-- 创建模式并授权所有者</span></span><br><span class="line"><span class="keyword">CREATE</span> SCHEMA new_schema <span class="keyword">AUTHORIZATION</span> test_user;</span><br></pre></td></tr></table></figure>
+
+<h4 id="通过创建用户隐式创建模式"><a href="#通过创建用户隐式创建模式" class="headerlink" title="通过创建用户隐式创建模式"></a>通过创建用户隐式创建模式</h4><p>当创建一个新用户时，如果这个用户开始创建数据库对象（如创建表、视图等），Oracle会自动为这个用户创建一个与用户同名的模式来存放这些对象。</p>
+<p>在Oracle容器数据库（CDB）架构中，包含一个根容器（CDB$ROOT）和多个可插拔数据库（PDB）。公用用户是可以在CDB的公共部分或者多个PDB中访问的用户。这些用户用于管理跨越多个PDB的公共资源或执行通用的管理任务。创建公用用户的方式如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> C##test_user IDENTIFIED <span class="keyword">BY</span> test_password;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SESSION <span class="keyword">TO</span> C##test_user;</span><br></pre></td></tr></table></figure>
+
+<p>创建本地用户则需要切换当前会话到指定的PDB中</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在容器数据库（CDB）中查看可插拔数据库（PDB）</span></span><br><span class="line"><span class="keyword">SELECT</span> name <span class="keyword">FROM</span> v$pdbs;</span><br><span class="line"><span class="comment">-- 换到目标 PDB</span></span><br><span class="line"><span class="keyword">ALTER</span> SESSION <span class="keyword">SET</span> CONTAINER <span class="operator">=</span> pdb1; </span><br><span class="line"><span class="comment">-- PDB中创建本地用户</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> new_schema_user IDENTIFIED <span class="keyword">BY</span> schema_password;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">CREATE</span> SESSION <span class="keyword">TO</span> new_schema_user;</span><br></pre></td></tr></table></figure>
+
+<h3 id="表空间"><a href="#表空间" class="headerlink" title="表空间"></a>表空间</h3><p>表空间是Oracle数据库中用于存储数据库对象（如表、索引等）的逻辑存储区域，后续创建的数据库对象可以指定存放在表空间里。</p>
+<h4 id="表空间操作"><a href="#表空间操作" class="headerlink" title="表空间操作"></a>表空间操作</h4><p>创建表空间</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span>SPACE tablespace_name</span><br><span class="line">DATAFILE <span class="string">&#x27;datafile_path&#x27;</span> SIZE size_value;</span><br></pre></td></tr></table></figure>
+
+<p>例如创建名为WORKHUB的表空间，并设置大小为50M</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span>SPACE &quot;WORKHUB&quot;</span><br><span class="line">DATAFILE <span class="string">&#x27;WORKHUB.dbf&#x27;</span> SIZE <span class="number">50</span>M </span><br></pre></td></tr></table></figure>
+
+<p>修改表所在空间</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name MOVE TABLESPACE new_tablespace_name;</span><br></pre></td></tr></table></figure>
+
+<p>修改用户在特定表空间中的配额</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> user_name QUOTA new_quota_size <span class="keyword">ON</span> tablespace_name;</span><br></pre></td></tr></table></figure>
+
+<p>表空间参数组合使用</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> schema_name.table_name (</span><br><span class="line">    ...</span><br><span class="line">)</span><br><span class="line">TABLESPACE &quot;WORKHUB&quot; <span class="comment">-- 定义了表空间的名称为 “WORKHUB”</span></span><br><span class="line">LOGGING <span class="comment">-- 启用日志记录功能</span></span><br><span class="line">NOCOMPRESS <span class="comment">-- 数据不进行压缩存储</span></span><br><span class="line">PCTFREE <span class="number">10</span> <span class="comment">-- 每个数据块中，会预留 10% 的空间作为空闲区域</span></span><br><span class="line">INITRANS <span class="number">1</span> <span class="comment">-- 每个数据块初始分配的事务入口数量为1</span></span><br><span class="line">STORAGE ( <span class="comment">-- 表空间存储相关参数的详细设置</span></span><br><span class="line">  <span class="keyword">INITIAL</span> <span class="number">65536</span>  <span class="comment">-- 指定了表空间的初始大小为 65536 * 8KB = 512MB</span></span><br><span class="line">  NEXT <span class="number">1048576</span> <span class="comment">-- 当表空间需要扩展时，每次扩展增加的大小为1048576 * 8KB = 8GB</span></span><br><span class="line">  MINEXTENTS <span class="number">1</span> <span class="comment">-- 表示表空间最初创建时至少包含的扩展次数为1</span></span><br><span class="line">  MAXEXTENTS <span class="number">2147483645</span> <span class="comment">-- 表空间最多可以扩展的次数为无限</span></span><br><span class="line">  BUFFER_POOL <span class="keyword">DEFAULT</span> <span class="comment">-- 指定该表空间使用默认的缓冲池</span></span><br><span class="line">)</span><br><span class="line">PARALLEL <span class="number">1</span> <span class="comment">-- 表示对这个表空间中数据的并行处理程度，最多可以启用 1 个并行执行服务器来协助处理任务</span></span><br><span class="line">NOCACHE <span class="comment">-- 指定了该表空间中的数据块在被读取到内存（缓冲池）后，不会被缓存起来用于后续的重复访问</span></span><br><span class="line">DISABLE <span class="type">ROW</span> MOVEMENT <span class="comment">-- 禁止行移动功能</span></span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+
+<h3 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h3><p>场景：表中某个字段可能有重复值出现，对于重复出现的记录，根据创建时间只选取首次出现的记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> NAME, P_ID</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> t.<span class="operator">*</span>,</span><br><span class="line">            <span class="built_in">ROW_NUMBER</span>() <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> P_ID <span class="keyword">ORDER</span> <span class="keyword">BY</span> CRT_TIME) <span class="keyword">AS</span> row_num</span><br><span class="line">    <span class="keyword">FROM</span> [schema_name].[table_name] t</span><br><span class="line">)</span><br><span class="line"><span class="keyword">WHERE</span> row_num <span class="operator">=</span> <span class="number">1</span> </span><br></pre></td></tr></table></figure>
+
+<h2 id="PL-SQL语句"><a href="#PL-SQL语句" class="headerlink" title="PL&#x2F;SQL语句"></a>PL&#x2F;SQL语句</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>PL&#x2F;SQL（Procedural Language&#x2F;Structured Query Language）是Oracle数据库系统的过程化编程语言。它是一种块结构语言，将 SQL语句的强大数据处理能力与过程化编程语言的流程控制结构相结合。这使得开发人员可以在数据库内部编写复杂的业务逻辑，而不仅仅是执行简单的查询操作。由于PL&#x2F;SQL程序是在数据库服务器内部执行，减少了数据在客户端和服务器之间的传输，从而提高了性能。特别是对于复杂的数据库操作和大量的数据处理，这种优势更加明显。</p>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><h4 id="块结构"><a href="#块结构" class="headerlink" title="块结构"></a>块结构</h4><p>PL&#x2F;SQL程序由块（Block）组成，每个块都有一个声明部分、执行部分和可选的异常处理部分。声明部分用于定义变量、常量、游标等；执行部分包含了要执行的SQL语句和PL&#x2F;SQL语句，用于实现具体的业务逻辑；异常处理部分用于处理程序执行过程中可能出现的错误。例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DECLARE</span></span><br><span class="line">    <span class="comment">-- 声明部分，定义变量</span></span><br><span class="line">    v_count NUMBER;</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">    <span class="comment">-- 执行部分，查询并赋值</span></span><br><span class="line">    <span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">INTO</span> v_count <span class="keyword">FROM</span> employees;</span><br><span class="line">    DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;员工总数为：&#x27;</span> <span class="operator">||</span> v_count);</span><br><span class="line">EXCEPTION</span><br><span class="line">    <span class="comment">-- 异常处理部分，处理可能的错误</span></span><br><span class="line">    <span class="keyword">WHEN</span> NO_DATA_FOUND <span class="keyword">THEN</span></span><br><span class="line">        DBMS_OUTPUT.PUT_LINE(<span class="string">&#x27;未找到数据。&#x27;</span>);</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="控制结构"><a href="#控制结构" class="headerlink" title="控制结构"></a>控制结构</h4><p>条件语句包括IF - THEN - ELSE语句用于根据条件执行不同的代码块。例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">IF <span class="keyword">condition</span> <span class="keyword">THEN</span></span><br><span class="line">    <span class="comment">-- 条件为真时执行的语句</span></span><br><span class="line">ELSIF another_condition <span class="keyword">THEN</span></span><br><span class="line">    <span class="comment">-- 另一个条件为真时执行的语句</span></span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">    <span class="comment">-- 所有条件为假时执行的语句</span></span><br><span class="line"><span class="keyword">END</span> IF;</span><br></pre></td></tr></table></figure>
+
+<p>循环语句有LOOP、WHILE - LOOP和FOR - LOOP等多种循环结构。例如，使用FOR - LOOP来遍历一个查询结果集</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FOR</span> i <span class="keyword">IN</span> (<span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table_name) LOOP</span><br><span class="line">    <span class="comment">-- 对每一行数据进行操作</span></span><br><span class="line"><span class="keyword">END</span> LOOP;</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h3><p>存储过程：是一组预编译的PL&#x2F;SQL语句，存储在数据库中，可以被调用以执行特定的任务。存储过程可以接受参数，并且可以包含复杂的业务逻辑和数据库操作。例如，使用存储过程向employees表中插入一条新员工记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">PROCEDURE</span> insert_employee(</span><br><span class="line">    p_name VARCHAR2,</span><br><span class="line">    p_salary NUMBER</span><br><span class="line">) <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">    <span class="keyword">INSERT</span> <span class="keyword">INTO</span> employees (name, salary) <span class="keyword">VALUES</span> (p_name, p_salary);</span><br><span class="line">    <span class="keyword">COMMIT</span>;</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储函数"><a href="#存储函数" class="headerlink" title="存储函数"></a>存储函数</h3><p>存储函数与存储过程类似，但函数必须返回一个值。函数可以用于计算并返回一个结果，这个结果可以在SQL语句中使用。例如，使用存储函数计算员工的年薪</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">FUNCTION</span> calculate_annual_salary(</span><br><span class="line">    p_salary NUMBER</span><br><span class="line">) <span class="keyword">RETURN</span> NUMBER <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">    <span class="keyword">RETURN</span> p_salary <span class="operator">*</span> <span class="number">12</span>;</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h2><h3 id="SQL-Plus"><a href="#SQL-Plus" class="headerlink" title="SQL*Plus"></a>SQL*Plus</h3><p>SQL*Plus是Oracle数据库提供的一个命令行界面的工具，用于与Oracle数据库进行交互。它允许用户输入和执行SQL语句、PL&#x2F;SQL块以及执行各种数据库管理和操作任务。比如查询数据、创建表、修改数据库对象结构等。</p>
+<h4 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h4><p>方式一：使用Easy Connection Identifier连接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlplus system/root1234@&quot;localhost:1521/FREEPDB1&quot;</span><br></pre></td></tr></table></figure>
+
+<p>方式二：使用Full Connection Identifier连接。首先需要编辑tnsnames.ora文件(以23 ai个人免费版为例，对应目录为<code>C:\app\your-username\product\23ai\dbhomeFree\network\admin</code>)，添加以下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FREEPDB1 = </span><br><span class="line"> (DESCRIPTION=</span><br><span class="line">   (ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))</span><br><span class="line">   (CONNECT_DATA=</span><br><span class="line">      (SERVICE_NAME=FREEPDB1)</span><br><span class="line">    )</span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlplus system/root1234@FREEPDB1</span><br></pre></td></tr></table></figure>
+
+<p>.NET项目配置文件中数据库连接字符串如下，</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;ConnectionStrings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;OracleConnection&quot;</span><span class="punctuation">:</span> <span class="string">&quot;User Id=system;Password=your-password;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)));&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SQLcl"><a href="#SQLcl" class="headerlink" title="SQLcl"></a>SQLcl</h3><p>SQLcl是Oracle推出的一款现代化的命令行工具，它是基于Java开发的，在功能上可以看作是SQL*Plus的增强版，提供了更加简洁易用、功能丰富的交互界面，并且融入了很多新的特性来提升开发和管理数据库的效率。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>SQLcl需要Java 11及以上版本的JDK，Oracle在使用过JDK后就会将JDK的配置写到配置文件中，若是Oracle的环境变量配置在JDK的变量前时将会被Oracle的配置信息加载覆盖掉。若遇到Java版本切换不生效的问题，可将PATH路径中的<code>C:\Program Files\Common Files\Oracle\Java\javapath</code>置于JDK变量之后。</p>
+<p>SQL*Plus和SQLcl可执行文件一般位于<code>%ORACLE_HOME%/bin</code>目录下，以23 ai个人免费版为例，对应目录为<code>C:\app\your-username\product\23ai\dbhomeFree\bin</code>。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/index.html">Oracle数据库官方文档</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html">Oracle数据库SQL语法参考(23ai)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/sql-developer-command-line/24.1/sqcug/working-sqlcl.html">Oracle数据库命令行工具SQLcl使用参考</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/database/oracle/oracle-database/23/comsc/installing-sample-schemas.html">Oracle数据库创建示例模式(23ai)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/error-help/db/">Oracle数据库SQL报错帮助</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/Hexo-Blog/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/Hexo-Blog/tags/Oracle/" rel="tag"># Oracle</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/11/29/mysql-usage/" rel="prev" title="MySQL常用CLI命令及SQL语句">
+                  <i class="fa fa-angle-left"></i> MySQL常用CLI命令及SQL语句
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/Hexo-Blog/2024/12/02/msbuild/" rel="next" title="基于.NET的MSBuild常用命令">
+                  基于.NET的MSBuild常用命令 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2019 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jocoboy</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">43k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">2:38</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/jocoboy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/comments.js"></script><script src="/Hexo-Blog/js/utils.js"></script><script src="/Hexo-Blog/js/motion.js"></script><script src="/Hexo-Blog/js/schemes/muse.js"></script><script src="/Hexo-Blog/js/sidebar.js"></script><script src="/Hexo-Blog/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/Hexo-Blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/Hexo-Blog/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
