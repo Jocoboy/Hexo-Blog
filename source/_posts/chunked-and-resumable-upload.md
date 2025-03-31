@@ -9,7 +9,7 @@ tags:
 - WinForm
 ---
 
-基于.NET实现大文件上传中的分片上传与断点续传功能，并在WinForm中实现上传进度反馈、并行上传等辅助功能。
+基于.NET实现大文件上传中的分片上传与断点续传功能，并在WinForm中实现上传进度反馈、并行上传、分片大小动态调整等辅助功能。
 
 <!--more-->
 
@@ -21,7 +21,7 @@ tags:
 
 - 分片大小调整：根据网络状况动态调整分片大小
 - 并行上传：可以并行上传多个分片以提高速度
-- 完整性校验：合并文件后校验MD5等哈希值确保文件完整
+- 完整性校验：合并文件后校验哈希值确保文件完整
 - 清理机制：定期清理未完成上传的临时分片
 - 进度反馈：提供上传进度信息给用户
 
@@ -38,7 +38,7 @@ tags:
 
 ### 服务端实现
 
-UploadChunk接口实现了分片的临时存储(存储的临时文件名为fileMD5_chunkNumber)，以及分片的最终合并。
+UploadChunk接口实现了分片的临时存储(存储的临时文件名为fileId_chunkNumber)，以及分片的最终合并。
 
 ```c#
 [HttpPost]
@@ -93,17 +93,17 @@ private async Task MergeChunksAsync(string fileId, int totalChunks, string fileN
 
 ### 客户端实现
 
-首先创建一个ChunkedUploader类，用来处理本地的文件流，并调用服务端的分片上传接口。
+首先创建一个ChunkedUploadService类，用来处理本地的文件流，并调用服务端的分片上传接口。
 
 ```c#
-public class ChunkedUploader
+public class ChunkedUploadService
 {
     private readonly HttpClient _httpClient;
     private readonly string _serviceUri;
     private const string UploadChunkApiUri = "/api/Upload/UploadChunk";
     private const int ChunkSize = 1024 * 1024; // 1MB 每块
 
-    public ChunkedUploader(string serviceUri)
+    public ChunkedUploadService(string serviceUri)
     {
         _serviceUri = serviceUri;
         _httpClient = new HttpClient();
@@ -148,12 +148,12 @@ public class ChunkedUploader
 }
 ```
 
-然后在客户端的UI线程中使用异步方式调用ChunkedUploader类中的分片上传方法。
+然后在客户端的UI线程中使用异步方式调用ChunkedUploadService类中的分片上传方法。
 
 ```c#
 var serviceUri = "http://localhost:5001";
 var filePath = $"{disk}:\\{srcDir}\\{srcFile}";
-var uploader = new ChunkedUploader(serviceUri);
+var uploader = new ChunkedUploadService(serviceUri);
 await uploader.UploadInChunksAsync(filePath, CancellationToken.None);
 ```
 
@@ -167,7 +167,7 @@ await uploader.UploadInChunksAsync(filePath, CancellationToken.None);
 
 ### 服务端实现
 
-GetUploadStatus接口根据文件标识fileMD5查询已上传的分片编号，UploadChunk接口的功能同上。
+GetUploadStatus接口根据文件标识fileId查询已上传的分片编号，UploadChunk接口的功能同上。
 
 ```c#
 [ApiController]
@@ -221,10 +221,10 @@ public class UploadController: ControllerBase
 
 ### 客户端实现
 
-首先创建一个ResumableUploader类，调用服务端的文件分片上传状态接口，对于已上传的分片跳过处理，然后调用服务端的分片上传接口继续上传，以实现断点续传功能。
+首先创建一个ResumableUploadService类，调用服务端的文件分片上传状态接口，对于已上传的分片跳过处理，然后调用服务端的分片上传接口继续上传，以实现断点续传功能。
 
 ```c#
-public class ResumableUploader
+public class ResumableUploadService
 {
     private readonly HttpClient _httpClient;
     private readonly string _serviceUri;
@@ -232,7 +232,7 @@ public class ResumableUploader
     private const string GetUploadStatusApiUri = "/api/Upload/GetUploadStatus";
     private const int ChunkSize = 1024 * 1024; // 1MB 每块
 
-    public ResumableUploader(string serviceUri)
+    public ResumableUploadService(string serviceUri)
     {
         _serviceUri = serviceUri;
         _httpClient = new HttpClient();
@@ -242,12 +242,11 @@ public class ResumableUploader
     {
         var fileInfo = new FileInfo(filePath);
         var totalChunks = (int)Math.Ceiling((double)fileInfo.Length / ChunkSize);
-        var fileId = GetFileMD5(filePath); // 基于文件内容生成唯一ID
+        using var fileStream = File.OpenRead(filePath);
+        var fileId = GetFileHash(fileStream, HashAlgorithmType.Sha256); // 基于文件内容生成唯一ID
 
         // 获取已上传的分片信息
         var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
-
-        using var fileStream = File.OpenRead(filePath);
 
         for (int chunkNumber = 0; chunkNumber < totalChunks; chunkNumber++)
         {
@@ -267,12 +266,25 @@ public class ResumableUploader
         }
     }
 
-    private string GetFileMD5(string filePath)
+    private static string GetFileHash(Stream stream, HashAlgorithmType hashAlgorithmType)
     {
-        using var md5 = MD5.Create();
-        using var stream = File.OpenRead(filePath);
-        var hash = md5.ComputeHash(stream);
-        return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        switch (hashAlgorithmType)
+        {
+            case HashAlgorithmType.Md5:
+                using (var hashAlgorithm = MD5.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            case HashAlgorithmType.Sha256:
+                using (var hashAlgorithm = SHA256.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            default:
+                return string.Empty;
+        }
     }
 
     private async Task<List<int>> GetUploadedChunksAsync(string fileId, CancellationToken cancellationToken)
@@ -298,12 +310,12 @@ public class ResumableUploader
 }
 ```
 
-然后在客户端的UI线程中使用异步方式调用ResumableUploader类中的断点续传方法。
+然后在客户端的UI线程中使用异步方式调用ResumableUploadService类中的断点续传方法。
 
 ```c#
 var serviceUri = "http://localhost:5001";
 var filePath = $"{disk}:\\{srcDir}\\{srcFile}";
-var uploader = new ResumableUploader(serviceUri);
+var uploader = new ResumableUploadService(serviceUri);
 await uploader.UploadWithResumeAsync(filePath, CancellationToken.None);
 ```
 
@@ -317,10 +329,10 @@ await uploader.UploadWithResumeAsync(filePath, CancellationToken.None);
 
 ### 客户端实现
 
-客户端的ResumableUploader中的主要变化是添加了三个委托事件，分别用来更新上传百分比、状态消息、上传与取消按钮禁用状态。
+客户端的ResumableUploadService中的主要变化是添加了三个委托事件，分别用来更新上传百分比、状态消息、上传与取消按钮禁用状态。
 
 ```c#
-public class ResumableUploader
+public class ResumableUploadService
 {
     ...
     // 进度和状态事件
@@ -336,14 +348,13 @@ public class ResumableUploader
 
             var fileInfo = new FileInfo(filePath);
             var totalChunks = (int)Math.Ceiling((double)fileInfo.Length / ChunkSize);
-            var fileId = GetFileMD5(filePath); // 基于文件内容生成唯一ID
+            using var fileStream = File.OpenRead(filePath);
+            var fileId = GetFileHash(fileStream, HashAlgorithmType.Sha256); // 基于文件内容生成唯一ID
 
             StatusChanged?.Invoke("正在检查已上传分片...");
 
             // 获取已上传的分片信息
             var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
-
-            using var fileStream = File.OpenRead(filePath);
 
             for (int chunkNumber = 0; chunkNumber < totalChunks; chunkNumber++)
             {
@@ -398,7 +409,7 @@ Control.InvokeRequired属性指示调用方在对控件进行方法调用时是�
 ```c#
 public partial class MainForm : Form
 {
-    private readonly ResumableUploader _uploader;
+    private readonly ResumableUploadService _uploader;
     private CancellationTokenSource _cts;
     private readonly string _serviceUri;
 
@@ -407,7 +418,7 @@ public partial class MainForm : Form
         InitializeComponent();
 
         _serviceUri = "http://localhost:5001";
-        _uploader = new ResumableUploader(_serviceUri);
+        _uploader = new ResumableUploadService(_serviceUri);
 
         // 绑定事件
         _uploader.ProgressChanged += UpdateProgress;
@@ -500,18 +511,18 @@ public partial class MainForm : Form
 
 ### 客户端实现
 
-客户端基于ResumableUploader，创建了一个并行上传服务类ParallelUploader，使用`Parallel.ForEachAsync`实现并行上传，并设置了最大并行度(默认为4)。
+客户端基于ResumableUploadService，创建了一个并行上传服务类ParallelUploadService，使用`Parallel.ForEachAsync`实现并行上传，并设置了最大并行度(默认为4)。
 
 ```c#
-public class ParallelUploader
+public class ParallelUploadService
 {
     ...
-    private readonly int _maxDegreeOfParallelism;
+    private readonly int _maxParallelism;
 
-    public ParallelUploader(string serviceUri, int maxDegreeOfParallelism = 4)
+    public ParallelUploadService(string serviceUri, int maxParallelism = 4)
     {
         ...
-        _maxDegreeOfParallelism = maxDegreeOfParallelism;
+        _maxParallelism = maxParallelism;
     }
 
     public async Task ParallelUploadFileAsync(string filePath, CancellationToken cancellationToken)
@@ -522,7 +533,8 @@ public class ParallelUploader
 
             var fileInfo = new FileInfo(filePath);
             var totalChunks = (int)Math.Ceiling((double)fileInfo.Length / ChunkSize);
-            var fileId = GetFileMD5(filePath); // 基于文件内容生成唯一ID
+            using var fileStream = File.OpenRead(filePath);
+            var fileId = GetFileHash(fileStream, HashAlgorithmType.Sha256); // 基于文件内容生成唯一ID
 
             StatusChanged?.Invoke("正在检查已上传分片...");
 
@@ -539,11 +551,9 @@ public class ParallelUploader
 
             var parallelOptions = new ParallelOptions
             {
-                MaxDegreeOfParallelism = _maxDegreeOfParallelism,
+                MaxDegreeOfParallelism = _maxParallelism,
                 CancellationToken = cancellationToken
             };
-
-            using var fileStream = File.OpenRead(filePath);
 
             await Parallel.ForEachAsync(chunksToUpload, parallelOptions, async (chunkNumber, cancellationToken) =>
             {
@@ -589,8 +599,730 @@ public class ParallelUploader
 }
 ```
 
-主窗体MainForm中对于ParallelUploader服务类的调用方式与ResumableUploader类似，不再展示。
+主窗体MainForm中对于ParallelUploadService服务类的调用方式与ResumableUploadService类似，不再展示。
 
+## 动态调整分片大小
+
+根据网络状态动态调整分片大小，可以优化分片上传效率。
+
+### 服务端实现
+
+由于分片的大小是动态计算得出的，存储的临时文件名由fileId_chunkNumber变更为{fileId}/chunk_{offsetValue}。
+
+服务端的分片存储结构如下：
+
+>uploads/
+├── {fileId}/          // 每个文件一个独立目录
+│   ├── chunk_{offsetValue1}        // 分片文件按偏移量命名
+│   ├── chunk_{offsetValue2}
+│   └── ...
+└── completed/       // 最终合并的文件
+
+由于上传是并行的，服务端在检查分片上传完整性时，必须以所有分片大小总和等于文件大小为标志，而不能以其中某一分片的偏移量+分片大小等于文件大小为标志。
+
+```c#
+[ApiController]
+[Route("[controller]/[action]")]
+[Authorize]
+public class UploadController: ControllerBase
+{
+    private readonly IWebHostEnvironment _env;
+    private readonly string _uploadPath;
+    private readonly ILogger<UploadController> _logger;
+
+    public UploadController(IWebHostEnvironment env, ILogger<UploadController> logger)
+    {
+        _env = env;
+        _uploadPath = Path.Combine(_env.WebRootPath, "uploads");
+        _logger = logger;
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Ping()
+    {
+        return Ok(DateTime.UtcNow);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult GetUploadStatus(string fileId)
+    {
+        var uploadDir = Path.Combine(_uploadPath, fileId);
+        if (!Directory.Exists(uploadDir))
+        {
+            return Ok(new { UploadedChunks = Array.Empty<UploadedChunk>() });
+        }
+
+        var chunks = Directory.GetFiles(uploadDir, "chunk_*")
+            .Select(f => new FileInfo(f))
+            .Select(f => new UploadedChunk
+            {
+                Offset = long.Parse(f.Name.Split('_')[1]),
+                Size = (int)f.Length
+            })
+            .OrderBy(c => c.Offset)
+            .ToList();
+
+        return Ok(new { UploadedChunks = chunks });
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> UploadChunkAsync(CancellationToken cancellationToken)
+    {
+        var form = await Request.ReadFormAsync(cancellationToken);
+        var fileId = form["fileId"].ToString();
+        var chunkIndex = int.Parse(form["chunkIndex"].ToString());
+        var chunkOffset = int.Parse(form["chunkOffset"].ToString());
+        var chunkSize = int.Parse(form["chunkSize"].ToString());
+        var fileSize = int.Parse(form["fileSize"].ToString());
+        var fileName = form["fileName"].ToString();
+        var chunk = form.Files["chunk"];
+
+        try
+        {
+            // 验证分片
+            if (chunk == null || chunk.Length == 0)
+            {
+                return BadRequest("无效的分片数据");
+            }
+
+            // 创建上传目录
+            var uploadDir = Path.Combine(_uploadPath, fileId);
+            Directory.CreateDirectory(uploadDir);
+
+            // 保存分片
+            var chunkPath = Path.Combine(uploadDir, $"chunk_{chunkOffset}");
+            using (var stream = new FileStream(chunkPath, FileMode.Create))
+            {
+                await chunk.CopyToAsync(stream, cancellationToken);
+            }
+
+            _logger.LogInformation($"已接收分片 {chunkIndex} (偏移: {chunkOffset}, 大小: {chunk.Length}, 剩余大小: {fileSize - chunkOffset})");
+
+            // 检查是否完成
+            if (IsUploadComplete(fileId, fileSize))
+            {
+                _logger.LogInformation($"文件 {fileName} 所有分片已上传");
+                return Ok(new { Completed = true });
+            }
+
+            return Ok(new { Completed = false });
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"分片上传失败:{ex.Message}";
+            _logger.LogError(errorMsg);
+            return BadRequest(errorMsg);
+        }
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> MergeChunksAsync(MergeFile mergeFile, CancellationToken cancellationToken)
+    {
+        var uploadDir = Path.Combine(_uploadPath, mergeFile.FileId);
+        var finalDir = Path.Combine(_uploadPath, "completed");
+        var finalPath = Path.Combine(finalDir, mergeFile.FileName);
+        if (!Directory.Exists(finalDir))
+        {
+            Directory.CreateDirectory(finalDir);
+        }
+
+        // 获取所有分片并按偏移量排序
+        var chunkFiles = Directory.GetFiles(uploadDir, "chunk_*")
+            .Select(f => new
+            {
+                Path = f,
+                Offset = long.Parse(Path.GetFileName(f).Split('_')[1])
+            })
+            .OrderBy(x => x.Offset)
+            .ToList();
+
+        // 合并文件
+        using (var finalStream = new FileStream(finalPath, FileMode.Create))
+        {
+            foreach (var chunk in chunkFiles)
+            {
+                using (var chunkStream = System.IO.File.OpenRead(chunk.Path))
+                {
+                    await chunkStream.CopyToAsync(finalStream, cancellationToken);
+                }
+                System.IO.File.Delete(chunk.Path);
+            }
+        }
+
+        // 清理临时目录
+        Directory.Delete(uploadDir);
+
+        using var stream = System.IO.File.OpenRead(finalPath);
+        var mergeFileId = GetFileHash(stream, HashAlgorithmType.Sha256);
+        if (!mergeFile.FileId.Equals(mergeFileId))
+        {
+            stream.Close();
+            System.IO.File.Delete(finalPath);
+            var errorMsg = $"合并后的文件内容哈希不正确，文件可能已损坏，合并前内容哈希为{mergeFile.FileId}, 合并后内容哈希为{mergeFileId}, 合并后的文件已被删除，请重新上传！";
+            _logger.LogError(errorMsg);
+            return BadRequest(errorMsg);
+        }
+
+        _logger.LogInformation($"文件合并完成: {finalPath}");
+
+        return Ok();
+    }
+
+    #region private methods
+    private static string GetFileHash(Stream stream, HashAlgorithmType hashAlgorithmType)
+    {
+        switch (hashAlgorithmType)
+        {
+            case HashAlgorithmType.Md5:
+                using (var hashAlgorithm = MD5.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            case HashAlgorithmType.Sha256:
+                using (var hashAlgorithm = SHA256.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            default:
+                return string.Empty;
+        }
+    }
+
+    private bool IsUploadComplete(string fileId, long fileSize)
+    {
+        var status = GetUploadStatus(fileId) as OkObjectResult;
+        var data = status?.Value as dynamic;
+        var chunks = data?.UploadedChunks as IEnumerable<UploadedChunk>;
+
+        if (chunks == null || !chunks.Any())
+        {
+            return false;
+        }
+
+        // 获取文件总大小(最后一个分片的结束位置)
+        // 请勿使用chunks.Max(c => c.Offset + c.Size), 该值在单线程环境中可以代表所有分片都已上传完毕, 但在多线程环境中是错误的
+        long currentTotalSize = chunks.Sum(c => c.Size);
+
+        // 检查是否覆盖了所有字节
+        return currentTotalSize >= fileSize;
+    }
+
+    #endregion
+
+    #region public class
+    public class UploadedChunk
+    {
+        public long Offset { get; set; }
+        public int Size { get; set; }
+    }
+
+    public class MergeFile
+    {
+        public string FileId { get; set; }
+        public string FileName { get; set; }
+    }
+    #endregion
+}
+```
+
+调用服务端上传时的日志记录如下，可以看到分片的上传是乱序的：
+
+{% asset_img adaptive_resumable_upload_console.png  服务端日志记录输出 %}
+
+### 客户端实现
+
+客户端实现了AdaptiveResumableUploadService服务类，在并行上传与断点续传的基础上，添加了实时更新网络指标(上行速度/网络延迟)并动态计算当前分片大小的功能，并使用了异步锁SemaphoreSlim确保分片信息更新时的原子性。
+
+```c#
+public class AdaptiveResumableUploadService
+{
+    private readonly HttpClient _httpClient;
+    private readonly string _serviceUri;
+    private const string UploadChunkApiUri = "/api/Upload/UploadChunk";
+    private const string GetUploadStatusApiUri = "/api/Upload/GetUploadStatus";
+    private const string MergeChunksApiUri = "/api/Upload/MergeChunks";
+    private const string PingApiUri = "/api/Ping";
+    private readonly int _maxParallelism;
+    private readonly int _minChunkSize;
+    private readonly int _maxChunkSize;
+    private readonly int _initialChunkSize;
+
+    // 网络状况监测
+    private double _averageUploadSpeedMbps = 1.0; // 初始假设1Mbps
+    private double _averageLatencyMs = 100; // 初始延迟100ms
+    private readonly object _networkLock = new object();
+    private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+
+    // 进度和状态事件
+    public event Action<int> ProgressChanged; // 上传百分比
+    public event Action<string> StatusChanged; // 状态消息
+    public event Action<bool> UploadCompleted; // 完成状态
+
+    public AdaptiveResumableUploadService(string serviceUri, 
+        int maxParallelism =  4,
+        int minChunkSize = 256 * 1024,    // 256KB
+        int maxChunkSize = 10 * 1024 * 1024, // 10MB
+        int initialChunkSize = 1 * 1024 * 1024) // 1MB
+    {
+        _serviceUri = serviceUri;
+        _httpClient = new HttpClient();
+        _httpClient.Timeout = Timeout.InfiniteTimeSpan;
+        _maxParallelism = maxParallelism;
+        _minChunkSize = minChunkSize;
+        _maxChunkSize = maxChunkSize;
+        _initialChunkSize = initialChunkSize;
+    }
+
+    // 主上传方法
+    public async Task UploadFileAdaptiveAsync(string filePath, CancellationToken cancellationToken)
+    {
+        try
+        {
+            StatusChanged?.Invoke("正在准备上传...");
+
+            var fileInfo = new FileInfo(filePath);
+            using var fileStream = File.OpenRead(filePath);
+            var fileId = GetFileHash(fileStream, HashAlgorithmType.Sha256); // 基于文件内容生成唯一ID
+
+            StatusChanged?.Invoke("正在检查已上传分片...");
+
+            // 获取已上传的分片信息
+            var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
+
+            // 准备上传任务
+            var currentChunkSize = _initialChunkSize;
+            var fileSize = fileInfo.Length;
+
+            var progressLock = new object();
+            long totalUploaded = uploadedChunks.Values.Sum();
+            long totalToUpload = fileSize - totalUploaded;
+
+            StatusChanged?.Invoke($"需要上传 {totalToUpload} 字节");
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxParallelism,
+                CancellationToken = cancellationToken
+            };
+
+
+            await Parallel.ForEachAsync(GenerateChunks(fileSize, currentChunkSize, uploadedChunks), parallelOptions, async (chunk, cancellationToken) =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                bool success = await UploadChunkAsync(fileId, chunk.Index, chunk.Offset, chunk.Size, fileSize, fileInfo.Name, fileStream, cancellationToken);
+
+                if (success)
+                {
+                    // 使用锁保证进度更新的原子性
+                    lock (progressLock)
+                    {
+                        totalUploaded += chunk.Size;
+                        int progress = (int)((double)totalUploaded / fileSize * 100);
+                        ProgressChanged?.Invoke(progress);
+                    }
+                }
+            });
+
+            ProgressChanged?.Invoke(100);
+            await MergeChunksAsync(fileId, fileInfo.Name, cancellationToken);
+
+            StatusChanged?.Invoke("上传完成！");
+            UploadCompleted?.Invoke(true);
+        }
+        catch (OperationCanceledException)
+        {
+            StatusChanged?.Invoke("上传已取消");
+            UploadCompleted?.Invoke(false);
+        }
+        catch (Exception ex)
+        {
+            StatusChanged?.Invoke($"上传失败: {ex.Message}");
+            UploadCompleted?.Invoke(false);
+        }
+    }
+
+    // 获取已上传的分片信息
+    private async Task<ConcurrentDictionary<long, int>> GetUploadedChunksAsync(string fileId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_serviceUri}{GetUploadStatusApiUri}?fileId={fileId}", cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<UploadStatusResponse>(cancellationToken);
+            return new ConcurrentDictionary<long, int>(result.UploadedChunks.ToDictionary(x => x.Offset, x => x.Size));
+        }
+        catch
+        {
+            return new ConcurrentDictionary<long, int>();
+        }
+    }
+
+    // 上传单个分片
+    private async Task<bool> UploadChunkAsync(string fileId, int chunkIndex, long chunkOffset, int chunkSize, long fileSize,  string fileName, Stream fileStream, CancellationToken cancellationToken)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            // 测量请求延迟
+            var latencyStopwatch = Stopwatch.StartNew();
+            var pingResponse = await _httpClient.GetAsync($"{_serviceUri}{PingApiUri}", cancellationToken);
+            latencyStopwatch.Stop();
+
+            // 准备分片数据
+            var chunkData = new byte[chunkSize];
+            fileStream.Seek(chunkOffset, SeekOrigin.Begin);
+            var bytesRead = await fileStream.ReadAsync(chunkData, 0, chunkSize, cancellationToken);
+
+            if (bytesRead == 0) return false;
+
+            using var content = new MultipartFormDataContent
+            {
+                { new StringContent(fileId), "fileId" },
+                { new StringContent(chunkIndex.ToString()), "chunkIndex" },
+                { new StringContent(chunkOffset.ToString()), "chunkOffset" },                   
+                { new StringContent(bytesRead.ToString()), "chunkSize"},
+                { new StringContent(fileSize.ToString()), "fileSize"},
+                { new StringContent(fileName), "fileName" },
+                { new ByteArrayContent(chunkData, 0, bytesRead), "chunk", "chunk.dat" }
+            };
+
+            // 上传
+            var uploadStopwatch = Stopwatch.StartNew();
+            var response = await _httpClient.PostAsync($"{_serviceUri}{UploadChunkApiUri}", content, cancellationToken);
+            uploadStopwatch.Stop();
+
+            response.EnsureSuccessStatusCode();
+
+            // 更新网络指标
+            UpdateNetworkMetrics(bytesRead, uploadStopwatch.Elapsed, latencyStopwatch.Elapsed);
+            return true;
+        }
+        finally
+        {
+            stopwatch.Stop();
+        }
+    }
+
+    // 上传完所有分片后合并分片
+    private async Task MergeChunksAsync(string fileId, string fileName, CancellationToken cancellationToken)
+    {
+        var stringContent = new StringContent(JsonSerializer.Serialize(new { FileId = fileId, FileName = fileName }), Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync($"{_serviceUri}{MergeChunksApiUri}", stringContent, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    private static string GetFileHash(Stream stream, HashAlgorithmType hashAlgorithmType)
+    {
+        switch (hashAlgorithmType)
+        {
+            case HashAlgorithmType.Md5:
+                using (var hashAlgorithm = MD5.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            case HashAlgorithmType.Sha256:
+                using (var hashAlgorithm = SHA256.Create())
+                {
+                    var hash = hashAlgorithm.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLower();
+                }
+            default:
+                return string.Empty;
+        }
+    }
+
+    #region 更新网络指标并动态计算当前分片大小
+    // 动态计算当前分片大小
+    private int CalculateDynamicChunkSize()
+    {
+        lock (_networkLock)
+        {
+            // 基于当前上传速度和延迟计算理想分片大小
+            double targetUploadTimeSec = 2.0; // 目标每个分片上传时间
+            double speedFactor = _averageUploadSpeedMbps* 125000; // Mbps -> bytes/sec
+            double latencyFactor = Math.Max(1, _averageLatencyMs / 50);
+
+            int idealSize = (int)(speedFactor * targetUploadTimeSec / latencyFactor);
+
+            // 限制在最小和最大值之间
+            return (int)Math.Clamp(idealSize, _minChunkSize, _maxChunkSize);
+        }
+    }
+
+    // 更新网络指标
+    private void UpdateNetworkMetrics(long chunkSize, TimeSpan uploadTime, TimeSpan latency)
+    {
+        lock (_networkLock)
+        {
+            // 计算速度 (Mbps)
+            double speedMbps = (chunkSize * 8 / uploadTime.TotalSeconds) / 1_000_000;
+            // 平滑处理速度值（加权平均）
+            _averageUploadSpeedMbps = 0.7 * _averageUploadSpeedMbps + 0.3 * speedMbps;
+            // 更新延迟
+            _averageLatencyMs = 0.8 * _averageLatencyMs + 0.2 * latency.TotalMilliseconds;
+
+            StatusChanged?.Invoke($"网络: {_averageUploadSpeedMbps:F1}Mbps, " +
+                                $"延迟: {_averageLatencyMs:F0}ms, " +
+                                $"分片: {CalculateDynamicChunkSize() / 1024}KB");
+        }
+    }
+
+    private IEnumerable<FileChunk> GenerateChunks(long fileSize, int currentChunkSize, ConcurrentDictionary<long, int> uploadedChunks)
+    {
+        long position = 0;
+        int chunkIndex = 0;
+
+        while (position < fileSize)
+        {
+            _semaphoreSlim.WaitAsync(); // 使用异步锁确保分片信息更新时的原子性
+            if (!uploadedChunks.TryGetValue(position, out var chunkSize))
+            {
+                // 动态调整分片大小
+                currentChunkSize = CalculateDynamicChunkSize();
+                var actualChunkSize = (int)Math.Min(currentChunkSize, fileSize - position);
+
+                yield return new FileChunk
+                {
+                    Index = chunkIndex,
+                    Offset = position,
+                    Size = actualChunkSize,
+                    RemainingSize = fileSize - (position + actualChunkSize)
+                };
+
+                position += actualChunkSize;
+            }
+            else
+            {
+                position += chunkSize;
+            }
+
+            chunkIndex++;
+
+            _semaphoreSlim.Release();
+        }
+    }
+    #endregion
+
+
+    #region record
+    private record UploadedChunk
+    {
+        public long Offset { get; init; }
+        public int Size { get; init; }
+    }
+
+    private record UploadStatusResponse
+    {
+        public List<UploadedChunk> UploadedChunks { get; init; }
+    }
+
+    private record FileChunk
+    {
+        public int Index { get; init; }
+        public long Offset { get; init; }
+        public int Size { get; init; }
+        public long RemainingSize { get; init; }
+    }
+    #endregion
+}
+```
+
+## 完整性校验
+
+完整性校验包含两个方面：
+
+- 分片完整性校验：校验单个分片的完整性，用于检测网络传输错误(一般使用MD5校验)
+- 文件完整性校验：校验合并后最终文件的完整性，确保内容安全(建议使用SHA-256校验)
+
+在计算哈希值时应当仅读取文件内容，避免隐藏的元数据差异(文件创建/修改日期等)造成哈希值不同。
+
+### 分片完整校验
+
+以下为服务端UploadChunkAsync接口对于分片完整校验的部分代码：
+
+```c#
+[HttpPost]
+[AllowAnonymous]
+public async Task<IActionResult> UploadChunkAsync(CancellationToken cancellationToken)
+{
+    ...
+    var chunkHash = form["chunkHash"].ToString();
+    ...
+
+    ...
+    using var chunkStream = System.IO.File.OpenRead(chunkPath);
+    var revievedChunkHash = GetFileHash(chunkStream, HashAlgorithmType.Md5);
+    if (!chunkHash.Equals(revievedChunkHash))
+    {
+        chunkStream.Close();
+        System.IO.File.Delete(chunkPath);
+        var errorMsg = $"分片完整性校验失败，原始分片哈希为{chunkHash}, 接收到的分片哈希为{revievedChunkHash}, 分片 {chunkIndex} 已被删除，请重新上传！";
+        _logger.LogError(errorMsg);
+        return BadRequest(errorMsg);
+    }
+    ...
+}
+```
+
+以下为客户端UploadChunkAsync方法对于分片完整性校验的部分代码：
+
+```c#
+private async Task<bool> UploadChunkAsync(string fileId, int chunkIndex, long chunkOffset, int chunkSize, long fileSize,  string fileName, Stream fileStream, CancellationToken cancellationToken)
+{
+    ...
+    var chunkData = new byte[chunkSize];
+    fileStream.Seek(chunkOffset, SeekOrigin.Begin);
+    var bytesRead = await fileStream.ReadAsync(chunkData, 0, chunkSize, cancellationToken);
+    using var stream = new MemoryStream(chunkData);
+    var chunkHash = GetFileHash(stream, HashAlgorithmType.Md5);
+    ...
+
+    ...
+    using var content = new MultipartFormDataContent
+    {
+        ...
+        { new StringContent(chunkHash.ToString()), "chunkHash"},
+        ...
+    };
+    ...
+}
+```
+
+### 文件完整性校验
+
+以下为服务端MergeChunksAsync接口中对于文件完整性校验的部分代码：
+
+```c#
+[HttpPost]
+[AllowAnonymous]
+public async Task<IActionResult> MergeChunksAsync(MergeFile mergeFile, CancellationToken cancellationToken)
+{
+    ...
+    using var stream = System.IO.File.OpenRead(finalPath);
+    var mergeFileId = GetFileHash(stream, HashAlgorithmType.Sha256);
+    if (!mergeFile.FileId.Equals(mergeFileId))
+    {
+        stream.Close();
+        System.IO.File.Delete(finalPath);
+        var errorMsg = $"合并后的文件内容哈希不正确，文件可能已损坏，合并前内容哈希为{mergeFile.FileId}, 合并后内容哈希为{mergeFileId}, 合并后的文件已被删除，请重新上传！";
+        _logger.LogError(errorMsg);
+        return BadRequest(errorMsg);
+    }
+    ...
+}
+```
+
+## 重传尝试
+
+分片上传过程中存在各种不稳定的因素(如网络波动)，可以为客户端上传服务类添加重传尝试机制，在上传失败后自动重新上传。
+
+```c#
+public class AdaptiveResumableUploadService
+{
+    ...
+    private readonly int _maxRetryCount;
+
+    public AdaptiveResumableUploadService(
+    ...,
+    int maxRetryCount = 10) 
+    {
+        ...
+        _maxRetryCount = maxRetryCount;
+    }
+
+    // 主上传方法
+    public async Task UploadFileAdaptiveAsync(string filePath, CancellationToken cancellationToken)
+    {
+        try
+        {
+            StatusChanged?.Invoke("正在准备上传...");
+
+            var fileInfo = new FileInfo(filePath);
+            using var fileStream = File.OpenRead(filePath);
+            var fileId = GetFileHash(fileStream, HashAlgorithmType.Sha256); // 基于文件内容生成唯一ID
+
+            StatusChanged?.Invoke("正在检查已上传分片...");
+
+            // 准备上传任务
+            var currentChunkSize = _initialChunkSize;
+            var fileSize = fileInfo.Length;
+
+            var progressLock = new object();
+
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxParallelism,
+                CancellationToken = cancellationToken
+            };
+
+            var retryCount = 0;
+            var Success = false;
+            while (!Success && retryCount < _maxRetryCount)
+            {
+                // 获取已上传的分片信息
+                var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
+                var totalUploaded = uploadedChunks.Values.Sum();
+                long totalToUpload = fileSize - totalUploaded;
+                StatusChanged?.Invoke($"需要上传 {totalToUpload} 字节");
+                try
+                {
+                    await Parallel.ForEachAsync(GenerateChunks(fileSize, currentChunkSize, uploadedChunks), parallelOptions, async (chunk, cancellationToken) =>
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        bool success = await UploadChunkAsync(fileId, chunk.Index, chunk.Offset, chunk.Size, fileSize, fileInfo.Name, fileStream, cancellationToken);
+
+                        if (success)
+                        {
+                            // 使用锁保证进度更新的原子性
+                            lock (progressLock)
+                            {
+                                totalUploaded += chunk.Size;
+                                int progress = (int)((double)totalUploaded / fileSize * 100);
+                                ProgressChanged?.Invoke(progress);
+                            }
+                        }
+                    });
+
+                    await MergeChunksAsync(fileId, fileInfo.Name, cancellationToken);
+                    Success = true;
+                    ProgressChanged?.Invoke(100);
+                    StatusChanged?.Invoke("上传完成！");
+                    UploadCompleted?.Invoke(true);
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= _maxRetryCount) throw;
+                    await Task.Delay(100 * retryCount, cancellationToken);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            StatusChanged?.Invoke("上传已取消");
+            UploadCompleted?.Invoke(false);
+        }
+        catch (Exception ex)
+        {
+            StatusChanged?.Invoke($"上传失败: {ex.Message}");
+            UploadCompleted?.Invoke(false);
+        }
+    }
+}
+```
 
 ## 参考文档
 
