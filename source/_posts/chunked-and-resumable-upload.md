@@ -1260,7 +1260,6 @@ public class AdaptiveResumableUploadService
 
             var progressLock = new object();
 
-
             var parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = _maxParallelism,
@@ -1322,6 +1321,148 @@ public class AdaptiveResumableUploadService
         }
     }
 }
+```
+
+## 分片定时清理
+
+断点续传留下的分片会随着时间在服务器上越积越多，因此需要有一个分片定时清理策略。
+
+首先在服务端创建一个后台任务配置类，用于读取appsettings.json中的后台任务配置项，并在Program.cs中注册配置项，
+
+```c#
+public class BackgroundJobOptions
+{
+    public int StartHour { get; set; }
+    public int StartMinute { get; set; }
+    public int StartSecond { get; set; }
+    public int IntervalMinute { get; set; }
+    public int CleanUpDaysAgo { get; set; }
+}
+```
+
+```c#
+// 注册配置类
+builder.Services.Configure<BackgroundJobOptions>(builder.Configuration.GetSection("BackgroundJobOptions"));
+```
+
+appsettings.json中的配置项如下所示。
+
+```json
+{
+  "BackgroundJobOptions": {
+    "StartHour": 10,
+    "StartMinute": 30,
+    "StartSecond": 0,
+    "IntervalMinute": 1440,
+    "CleanUpDaysAgo": 7
+  }
+}
+
+```
+
+然后定义IWorkServie和WorkService，作为分片定时清理服务类。
+
+```c#
+public interface IWorkService
+{
+    Task TaskWorkAsync(CancellationToken cancellationToken);
+}
+```
+
+```c#
+public class WorkService : IWorkService
+{
+    private int executionCount = 0;
+    private readonly ILogger<WorkService> _logger;
+    private DateTime nextDateTime;
+    private readonly IWebHostEnvironment _env;
+    private readonly BackgroundJobOptions _backgroundJobOptions;
+
+    public WorkService(ILogger<WorkService> logger, IWebHostEnvironment env, IOptions<BackgroundJobOptions> backgroundJobOptions)
+    {
+        _logger = logger;
+        _env = env;
+        _backgroundJobOptions = backgroundJobOptions.Value;
+    }
+
+    public async Task TaskWorkAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            // 计算下一个时间节点
+            var now = DateTime.Now;
+            var firstDateTime = new DateTime(now.Year, now.Month, now.Day, _backgroundJobOptions.StartHour, _backgroundJobOptions.StartMinute, _backgroundJobOptions.StartSecond);
+            if (executionCount == 0)
+            {
+                nextDateTime = firstDateTime;
+            }
+            else
+            {
+                nextDateTime = nextDateTime.AddMinutes(_backgroundJobOptions.IntervalMinute);
+            }
+
+            if (nextDateTime < now)
+            {
+                var delay = nextDateTime.AddDays(1) - now;
+                await Task.Delay(delay, cancellationToken);
+            }
+            else
+            {
+                var delay = nextDateTime - now;
+                await Task.Delay(delay, cancellationToken);
+                    CleanupOldUploads(_backgroundJobOptions.CleanUpDaysAgo);
+
+                var count = Interlocked.Increment(ref executionCount);
+                _logger.LogInformation("已完成分片自动清理. 累计清理次数: {Count}", count);
+            }
+
+        }
+    }
+
+    private void CleanupOldUploads(int daysAgo)
+    {
+        var cutoff = DateTime.Now.AddDays(-daysAgo);
+        var uploadPath = Path.Combine(_env.WebRootPath, "uploads");
+        foreach (var dir in Directory.GetDirectories(uploadPath))
+        {
+            var dirName = dir.Split('\\').Last();
+            if (!"completed".Equals(dirName) && Directory.GetCreationTime(dir) < cutoff)
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+    }
+}
+```
+
+然后创建一个后台服务类UploadCleanupService继承BackgroundService，并调用WorkService中的分片定时清理服务。
+
+```c#
+public class UploadCleanupService : BackgroundService
+{
+    private readonly IServiceProvider _services;
+
+    public UploadCleanupService(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var scope = _services.CreateScope();
+        //获取服务类
+        var taskWorkService = scope.ServiceProvider.GetRequiredService<IWorkService>();
+        //执行服务类的定时任务
+        await taskWorkService.TaskWorkAsync(stoppingToken);
+    }
+}
+```
+
+最后在Program.cs中注册后台服务。
+
+```c#
+// 注册后台服务
+builder.Services.AddHostedService<UploadCleanupService>();
 ```
 
 ## 参考文档
