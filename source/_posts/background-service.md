@@ -138,10 +138,10 @@ public class WorkService : IWorkService
 
             // 计算下一个时间节点
             var now = DateTime.Now;
-            nextDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond).AddMinutes(IntervalMinute);
+            var firstDateTime = new DateTime(now.Year, now.Month, now.Day, StartHour, StartMinute, StartSecond);
             if(executionCount == 0)
             {
-                nextDateTime = FirstDateTime;
+                nextDateTime = firstDateTime;
             }
             else
             {
