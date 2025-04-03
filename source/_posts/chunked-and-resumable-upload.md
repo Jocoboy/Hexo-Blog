@@ -495,10 +495,6 @@ public partial class MainForm : Form
 }
 ```
 
-最终实现的效果如下：
-
-{% asset_img resumable_upload_in_winform.png  在WinForm中实现断点续传 %}
-
 ## 并行上传
 
 并行上传是提升大文件传输效率的有效手段，并行上传可将总时间缩短为单线程上传时间/N(N为并行度)。并行上传适合在不稳定的网络环境(如高延迟)中使用，可充分利用间歇性网络带宽。
@@ -710,6 +706,14 @@ public class UploadController: ControllerBase
 
             return Ok(new { Completed = false });
         }
+        catch(OperationCanceledException ex)
+        {
+            // 客户端主动取消上传，最后一个分片可能未完整上传，需要进行删除，否则客户端断点续传时，在对分片信息的更新过程中会发生错误
+            System.IO.File.Delete(Path.Combine(Path.Combine(_uploadPath, fileId), $"chunk_{chunkOffset}"));
+            var errorMsg = $"分片上传失败:{ex.Message}, 分片 chunk_{chunkOffset} 已删除！";
+            _logger.LogError(errorMsg);
+            return BadRequest(errorMsg);
+        }
         catch (Exception ex)
         {
             var errorMsg = $"分片上传失败:{ex.Message}";
@@ -838,6 +842,8 @@ public class UploadController: ControllerBase
 ### 客户端实现
 
 客户端实现了AdaptiveResumableUploadService服务类，在并行上传与断点续传的基础上，添加了实时更新网络指标(上行速度/网络延迟)并动态计算当前分片大小的功能，并使用了异步锁SemaphoreSlim确保分片信息更新时的原子性。
+
+注：请勿使用同步锁lock，否则会报错`Object synchronization method was called from an unsynchronized block of code`
 
 ```c#
 public class AdaptiveResumableUploadService
@@ -1000,7 +1006,11 @@ public class AdaptiveResumableUploadService
             var response = await _httpClient.PostAsync($"{_serviceUri}{UploadChunkApiUri}", content, cancellationToken);
             uploadStopwatch.Stop();
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new HttpRequestException(error);
+            }
 
             // 更新网络指标
             UpdateNetworkMetrics(bytesRead, uploadStopwatch.Elapsed, latencyStopwatch.Elapsed);
@@ -1018,7 +1028,11 @@ public class AdaptiveResumableUploadService
         var stringContent = new StringContent(JsonSerializer.Serialize(new { FileId = fileId, FileName = fileName }), Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync($"{_serviceUri}{MergeChunksApiUri}", stringContent, cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new HttpRequestException(error);
+        }
     }
 
     private static string GetFileHash(Stream stream, HashAlgorithmType hashAlgorithmType)
@@ -1092,6 +1106,7 @@ public class AdaptiveResumableUploadService
                 currentChunkSize = CalculateDynamicChunkSize();
                 var actualChunkSize = (int)Math.Min(currentChunkSize, fileSize - position);
 
+                // 惰性求值: 迭代器代码直到开始遍历才会执行，每次迭代时返回一个值，并保持当前执行状态(局部变量、执行位置等)
                 yield return new FileChunk
                 {
                     Index = chunkIndex,
@@ -1137,6 +1152,11 @@ public class AdaptiveResumableUploadService
     #endregion
 }
 ```
+
+
+最终实现的效果如下：
+
+{% asset_img adaptive_resumable_upload_in_winform.png  客户端断点续传演示 %}
 
 ## 完整性校验
 
@@ -1260,7 +1280,6 @@ public class AdaptiveResumableUploadService
 
             var progressLock = new object();
 
-
             var parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = _maxParallelism,
@@ -1268,8 +1287,8 @@ public class AdaptiveResumableUploadService
             };
 
             var retryCount = 0;
-            var Success = false;
-            while (!Success && retryCount < _maxRetryCount)
+            var completed = false;
+            while (!completed && retryCount < _maxRetryCount)
             {
                 // 获取已上传的分片信息
                 var uploadedChunks = await GetUploadedChunksAsync(fileId, cancellationToken);
@@ -1297,7 +1316,7 @@ public class AdaptiveResumableUploadService
                     });
 
                     await MergeChunksAsync(fileId, fileInfo.Name, cancellationToken);
-                    Success = true;
+                    completed = true;
                     ProgressChanged?.Invoke(100);
                     StatusChanged?.Invoke("上传完成！");
                     UploadCompleted?.Invoke(true);
@@ -1322,6 +1341,148 @@ public class AdaptiveResumableUploadService
         }
     }
 }
+```
+
+## 分片定时清理
+
+断点续传留下的分片会随着时间在服务器上越积越多，因此需要有一个分片定时清理策略。
+
+首先在服务端创建一个后台任务配置类，用于读取appsettings.json中的后台任务配置项，并在Program.cs中注册配置项，
+
+```c#
+public class BackgroundJobOptions
+{
+    public int StartHour { get; set; }
+    public int StartMinute { get; set; }
+    public int StartSecond { get; set; }
+    public int IntervalMinute { get; set; }
+    public int CleanUpDaysAgo { get; set; }
+}
+```
+
+```c#
+// 注册配置类
+builder.Services.Configure<BackgroundJobOptions>(builder.Configuration.GetSection("BackgroundJobOptions"));
+```
+
+appsettings.json中的配置项如下所示。
+
+```json
+{
+  "BackgroundJobOptions": {
+    "StartHour": 10,
+    "StartMinute": 30,
+    "StartSecond": 0,
+    "IntervalMinute": 1440,
+    "CleanUpDaysAgo": 7
+  }
+}
+
+```
+
+然后定义IWorkServie和WorkService，作为分片定时清理服务类。
+
+```c#
+public interface IWorkService
+{
+    Task TaskWorkAsync(CancellationToken cancellationToken);
+}
+```
+
+```c#
+public class WorkService : IWorkService
+{
+    private int executionCount = 0;
+    private readonly ILogger<WorkService> _logger;
+    private DateTime nextDateTime;
+    private readonly IWebHostEnvironment _env;
+    private readonly BackgroundJobOptions _backgroundJobOptions;
+
+    public WorkService(ILogger<WorkService> logger, IWebHostEnvironment env, IOptions<BackgroundJobOptions> backgroundJobOptions)
+    {
+        _logger = logger;
+        _env = env;
+        _backgroundJobOptions = backgroundJobOptions.Value;
+    }
+
+    public async Task TaskWorkAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            // 计算下一个时间节点
+            var now = DateTime.Now;
+            var firstDateTime = new DateTime(now.Year, now.Month, now.Day, _backgroundJobOptions.StartHour, _backgroundJobOptions.StartMinute, _backgroundJobOptions.StartSecond);
+            if (executionCount == 0)
+            {
+                nextDateTime = firstDateTime;
+            }
+            else
+            {
+                nextDateTime = nextDateTime.AddMinutes(_backgroundJobOptions.IntervalMinute);
+            }
+
+            if (nextDateTime < now)
+            {
+                var delay = nextDateTime.AddDays(1) - now;
+                await Task.Delay(delay, cancellationToken);
+            }
+            else
+            {
+                var delay = nextDateTime - now;
+                await Task.Delay(delay, cancellationToken);
+                    CleanupOldUploads(_backgroundJobOptions.CleanUpDaysAgo);
+
+                var count = Interlocked.Increment(ref executionCount);
+                _logger.LogInformation("已完成分片自动清理. 累计清理次数: {Count}", count);
+            }
+
+        }
+    }
+
+    private void CleanupOldUploads(int daysAgo)
+    {
+        var cutoff = DateTime.Now.AddDays(-daysAgo);
+        var uploadPath = Path.Combine(_env.WebRootPath, "uploads");
+        foreach (var dir in Directory.GetDirectories(uploadPath))
+        {
+            var dirName = dir.Split('\\').Last();
+            if (!"completed".Equals(dirName) && Directory.GetCreationTime(dir) < cutoff)
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+    }
+}
+```
+
+然后创建一个后台服务类UploadCleanupService继承BackgroundService，并调用WorkService中的分片定时清理服务。
+
+```c#
+public class UploadCleanupService : BackgroundService
+{
+    private readonly IServiceProvider _services;
+
+    public UploadCleanupService(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var scope = _services.CreateScope();
+        //获取服务类
+        var taskWorkService = scope.ServiceProvider.GetRequiredService<IWorkService>();
+        //执行服务类的定时任务
+        await taskWorkService.TaskWorkAsync(stoppingToken);
+    }
+}
+```
+
+最后在Program.cs中注册后台服务。
+
+```c#
+// 注册后台服务
+builder.Services.AddHostedService<UploadCleanupService>();
 ```
 
 ## 参考文档
