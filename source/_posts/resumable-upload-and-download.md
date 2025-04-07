@@ -1,5 +1,5 @@
 ---
-title: .NET实现分片上传与断点续传
+title: .NET实现断点续传(上传/下载)
 date: 2025-03-25 17:28:11
 categories:
 - Framework
@@ -9,11 +9,15 @@ tags:
 - WinForm
 ---
 
-基于.NET实现大文件上传中的分片上传与断点续传功能，并在WinForm中实现上传进度反馈、并行上传、分片大小动态调整等辅助功能。
+基于.NET实现大文件的断点续传功能，包含上传与下载。其中上传部分包括分片上传与断点续传功能，并借助WinForm实现上传进度反馈、并行上传、分片大小动态调整等辅助功能。
 
 <!--more-->
 
 ## 前言
+
+断点续传基于分片上传和分片下载，包含断点续传上传与断点续传下载两部分，下面基于.NET分别对其进行功能实现。
+
+## 断点续传上传
 
 在文件上传场景中，分片上传和断点续传是处理大文件上传的重要技术。
 
@@ -27,7 +31,7 @@ tags:
 
 下面我们来简单实现上述功能。
 
-## 分片上传
+### 分片上传
 
 分片上传流程如下：
 
@@ -36,7 +40,7 @@ tags:
 - 服务器接收并临时保存每个分片
 - 当所有分片上传完成后，服务器合并分片为完整文件
 
-### 服务端实现
+#### 服务端实现
 
 UploadChunk接口实现了分片的临时存储(存储的临时文件名为fileId_chunkNumber)，以及分片的最终合并。
 
@@ -91,7 +95,7 @@ private async Task MergeChunksAsync(string fileId, int totalChunks, string fileN
 }
 ```
 
-### 客户端实现
+#### 客户端实现
 
 首先创建一个ChunkedUploadService类，用来处理本地的文件流，并调用服务端的分片上传接口。
 
@@ -157,7 +161,7 @@ var uploader = new ChunkedUploadService(serviceUri);
 await uploader.UploadInChunksAsync(filePath, CancellationToken.None);
 ```
 
-## 断点续传
+### 断点续传
 
 断点续传流程如下：
 
@@ -165,7 +169,7 @@ await uploader.UploadInChunksAsync(filePath, CancellationToken.None);
 - 上传前根据文件文件唯一ID查询服务器已接收的分片，继续上传时只上传缺失的分片
 - 当所有分片上传完成后合并分片
 
-### 服务端实现
+#### 服务端实现
 
 GetUploadStatus接口根据文件标识fileId查询已上传的分片编号，UploadChunk接口的功能同上。
 
@@ -219,7 +223,7 @@ public class UploadController: ControllerBase
 }
 ```
 
-### 客户端实现
+#### 客户端实现
 
 首先创建一个ResumableUploadService类，调用服务端的文件分片上传状态接口，对于已上传的分片跳过处理，然后调用服务端的分片上传接口继续上传，以实现断点续传功能。
 
@@ -319,15 +323,15 @@ var uploader = new ResumableUploadService(serviceUri);
 await uploader.UploadWithResumeAsync(filePath, CancellationToken.None);
 ```
 
-## 上传进度反馈与上传取消
+### 上传进度反馈与上传取消
 
 通常情况下，大文件上传时需要给用户提供上传进度信息以及取消上传的功能，下面使用WinForm简单实现上述功能。
 
-### 服务端实现
+#### 服务端实现
 
 服务端代码延用[断点续传](#断点续传)，不再展示。
 
-### 客户端实现
+#### 客户端实现
 
 客户端的ResumableUploadService中的主要变化是添加了三个委托事件，分别用来更新上传百分比、状态消息、上传与取消按钮禁用状态。
 
@@ -495,17 +499,17 @@ public partial class MainForm : Form
 }
 ```
 
-## 并行上传
+### 并行上传
 
 并行上传是提升大文件传输效率的有效手段，并行上传可将总时间缩短为单线程上传时间/N(N为并行度)。并行上传适合在不稳定的网络环境(如高延迟)中使用，可充分利用间歇性网络带宽。
 
 并行上传时多个分片同时上报上传进度，进度条呈现更平滑，更适合需要实时进度反馈的场景。
 
-### 服务端实现
+#### 服务端实现
 
 服务端代码延用[断点续传](#断点续传)，不再展示。
 
-### 客户端实现
+#### 客户端实现
 
 客户端基于ResumableUploadService，创建了一个并行上传服务类ParallelUploadService，使用`Parallel.ForEachAsync`实现并行上传，并设置了最大并行度(默认为4)。
 
@@ -597,11 +601,11 @@ public class ParallelUploadService
 
 主窗体MainForm中对于ParallelUploadService服务类的调用方式与ResumableUploadService类似，不再展示。
 
-## 动态调整分片大小
+### 动态调整分片大小
 
 根据网络状态动态调整分片大小，可以优化分片上传效率。
 
-### 服务端实现
+#### 服务端实现
 
 由于分片的大小是动态计算得出的，存储的临时文件名由fileId_chunkNumber变更为{fileId}/chunk_{offsetValue}。
 
@@ -839,7 +843,7 @@ public class UploadController: ControllerBase
 
 {% asset_img adaptive_resumable_upload_console.png  服务端日志记录输出 %}
 
-### 客户端实现
+#### 客户端实现
 
 客户端实现了AdaptiveResumableUploadService服务类，在并行上传与断点续传的基础上，添加了实时更新网络指标(上行速度/网络延迟)并动态计算当前分片大小的功能，并使用了异步锁SemaphoreSlim确保分片信息更新时的原子性。
 
@@ -1158,7 +1162,7 @@ public class AdaptiveResumableUploadService
 
 {% asset_img adaptive_resumable_upload_in_winform.png  客户端断点续传演示 %}
 
-## 完整性校验
+### 完整性校验
 
 完整性校验包含两个方面：
 
@@ -1167,7 +1171,7 @@ public class AdaptiveResumableUploadService
 
 在计算哈希值时应当仅读取文件内容，避免隐藏的元数据差异(文件创建/修改日期等)造成哈希值不同。
 
-### 分片完整校验
+#### 分片完整校验
 
 以下为服务端UploadChunkAsync接口对于分片完整校验的部分代码：
 
@@ -1219,7 +1223,7 @@ private async Task<bool> UploadChunkAsync(string fileId, int chunkIndex, long ch
 }
 ```
 
-### 文件完整性校验
+#### 文件完整性校验
 
 以下为服务端MergeChunksAsync接口中对于文件完整性校验的部分代码：
 
@@ -1243,7 +1247,7 @@ public async Task<IActionResult> MergeChunksAsync(MergeFile mergeFile, Cancellat
 }
 ```
 
-## 重传尝试
+### 重传尝试
 
 分片上传过程中存在各种不稳定的因素(如网络波动)，可以为客户端上传服务类添加重传尝试机制，在上传失败后自动重新上传。
 
@@ -1343,7 +1347,7 @@ public class AdaptiveResumableUploadService
 }
 ```
 
-## 分片定时清理
+### 分片定时清理
 
 断点续传留下的分片会随着时间在服务器上越积越多，因此需要有一个分片定时清理策略。
 
@@ -1485,8 +1489,218 @@ public class UploadCleanupService : BackgroundService
 builder.Services.AddHostedService<UploadCleanupService>();
 ```
 
+## 断点续传下载
+
+与断点续传上传类似，断点续传下载同样包含下载进度反馈、下载取消、并行下载等辅助功能。
+
+下面我们来简单实现上述功能。
+
+### 断点续传/下载进度反馈/下载取消
+
+#### 服务端实现
+
+由于断点续传上传中使用了wwwroot静态资源文件夹，服务端的文件可直接通过url访问。确保Program.cs中启用了静态文件服务。
+
+```c#
+// 启用静态文件服务
+app.UseStaticFiles(); 
+```
+
+#### 客户端实现
+
+首先创建一个ResumableDownloadService服务类，根据传入的服务器文件地址，使用Range头请求从断点处继续下载(确保服务器支持Range请求头)，并提供进度条反馈和取消下载功能。
+
+```c#
+public class ResumableDownloadService
+{
+    private readonly HttpClient _httpClient;
+
+    // 进度和状态事件
+    public event Action<int> ProgressChanged; // 上传百分比
+    public event Action<string> StatusChanged; // 状态消息
+    public event Action<bool> DownloadCompleted; // 完成状态
+
+    public ResumableDownloadService()
+    {
+        _httpClient = new HttpClient();
+    }
+
+    public async Task DownloadWithResumeAsync(string fileUrl, string destDir, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // 检查目标文件是否已存在部分下载内容
+            long existingLength = 0;
+            var destFile = fileUrl.Split("/").Last();
+            var destinationPath = $"{destDir}\\{destFile}";
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            if (File.Exists(destinationPath))
+            {
+                existingLength = new FileInfo(destinationPath).Length;
+            }
+
+            // 使用 Range 头请求从断点处继续下载
+            using var request = new HttpRequestMessage(HttpMethod.Get, fileUrl);
+            if (existingLength > 0)
+            {
+                request.Headers.Range = new RangeHeaderValue(existingLength, null);
+            }
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.RequestedRangeNotSatisfiable)
+                {
+                    StatusChanged?.Invoke("下载完成！"); // Range头请求范围超出文件大小，视为下载完成
+                    ProgressChanged?.Invoke(100);
+                    DownloadCompleted?.Invoke(true);
+                    return;
+                }
+            }
+
+            var fileTotalLength = response.Content.Headers.ContentLength;
+
+            using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            using var fileStream = new FileStream(destinationPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None);
+            var buffer = new byte[8192];
+            int bytesRead;
+            long totalRead = 0;
+
+            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            {
+                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                totalRead += bytesRead;
+
+                int progress = (int)((double)totalRead / fileTotalLength * 100);
+                ProgressChanged?.Invoke(progress);
+                StatusChanged?.Invoke($"当前上传进度: {progress}%");
+            }
+
+            StatusChanged?.Invoke("下载完成！");
+            DownloadCompleted?.Invoke(true);
+        }
+        catch (OperationCanceledException)
+        {
+            StatusChanged?.Invoke("下载已取消");
+            DownloadCompleted?.Invoke(false);
+        }
+        catch (Exception ex)
+        {
+            StatusChanged?.Invoke($"上传失败: {ex.Message}");
+            DownloadCompleted?.Invoke(false);
+        }
+    }
+}
+```
+
+与上传类似，主窗体MainForm中的代码如下。
+
+```c#
+public partial class MainForm : Form
+{
+    private readonly string _serviceUri;
+    private readonly ResumableDownloadService _downloader;
+    private CancellationTokenSource _cts;
+
+    public MainForm()
+    {
+        InitializeComponent();
+
+        _serviceUri = "http://localhost:5001";
+        _downloader = new ResumableDownloadService();
+
+        // 绑定事件
+        _downloader.ProgressChanged += UpdateProgress;
+        _downloader.StatusChanged += UpdateStatus;
+        _downloader.DownloadCompleted += UploadCompleted;
+    }
+
+    private void UpdateProgress(int percent)
+    {
+        if (progressBar.InvokeRequired)
+        {
+            progressBar.Invoke(new Action<int>(UpdateProgress), percent);
+            return;
+        }
+        progressBar.Value = percent;
+    }
+
+    private void UpdateStatus(string message)
+    {
+        if (lblStatus.InvokeRequired)
+        {
+            lblStatus.Invoke(new Action<string>(UpdateStatus), message);
+            return;
+        }
+        lblStatus.Text = message;
+    }
+
+    private void UploadCompleted(bool success)
+    {
+        if (btnDownload.InvokeRequired)
+        {
+            btnDownload.Invoke(new Action<bool>(UploadCompleted), success);
+            return;
+        }
+        btnDownload.Enabled = true;
+        btnCancel.Enabled = false;
+    }
+
+    private async void btnDownload_Click(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(textBox.Text) || !Directory.Exists(textBox.Text))
+        {
+            MessageBox.Show("请选择有效目录！");
+            return;
+        }
+
+        btnDownload.Enabled = false;
+        btnCancel.Enabled = true;
+        progressBar.Value = 0;
+
+        _cts = new CancellationTokenSource();
+        string fileUrl = $"{_serviceUri}/uploads/completed/test.mp4";
+        string destDir = textBox.Text;
+        await _downloader.DownloadWithResumeAsync(fileUrl, destDir, _cts.Token);
+    }
+
+    private void btnBrowse_Click(object sender, EventArgs e)
+    {
+        using var folderBrowserDialog = new FolderBrowserDialog();
+        // 设置对话框标题
+        folderBrowserDialog.Description = "请选择保存文件的目录";
+        // 设置初始目录（可选）
+        folderBrowserDialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        // 显示对话框
+        if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+        {
+            // 获取用户选择的目录路径
+            textBox.Text = folderBrowserDialog.SelectedPath;
+        }
+    }
+
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+        _cts?.Cancel();
+    }
+
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        _cts?.Cancel();
+        base.OnFormClosing(e);
+    }
+}
+```
+
 ## 参考文档
 
 - [阿里云OSS断点续传上传操作指南](https://help.aliyun.com/zh/oss/user-guide/resumable-upload)
+
+- [阿里云OSS断点续传下载操作指南](https://help.aliyun.com/zh/oss/user-guide/oss-resumable-download)
 
 - [Control.InvokeRequired属性参考文档](https://learn.microsoft.com/zh-cn/dotnet/api/system.windows.forms.control.invokerequired)
