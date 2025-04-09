@@ -1160,7 +1160,7 @@ public class AdaptiveResumableUploadService
 
 最终实现的效果如下：
 
-{% asset_img adaptive_resumable_upload_in_winform.png  客户端断点续传演示 %}
+{% asset_img adaptive_resumable_upload_in_winform.png  客户端断点续传上传演示 %}
 
 ### 完整性校验
 
@@ -1495,7 +1495,7 @@ builder.Services.AddHostedService<UploadCleanupService>();
 
 下面我们来简单实现上述功能。
 
-### 断点续传/下载进度反馈/下载取消
+### 下载进度反馈与下载取消
 
 #### 服务端实现
 
@@ -1696,6 +1696,626 @@ public partial class MainForm : Form
     }
 }
 ```
+
+### 并行下载与暂停恢复
+
+#### 客户端实现
+
+首先创建一个ParallelDownloadService服务类，默认并发下载线程数为4，并使用并发字典记录CancellationTokenSource，以便实现下载的暂停和恢复。
+
+```c#
+public class ParallelDownloadService
+{
+    private readonly HttpClient _httpClient;
+    private readonly ConcurrentDictionary<int, CancellationTokenSource> _activeDownloads;
+    private const int BufferSize = 8192; // 缓冲区 8KB
+    private const int ChunkSize = 1024 * 1024; // 1MB 每块
+    private readonly int _maxParallelism;
+    private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);  // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+
+    // 进度和状态事件
+    public event Action<long, long> ProgressChanged; // 当前下载量, 总大小
+    public event Action<int> DownloadCompleted;     // 下载ID
+    public event Action<int, Exception> DownloadFailed; // 下载ID, 异常
+
+    public ParallelDownloadService(int maxParallelism = 4)
+    {
+        _httpClient = new HttpClient();
+        _httpClient.Timeout = Timeout.InfiniteTimeSpan;
+        _activeDownloads = new ConcurrentDictionary<int, CancellationTokenSource>();
+        _maxParallelism = maxParallelism;
+    }
+
+    public async Task<int> StartParallelDownloadAsync(string fileUrl, string destDir)
+    {
+        var downloadId = fileUrl.GetHashCode();
+        var cts = new CancellationTokenSource();
+        _activeDownloads.TryAdd(downloadId, cts);
+
+        try
+        {
+            // 获取文件总大小
+            var fileSize = await GetFileSizeAsync(fileUrl);
+
+            // 创建目标文件
+            var destFile = fileUrl.Split("/").Last();
+            var destinationPath = $"{destDir}\\{destFile}";
+            var tempDir = $"{destDir}\\temp";
+            var tempPath = $"{tempDir}\\{Path.GetFileNameWithoutExtension(destFile)}.tmp";
+            if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+            if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
+            using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+            {
+                fs.SetLength(fileSize);
+            }
+
+            // 计算分片
+            var chunks = CalculateChunks(fileSize, _maxParallelism);
+
+            // 并行下载
+            await Task.Run(() => Parallel.ForEachAsync(chunks, new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxParallelism,
+                CancellationToken = cts.Token
+            }, async (chunk, ct) =>
+            {
+                await _semaphoreSlim.WaitAsync();
+                await DownloadChunkAsync(downloadId, fileUrl, tempPath, chunk.Start, chunk.End, fileSize, ct);
+                _semaphoreSlim.Release();
+            }), cts.Token);
+
+            // 下载完成后重命名临时文件
+            File.Move(tempPath, destinationPath, true);
+            DownloadCompleted?.Invoke(downloadId);
+            return downloadId;
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消，不视为错误
+            return downloadId;
+        }
+        catch (Exception ex)
+        {
+            DownloadFailed?.Invoke(downloadId, ex);
+            throw;
+        }
+        finally
+        {
+            _activeDownloads.TryRemove(downloadId, out _);
+        }
+    }
+
+    public void PauseDownload(int downloadId)
+    {
+        if (_activeDownloads.TryGetValue(downloadId, out var cts))
+        {
+            cts.Cancel();
+        }
+    }
+
+    private async Task DownloadChunkAsync(int downloadId, string fileUrl, string destinationPath, long start, long end, long fileSize, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // 使用 Range 头请求从断点处继续下载
+            using var request = new HttpRequestMessage(HttpMethod.Get, fileUrl);
+            request.Headers.Range = new RangeHeaderValue(start, end);
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            using var contentStream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = new FileStream(destinationPath, FileMode.Open, FileAccess.Write);
+
+            fileStream.Seek(start, SeekOrigin.Begin);
+
+            // 使用固定大小缓冲区，避免内存问题
+            var buffer = new byte[BufferSize];
+            int bytesRead;
+            long totalRead = 0;
+            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            {
+                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                totalRead += bytesRead;
+                ProgressChanged?.Invoke(start + totalRead, fileSize);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消，不视为错误
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"分片下载失败({start}-{end}): {ex.Message}", ex);
+        }
+    }
+
+    private static IEnumerable<(long Start, long End)> CalculateChunks(long fileSize, int threadCount)
+    {
+        var chunkSize = Math.Max(ChunkSize, fileSize / threadCount);
+        for (long i = 0; i < fileSize; i += chunkSize + 1)
+        {
+            var end = Math.Min(i + chunkSize, fileSize - 1);
+            yield return (i, end);
+        }
+    }
+
+
+    private async Task<long> GetFileSizeAsync(string fileUrl)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Head, fileUrl);
+        using var response = await _httpClient.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+        return response.Content.Headers.ContentLength ??
+                throw new Exception("无法获取文件大小");
+    }
+}
+```
+
+主窗体MainForm中的代码如下。
+
+
+```c#
+public partial class MainForm : Form
+{
+    private readonly string _serviceUri;
+    private readonly ParallelDownloadService _downloader;
+    private int _currentDownloadId;
+
+    public MainForm()
+    {
+        InitializeComponent();
+
+        _serviceUri = "http://localhost:5001";
+        _downloader = new ParallelDownloadService();
+
+        // 绑定事件
+        _downloader.ProgressChanged += OnDownloadProgress;
+        _downloader.DownloadCompleted += OnDownloadComplete;
+        _downloader.DownloadFailed += OnDownloadFailed;
+
+        // 按钮置灰
+        btnPause.Enabled = false;
+        btnResume.Enabled = false;
+    }
+
+    private void btnStart_Click(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(textBox.Text) || !Directory.Exists(textBox.Text))
+        {
+            MessageBox.Show("请选择有效目录！");
+            return;
+        }
+
+        btnStart.Enabled = false;
+        btnPause.Enabled = true;
+        progressBar.Value = 0;
+        lblStatus.Text = "下载中...";
+
+        string fileUrl = $"{_serviceUri}/uploads/completed/test.mp4";
+        string destDir = textBox.Text;
+
+        // 开始下载
+        _ = Task.Run(async () =>
+        {
+                _currentDownloadId = await _downloader.StartParallelDownloadAsync(fileUrl, destDir);
+        });
+    }
+
+    private void btnPause_Click(object sender, EventArgs e)
+    {
+        _downloader.PauseDownload(_currentDownloadId);
+        btnPause.Enabled = false;
+        btnResume.Enabled = true;
+        lblStatus.Text = "已暂停";
+    }
+
+    private void btnResume_Click(object sender, EventArgs e)
+    {
+        // 重新开始下载
+        btnStart_Click(sender, e);
+        btnResume.Enabled = false;
+    }
+
+    private void btnBrowse_Click(object sender, EventArgs e)
+    {
+        using var folderBrowserDialog = new FolderBrowserDialog();
+        // 设置对话框标题
+        folderBrowserDialog.Description = "请选择保存文件的目录";
+        // 设置初始目录（可选）
+        folderBrowserDialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        // 显示对话框
+        if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+        {
+            // 获取用户选择的目录路径
+            textBox.Text = folderBrowserDialog.SelectedPath;
+        }
+    }
+    private void OnDownloadProgress(long bytes, long fileSize)
+    {
+        this.Invoke(() =>
+        {
+            progressBar.Maximum = (int)(fileSize / 1024);
+            progressBar.Value = (int)(bytes / 1024);
+            lblProgress.Text = $"{bytes / 1024 / 1024}MB / {fileSize / 1024 / 1024}MB";
+        });
+    }
+
+    private void OnDownloadComplete(int downloadId)
+    {
+        this.Invoke(() =>
+        {
+            lblStatus.Text = "下载完成";
+            ResetUI();
+        });
+    }
+
+    private void OnDownloadFailed(int downloadId, Exception ex)
+    {
+        this.Invoke(() =>
+        {
+            MessageBox.Show($"下载失败: {ex.Message}");
+            lblStatus.Text = "下载失败";
+            ResetUI();
+        });
+    }
+
+    private void ResetUI()
+    {
+        btnStart.Enabled = true;
+        btnPause.Enabled = false;
+        btnResume.Enabled = false;
+    }
+}
+```
+
+### 下载重试
+
+与上传类似，断点续传下载也可以添加重试机制。
+
+```c#
+public class ParallelDownloadService
+{
+    ...
+    private readonly int _maxRetryCount;
+    ...
+
+    public ParallelDownloadService(..., int maxRetryCount = 10)
+    {
+        ...
+        _maxRetryCount = maxRetryCount;
+    }
+
+    public async Task<int> StartParallelDownloadAsync(string fileUrl, string destDir)
+    {
+        var downloadId = fileUrl.GetHashCode();
+        var cts = new CancellationTokenSource();
+        _activeDownloads.TryAdd(downloadId, cts);
+
+        try
+        {
+            // 获取文件总大小
+            var fileSize = await GetFileSizeAsync(fileUrl);
+
+            // 创建目标文件
+            var destFile = fileUrl.Split("/").Last();
+            var destinationPath = $"{destDir}\\{destFile}";
+            var tempDir = $"{destDir}\\temp";
+            var tempPath = $"{tempDir}\\{Path.GetFileNameWithoutExtension(destFile)}.tmp";
+            if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+            if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
+            using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+            {
+                fs.SetLength(fileSize);
+            }
+
+            // 计算分片
+            var chunks = CalculateChunks(fileSize, _maxParallelism);
+
+            // 并行下载
+            var retryCount = 0;
+            var completed = false;
+            while (!completed && retryCount < _maxRetryCount)
+            {
+                try
+                {
+                    await Task.Run(() => Parallel.ForEachAsync(chunks, new ParallelOptions
+                    {
+                        MaxDegreeOfParallelism = _maxParallelism,
+                        CancellationToken = cts.Token
+                    }, async (chunk, ct) =>
+                    {
+                        await _semaphoreSlim.WaitAsync();
+                        await DownloadChunkAsync(downloadId, fileUrl, tempPath, chunk.Start, chunk.End, fileSize, ct);
+                        _semaphoreSlim.Release();
+                    }), cts.Token);
+
+                    completed = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= _maxRetryCount) throw;
+                    await Task.Delay(100 * retryCount); // 指数退避
+                }
+            }
+            // 下载完成后重命名临时文件
+            File.Move(tempPath, destinationPath, true);
+            DownloadCompleted?.Invoke(downloadId);
+            return downloadId;
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消，不视为错误
+            return downloadId;
+        }
+        catch (Exception ex)
+        {
+            DownloadFailed?.Invoke(downloadId, ex);
+            throw;
+        }
+        finally
+        {
+            _activeDownloads.TryRemove(downloadId, out _);
+        }
+    }
+
+    ...
+}
+```
+
+### 限速下载
+
+断点续传下载同样可以添加下载速度限制功能。下面创建一个SpeedLimitResumableDownloadService服务类，在并行下载基础上，添加限速下载功能。
+
+```c#
+public class SpeedLimitResumableDownloadService
+{
+    private readonly HttpClient _httpClient;
+    private readonly ConcurrentDictionary<int, CancellationTokenSource> _activeDownloads;
+    private const int BufferSize = 8192; // 缓冲区 8KB
+    private const int ChunkSize = 1024 * 1024; // 1MB 每块
+    private readonly int _maxParallelism;
+    private readonly int _maxRetryCount;
+    private int _maxSpeedKBps; // 0表示不限速
+    private Stopwatch _stopWatch;
+    private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);  // 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1
+
+    // 进度和状态事件
+    public event Action<long, long> ProgressChanged; // 当前下载量, 总大小
+    public event Action<int> DownloadCompleted;     // 下载ID
+    public event Action<int, Exception> DownloadFailed; // 下载ID, 异常
+    public event Action<double> SpeedChanged;      // 下载速度(KB/s)
+
+    public SpeedLimitResumableDownloadService(int maxParallelism = 4, int maxRetryCount = 10, int maxSpeedKBps = 0)
+    {
+        _httpClient = new HttpClient();
+        _stopWatch = new Stopwatch();
+        _httpClient.Timeout = Timeout.InfiniteTimeSpan;
+        _activeDownloads = new ConcurrentDictionary<int, CancellationTokenSource>();
+        _maxParallelism = maxParallelism;
+        _maxRetryCount = maxRetryCount;
+        _maxSpeedKBps = maxSpeedKBps;
+    }
+
+    public async Task<int> StartParallelDownloadAsync(string fileUrl, string destDir)
+    {
+        var downloadId = fileUrl.GetHashCode();
+        var cts = new CancellationTokenSource();
+        _activeDownloads.TryAdd(downloadId, cts);
+        try
+        {
+            // 获取文件总大小
+            var fileSize = await GetFileSizeAsync(fileUrl);
+
+            // 创建目标文件
+            var destFile = fileUrl.Split("/").Last();
+            var destinationPath = $"{destDir}\\{destFile}";
+            var tempDir = $"{destDir}\\temp";
+            var tempPath = $"{tempDir}\\{Path.GetFileNameWithoutExtension(destFile)}.tmp";
+            if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+            if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
+            using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+            {
+                fs.SetLength(fileSize);
+            }
+
+            // 计算分片
+            var chunks = CalculateChunks(fileSize, _maxParallelism);
+
+            // 并行下载
+            var retryCount = 0;
+            var completed = false;
+            while (!completed && retryCount < _maxRetryCount)
+            {
+                try
+                {
+                    await Task.Run(() => Parallel.ForEachAsync(chunks, new ParallelOptions
+                    {
+                        MaxDegreeOfParallelism = _maxParallelism,
+                        CancellationToken = cts.Token
+                    }, async (chunk, ct) =>
+                    {
+                        await _semaphoreSlim.WaitAsync();
+                        await DownloadChunkAsync(downloadId, fileUrl, tempPath, chunk.Start, chunk.End, fileSize, ct);
+                        _semaphoreSlim.Release();
+                    }), cts.Token);
+
+                    completed = true;
+                }
+                catch
+                {
+                    retryCount++;
+                    if (retryCount >= _maxRetryCount) throw;
+                    await Task.Delay(100 * retryCount); // 指数退避
+                }
+            }
+            // 下载完成后重命名临时文件
+            File.Move(tempPath, destinationPath, true);
+            DownloadCompleted?.Invoke(downloadId);
+            return downloadId;
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消，不视为错误
+            return downloadId;
+        }
+        catch (Exception ex)
+        {
+            DownloadFailed?.Invoke(downloadId, ex);
+            throw;
+        }
+        finally
+        {
+            _activeDownloads.TryRemove(downloadId, out _);
+        }
+    }
+
+    public void PauseDownload(int downloadId)
+    {
+        if (_activeDownloads.TryGetValue(downloadId, out var cts))
+        {
+            cts.Cancel();
+        }
+    }
+
+    private async Task DownloadChunkAsync(int downloadId, string fileUrl, string destinationPath, long start, long end, long fileSize, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // 使用 Range 头请求从断点处继续下载
+            using var request = new HttpRequestMessage(HttpMethod.Get, fileUrl);
+            request.Headers.Range = new RangeHeaderValue(start, end);
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            using var contentStream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = new FileStream(destinationPath, FileMode.Open, FileAccess.Write);
+
+            fileStream.Seek(start, SeekOrigin.Begin);
+
+            // 使用固定大小缓冲区，避免内存问题
+            var buffer = new byte[BufferSize];
+            int bytesRead;
+            long totalRead = 0;
+            while ((bytesRead = await ReadWithSpeedLimit(contentStream, buffer, cancellationToken)) > 0)
+            {
+                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                // 更新下载进度
+                totalRead += bytesRead;
+                ProgressChanged?.Invoke(start + totalRead, fileSize);
+                // 更新下载速度
+                var speed = bytesRead / 1024.0 / _stopWatch.Elapsed.TotalSeconds;
+                SpeedChanged?.Invoke(speed);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 正常取消，不视为错误
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"分片下载失败({start}-{end}): {ex.Message}", ex);
+        }
+        finally
+        {
+            _stopWatch.Stop();
+        }
+    }
+
+    private async Task<int> ReadWithSpeedLimit(Stream stream, byte[] buffer, CancellationToken cancellationToken)
+    {
+        _stopWatch.Restart();
+        var bytesRead = 0;
+        if (_maxSpeedKBps <= 0)
+        {
+            // 不限速
+            bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+            return bytesRead;
+        }
+
+        // 计算本次读取的最大字节数
+        var maxBytes = (int)(_maxSpeedKBps * 1024 * 0.1); // 每100ms的限额
+        var readSize = Math.Min(buffer.Length, maxBytes);
+
+        bytesRead = await stream.ReadAsync(buffer, 0, readSize, cancellationToken);
+    
+        // 速度控制
+        if (bytesRead > 0 && _maxSpeedKBps > 0)
+        {
+            var expectedTime = (bytesRead / 1024.0) / _maxSpeedKBps * 1000; // 毫秒
+            var actualTime = _stopWatch.ElapsedMilliseconds;
+            var delayTime = (int)(expectedTime - actualTime);
+
+            if (delayTime > 0)
+            {
+                await Task.Delay(delayTime, cancellationToken);
+            }
+        }
+
+        return bytesRead;
+    }
+
+    private static IEnumerable<(long Start, long End)> CalculateChunks(long fileSize, int threadCount)
+    {
+        // 同并行下载
+    }
+
+
+    private async Task<long> GetFileSizeAsync(string fileUrl)
+    {
+        // 同并行下载
+    }
+}
+```
+
+主窗体MainForm中的部分代码如下。
+
+```c#
+public partial class MainForm : Form
+{
+    private readonly string _serviceUri;
+    private readonly SpeedLimitResumableDownloadService _downloader;
+    private int _currentDownloadId;
+
+    public MainForm()
+    {
+        InitializeComponent();
+
+        _serviceUri = "http://localhost:5001";
+        _downloader = new SpeedLimitResumableDownloadService();
+
+        // 绑定事件
+        _downloader.ProgressChanged += OnDownloadProgress;
+        _downloader.DownloadCompleted += OnDownloadComplete;
+        _downloader.DownloadFailed += OnDownloadFailed;
+        _downloader.SpeedChanged += OnSpeedChanged;
+
+        // 按钮置灰
+        btnPause.Enabled = false;
+        btnResume.Enabled = false;
+    }
+
+    private void OnSpeedChanged(double speedKBps)
+    {
+        this.Invoke((Delegate)(() =>
+        {
+            lblSpeed.Text = $"{speedKBps / 1024:0.00} MB/s";
+        }));
+    }
+    
+    ...
+}
+```
+
+最终实现的效果如下：
+
+{% asset_img resumable_download_in_winform.png  客户端断点续传下载演示 %}
 
 ## 参考文档
 
