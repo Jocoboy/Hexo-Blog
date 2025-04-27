@@ -97,7 +97,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: keep
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
@@ -105,3 +105,10 @@ deploy:
   type: git
   repo: https://github.com/Jocoboy/Hexo-Blog.git
   branch: gh-pages
+
+# Feed Atom
+# npm install hexo-generator-feed
+feed:
+  type: atom
+  path: Hexo-Blog/atom.xml
+  limit: 20
