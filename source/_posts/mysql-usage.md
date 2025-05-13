@@ -98,6 +98,18 @@ mysql>show databases;
 
 ## MySQL 常用 SQL
 
+### CREATE/GRANT
+
+CREATE 可用于创建库名和用户名，配合GRANT可以在创建用户的同时赋予权限。
+
+```sql
+-- 创建数据库名
+CREATE DATABASE `demo` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+-- 创建用户并赋予权限
+CREATE USER test@'localhost' IDENTIFIED BY 'test';
+GRANT ALL ON demo.* TO 'test'@'localhost';                
+```
+
 ### SELECT
 
 获取数据库中所有 TRUNCATE 语句
