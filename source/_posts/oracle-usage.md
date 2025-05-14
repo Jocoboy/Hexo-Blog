@@ -164,6 +164,8 @@ EXCEPTION
 END;
 ```
 
+
+
 #### 控制结构
 
 条件语句包括IF - THEN - ELSE语句用于根据条件执行不同的代码块。例如：
@@ -201,6 +203,56 @@ BEGIN
 END;
 ```
 
+存储过程可以结合块结构和控制结构，实现批量插入随机数据，例如：
+
+```sql
+-- 批量插入随机数据(存储过程)
+CREATE OR REPLACE PROCEDURE batch_insert_users(
+    total IN NUMBER DEFAULT 2
+) AS
+    -- 定义变量
+    v_id ADMIN_USER.ID%TYPE;
+    v_name ADMIN_USER.NAME%TYPE;
+    v_gender ADMIN_USER.GENDER%TYPE;
+    v_pid ADMIN_USER.P_ID%TYPE;
+    v_orgcode ADMIN_USER.ORG_CODE%TYPE;
+
+    gender NUMBER := 0;
+    v_counter NUMBER := 1; -- 循环计数器
+    v_max NUMBER := total; -- 最大插入条数
+BEGIN
+	-- 循环插入数据
+    WHILE v_counter <= v_max LOOP
+        v_id := random_alphanum(6); -- 随机六位字符(包含大小写字母、数字)
+        v_name := random_chinese_name(); -- 随机两位或三位姓名
+        gender := ROUND(DBMS_RANDOM.VALUE(0, 1));
+        v_pid := simple_random_id_card(gender); -- 随机身份证号
+        SELECT 
+	    CASE 
+	        WHEN gender = 0 THEN '2' 
+	        ELSE '1' 
+	    END AS res INTO v_gender; -- 随机性别(1男性2女性)
+        SELECT ID INTO v_orgcode  -- 从现有组织代码中随机挑选一个
+		FROM (
+		    SELECT *
+		    FROM ADMIN_ORG
+		    ORDER BY DBMS_RANDOM.VALUE -- 对查询结果进行随机排序
+		)
+		WHERE ROWNUM = 1;
+
+        -- 插入数据到表中
+        INSERT INTO ADMIN_USER 
+		(ID, NAME, P_ID, ORG_CODE, GENDER) 
+		VALUES(v_id, v_name, v_pid, v_orgcode, v_gender);
+
+        v_counter := v_counter + 1; -- 更新计数器
+    END LOOP;
+	
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('成功插入' || v_max || '条数据');
+END;                                   
+```
+
 ### 存储函数
 
 存储函数与存储过程类似，但函数必须返回一个值。函数可以用于计算并返回一个结果，这个结果可以在SQL语句中使用。例如，使用存储函数计算员工的年薪
@@ -212,6 +264,82 @@ CREATE OR REPLACE FUNCTION calculate_annual_salary(
 BEGIN
     RETURN p_salary * 12;
 END;
+```
+
+存储函数中可以使用条件语句。例如，生成随机两位或三位姓名、随机身份证号
+```sql
+-- 常见姓氏数组
+CREATE OR REPLACE FUNCTION get_random_surname RETURN VARCHAR2 IS
+    TYPE surname_array IS TABLE OF VARCHAR2(10);
+    v_surnames surname_array := surname_array(
+        '王', '李', '张', '刘', '陈', '杨', '赵', '黄', '周', '吴',
+        '徐', '孙', '胡', '朱', '高', '林', '何', '郭', '马', '罗'
+    );
+BEGIN
+    RETURN v_surnames(TRUNC(DBMS_RANDOM.VALUE(1, v_surnames.COUNT + 1)));
+END;
+
+-- 随机名字生成
+CREATE OR REPLACE FUNCTION random_chinese_name RETURN VARCHAR2 IS
+    v_name VARCHAR2(30);
+BEGIN
+    v_name := get_random_surname;
+    
+    -- 60%概率单字名，40%双字名
+    IF DBMS_RANDOM.VALUE(0, 1) < 0.6 THEN
+        v_name := v_name || UNISTR('\' || LPAD(TO_CHAR(19968 + TRUNC(DBMS_RANDOM.VALUE(0, 500)), 'FMXXXX'), 4, '0'));
+    ELSE
+        v_name := v_name || 
+                 UNISTR('\' || LPAD(TO_CHAR(19968 + TRUNC(DBMS_RANDOM.VALUE(0, 500)), 'FMXXXX'), 4, '0')) ||
+                 UNISTR('\' || LPAD(TO_CHAR(19968 + TRUNC(DBMS_RANDOM.VALUE(0, 500)), 'FMXXXX'), 4, '0'));
+    END IF;
+    
+    RETURN v_name;
+END;
+
+-- 生成随机身份证号
+CREATE OR REPLACE FUNCTION simple_random_id_card(gender NUMBER DEFAULT 0) RETURN VARCHAR2 IS
+    v_id_card VARCHAR2(18);
+BEGIN
+    -- 1. 前6位行政区划代码（随机）
+    v_id_card := LPAD(TRUNC(DBMS_RANDOM.VALUE(0, 999999)), 6, '0');
+    
+    -- 2. 中间8位出生日期（1980-2000年间）
+    v_id_card := v_id_card || 
+                TO_CHAR(TO_DATE('1980-01-01', 'YYYY-MM-DD') + 
+                TRUNC(DBMS_RANDOM.VALUE(0, 365*20)), 'YYYYMMDD');
+    
+    -- 3. 顺序号3位（最后一位奇数男，偶数女）
+    v_id_card := v_id_card || LPAD(TRUNC(DBMS_RANDOM.VALUE(0, 99)), 2, '0') || TRUNC(gender);
+    
+    -- 4. 随机校验码（1位数字或X）
+    IF DBMS_RANDOM.VALUE(0, 1) < 0.9 THEN
+        v_id_card := v_id_card || TRUNC(DBMS_RANDOM.VALUE(0, 10));
+    ELSE
+        v_id_card := v_id_card || 'X';
+    END IF;
+    
+    RETURN v_id_card;
+END;
+```
+
+
+存储函数中也可以使用循环语句。例如，获取随机6位包含大小写字母、数字的字符串
+
+```sql
+CREATE OR REPLACE FUNCTION random_alphanum(p_length NUMBER DEFAULT 6) 
+RETURN VARCHAR2 IS
+    v_chars VARCHAR2(62) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    v_result VARCHAR2(4000);
+BEGIN
+    v_result := '';
+    FOR i IN 1..p_length LOOP
+        v_result := v_result || SUBSTR(v_chars, 
+                             MOD(ABS(DBMS_RANDOM.RANDOM), 62) + 1, 
+                             1);
+    END LOOP;
+    RETURN v_result;
+END random_alphanum;
 ```
 
 ## 命令行工具
