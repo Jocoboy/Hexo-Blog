@@ -70,7 +70,7 @@ Linux平台下，使用包管理器安装
 
 使用docker安装
 
-`dcoker pull nginx`
+`docker pull nginx`
 
 ## 常用命令
 
