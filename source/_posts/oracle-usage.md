@@ -382,6 +382,12 @@ sqlplus system/root1234@FREEPDB1
 }
 ```
 
+方式三：使用Oracle提供的外部认证方式，以操作系统管理员身份登录
+
+```shell
+sqlplus / as sysdba
+```
+
 ### SQLcl
 
 SQLcl是Oracle推出的一款现代化的命令行工具，它是基于Java开发的，在功能上可以看作是SQL*Plus的增强版，提供了更加简洁易用、功能丰富的交互界面，并且融入了很多新的特性来提升开发和管理数据库的效率。
