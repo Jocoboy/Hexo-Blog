@@ -37,8 +37,8 @@ Docker仓库(Registry)是用来集中存储和管理Docker镜像的地方。常�
 
 Docker官网在国内需要vpn才能访问，可通过国内镜像地址下载。Docker的使用可通过命令行方式，也可通过图形化工具Docker Desktop。
 
-Windows系统中启动Docker Desktop的先决条件
-- 安装WSL
+Windows系统中启动Docker Desktop的先决条件(以下二选一)
+- 安装WSL(推荐)
 - 开启Hyper-V功能
 
 ## 容器化与Dockerfile
@@ -67,11 +67,23 @@ CMD node /index.js
 
 `docker pull [image-url]`
 
+使用镜像源拉取(如轩辕镜像`docker.xuanyuan.me`)
+
+`docker pull [mirror-url]/library/[image-name]:latest`
+
+从本地归档文件(.tar)加载镜像到本地镜像库
+
+`docker load -i [image-name].tar`
+
 构建镜像
 
 `docker build -t [image-name] .`
 
-运行镜像
+根据镜像ID重命名镜像名称
+
+`docker tag [image-id] [image-name]`
+
+运行镜像(使用-d以守护进程/后台方式运行)
 
 `docker run [image-name] .`
 
@@ -105,6 +117,16 @@ CMD node /index.js
 
 `docker run  --name [container-name] [image-name]`
 
+例如运行一个基于Ubuntu的容器，可使用以下命令
+
+`docker run --name ubuntu_demo -itd docker.xuanyuan.me/library/ubuntu`
+
+(注：-itd为组合参数，-i使容器保持交互状态，-t为容器分配一个伪终端，-d在后台运行容器)
+
+进入Ubuntu容器内部
+
+`docker exec -it ubuntu_demo /bin/bash`
+
 停止容器
 
 `docker stop [container-name]`
@@ -120,4 +142,4 @@ CMD node /index.js
 
 - [Docker官方文档](https://docs.docker.com/)
 
-- [如何使用WSL在Windows上安装Linux](https://learn.microsoft.com/zh-cn/windows/wsl/install)
+- [Docker集成WSL2](https://docs.docker.com/desktop/features/wsl/)
