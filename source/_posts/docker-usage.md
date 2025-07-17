@@ -151,6 +151,10 @@ services:
 
 `docker load -i [image-name].tar`
 
+通过Shell重定向使用标准输入(stdin)加载镜像(适用于脚本或管道操作)
+
+`docker load < [image-name].tar`
+
 构建镜像
 
 `docker build -t [image-name] .`
