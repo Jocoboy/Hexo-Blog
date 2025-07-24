@@ -86,9 +86,28 @@ MaxKB是一个基于大语言模型和RAG的知识库问答系统。
 
 配置完成后即可使用ngrok映射大模型应用，输入`ngrok http 8088`将会回显一个Forwarding地址，这个地址就是ngrok为我们映射的公网地址，将其替换`http://localhost:8088`即可。
 
+注：对于所有HTTP请求，ngrok默认会返回一个html的警告页面，可在上述命令中添加参数`--request-header-add ngrok-skip-browser-warning:true`跳过此警告。
+
+除此之外，还可以通过修改`%HOMEPATH%\AppData\Local\ngrok`目录下的ngrok.yml配置文件来实现。
+
+```yml
+version: "3"
+agent:
+    authtoken: 'your-authtoken'
+tunnels:
+  example:
+    proto: http
+    addr: 8088
+    request_header:
+      add: ["ngrok-skip-browser-warning: true"]
+```
+
+修改完成后使用命令`ngrok start --all`即可启动服务。
+
 ## 参考文档
 
 - [Ollama API文档参考](https://github.com/ollama/ollama/blob/main/docs/api.md)
 
 - [MaxKB官方文档](https://maxkb.cn/docs/v2/installation/offline_installtion/)
 
+- [ngrok官方文档](https://ngrok.com/docs)
