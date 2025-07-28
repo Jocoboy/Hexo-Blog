@@ -35,9 +35,9 @@ mysqld，也称为 MySQL Server，是 MySQL 数据库系统中的核心组件。
 
 #### 常用命令
 
-初始化 mysql 服务，初始化数据目录，但不生成随机密码(设置数据库空密码)，同时指定运行 mysqld 服务器的用户名为 root，端口号为 3307
+初始化 mysql 服务，初始化数据目录，但不生成随机密码(设置数据库空密码)，同时指定运行 mysqld 服务器的用户名为 root，端口号为 3306
 
-`mysqld --initialize-insecure --user=root --port=3307 --console`
+`mysqld --initialize-insecure --user=root --port=3306 --console`
 
 安装 mysql 服务，命名为 MySQL80，并设置默认配置文件
 
@@ -56,7 +56,7 @@ my.ini 配置文件内容如下，
 default-character-set=utf8mb4
 # 配置免密登录 (可选)
 user=root
-password=root1234
+password=your_passowrd
 [mysqld]
 default_authentication_plugin=mysql_native_password
 port=3306
@@ -80,12 +80,12 @@ mysql 是 MySQL 自带的命令行客户端程序，用于交互式输入 SQL �
 
 登录 mysql
 
-`mysql -u root -P 3307`
+`mysql -u root -P 3306`
 
 修改 mysql 密码
 
 ```shell
-mysql>ALTER USER 'root'@'localhost'IDENTIFIED WITH mysql_native_password BY 'root1234';
+mysql>ALTER USER 'root'@'localhost'IDENTIFIED WITH mysql_native_password BY 'your_passowrd';
 mysql>flush privileges;
 mysql>quit;
 ```
@@ -95,6 +95,13 @@ mysql>quit;
 ```shell
 mysql>show databases;
 ```
+
+执行SQL文件(需要在控制台中将字符编码设置为UTF-8)
+
+`chcp 65001`
+
+`mysql -uroot -p[your_passowrd] -D[your_databse] < [your_script].sql`
+
 
 ## MySQL 常用 SQL
 
