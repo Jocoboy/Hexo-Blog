@@ -59,6 +59,8 @@ COPY index.js /index.js
 CMD node /index.js
 ```
 
+.dockerignore是Docker镜像构建的ignore文件，通过合理配置可以减少Docker构建上下文大小，加快镜像构建速度，避免将敏感信息（如开发环境配置）打包进镜像，保持生产镜像的简洁性。
+
 ## Docker Compose
 
 Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。 
@@ -134,6 +136,229 @@ services:
 关闭或移除容器、镜像等
 
 `docker-compose -f server.yml down`
+
+## Docker镜像打包
+
+将一个.NET+Vue+MySQL应用打包为Docker镜像的完整方案如下，
+
+```
+my-app/
+├── backend/
+│   ├── XFree.Simple.Web
+│   ├── ...           ├── Dockerfile
+│   └── .dockerignore └── ABPDemo.Web.csproj
+│              
+├── frontend/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── nginx.conf
+│   ├── package.json
+│   └── ...
+├── docker-compose.yml
+├── .env
+└── init.sql
+```
+
+### 后端Dockerfile配置
+
+.NET后端Dockerfile文件如下，
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+# 先复制项目文件进行依赖恢复
+COPY ["ABPDemo.Web/ABPDemo.Web.csproj", "ABPDemo.Web/"]
+COPY ["ABPDemo.HttpApi/ABPDemo.HttpApi.csproj", "ABPDemo.HttpApi/"]
+COPY ["ABPDemo.Application.Contracts/ABPDemo.Application.Contracts.csproj", "ABPDemo.Application.Contracts/"]
+COPY ["ABPDemo.Domain.Shared/ABPDemo.Domain.Shared.csproj", "ABPDemo.Domain.Shared/"]
+COPY ["ABPDemo.Application/ABPDemo.Application.csproj", "ABPDemo.Application/"]
+COPY ["ABPDemo.Domain/ABPDemo.Domain.csproj", "ABPDemo.Domain/"]
+COPY ["ABPDemo.EntityFrameworkCore/ABPDemo.EntityFrameworkCore.csproj", "ABPDemo.EntityFrameworkCore/"]
+RUN dotnet restore "ABPDemo.Web/ABPDemo.Web.csproj"
+# 然后复制所有源代码
+COPY . .
+WORKDIR "/src/ABPDemo.Web"
+RUN dotnet build "ABPDemo.Web.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "ABPDemo.Web.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ABPDemo.Web.dll"]
+```
+
+### 前端Dockerfile配置
+
+Vue前端Dockerfile文件如下，
+
+```dockerfile
+# 构建阶段
+FROM node:18-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# 生产阶段
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+其中nginx.conf的配置内容如下，
+
+```
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    server {
+        listen 80;
+        server_name localhost;
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # 处理前端路由
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # 代理 API 请求到后端
+        location /api/ {
+            proxy_pass http://backend:80/;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
+```
+
+### Docker Compose配置
+
+docker-compose.yml配置文件如下，
+
+```yaml
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: dotnet_backend
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "5000:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: vue_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+其中init.sql数据库初始化脚本文件如下，
+
+```sql
+-- init.sql
+-- MySQL 数据库初始化脚本
+
+-- 设置字符集
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 创建数据库（如果不存在）
+CREATE DATABASE IF NOT EXISTS `ABPDemo` 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 使用新创建的数据库
+USE `ABPDemo`;
+
+-- 示例: 创建学生表（如果不存在）
+CREATE TABLE IF NOT EXISTS `students` (
+	`id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据唯一标识',
+	`name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '姓名',
+	PRIMARY KEY (`id`) USING BTREE,
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+
+INSERT INTO students (id, name) VALUES('3a1b6256-17fb-3551-0aed-af1436e871f1', 'John');
+
+-- 启用外键约束
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+### 环境变量配置
+
+.env配置文件如下，
+
+```
+MYSQL_ROOT_PASSWORD=root1234
+MYSQL_DATABASE=ABPDemo
+MYSQL_USER=root
+MYSQL_PASSWORD=root1234
+```
+
+使用命令`docker-compose build`以构建上述所有镜像。
 
 ## 常用命令
 
