@@ -145,14 +145,15 @@ services:
 my-app/
 ├── backend/
 │   ├── XFree.Simple.Web
-│   ├── ...           ├── Dockerfile
-│   └── .dockerignore └── ABPDemo.Web.csproj
+│   ├── Dockerfile  └── ABPDemo.Web.csproj
+│   ├── .dockerignore
+│   └── ...  
 │              
 ├── frontend/
+│   ├── package.json
 │   ├── Dockerfile
 │   ├── .dockerignore
 │   ├── nginx.conf
-│   ├── package.json
 │   └── ...
 ├── docker-compose.yml
 ├── .env
@@ -171,7 +172,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-# 先复制项目文件进行依赖恢复
+# 复制解决方案文件（如果存在）
+COPY *.sln .
+# 复制项目文件进行依赖恢复
 COPY ["ABPDemo.Web/ABPDemo.Web.csproj", "ABPDemo.Web/"]
 COPY ["ABPDemo.HttpApi/ABPDemo.HttpApi.csproj", "ABPDemo.HttpApi/"]
 COPY ["ABPDemo.Application.Contracts/ABPDemo.Application.Contracts.csproj", "ABPDemo.Application.Contracts/"]
@@ -180,7 +183,7 @@ COPY ["ABPDemo.Application/ABPDemo.Application.csproj", "ABPDemo.Application/"]
 COPY ["ABPDemo.Domain/ABPDemo.Domain.csproj", "ABPDemo.Domain/"]
 COPY ["ABPDemo.EntityFrameworkCore/ABPDemo.EntityFrameworkCore.csproj", "ABPDemo.EntityFrameworkCore/"]
 RUN dotnet restore "ABPDemo.Web/ABPDemo.Web.csproj"
-# 然后复制所有源代码
+# 复制所有源代码
 COPY . .
 WORKDIR "/src/ABPDemo.Web"
 RUN dotnet build "ABPDemo.Web.csproj" -c Release -o /app/build
@@ -205,10 +208,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 # 生产阶段
-FROM nginx:alpine
+FROM nginx:1.27.0
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
@@ -263,7 +266,7 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8.0.1
     container_name: mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -271,16 +274,20 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       timeout: 20s
       retries: 10
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
 
   backend:
     build: ./backend
@@ -301,7 +308,7 @@ services:
     build: ./frontend
     container_name: vue_frontend
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - backend
     networks:
@@ -358,7 +365,7 @@ MYSQL_USER=root
 MYSQL_PASSWORD=root1234
 ```
 
-使用命令`docker-compose build`以构建上述所有镜像。
+使用命令`docker-compose build`以构建上述所有镜像，使用命令`docker-compose up -d`启动镜像。
 
 ## 常用命令
 
@@ -368,9 +375,9 @@ MYSQL_PASSWORD=root1234
 
 `docker pull [image-url]`
 
-使用镜像源拉取(如轩辕镜像`docker.xuanyuan.me`)
+使用镜像源拉取(如轩辕镜像中mirror-url为`docker.xuanyuan.me`, path为`library`)
 
-`docker pull [mirror-url]/library/[image-name]:latest`
+`docker pull [mirror-url]/[path]/[image-name]:[image-version]`
 
 从本地归档文件(.tar)加载镜像到本地镜像库
 
@@ -411,6 +418,10 @@ MYSQL_PASSWORD=root1234
 从容器创建镜像
 
 `docker commit [container-name] [image-name]`
+
+保存为镜像文件
+
+`docker save -o [image-name].tar [image-name]`
 
 ### 容器管理
 
@@ -464,7 +475,10 @@ docker安装后默认没有daemon.json这个配置文件，需要进行手动创
 
 ```json
 {
-    "registry-mirrors": [ "https://docker.xuanyuan.me" ]
+    "registry-mirrors": [ 
+      "https://<your-aliyun-id>.mirror.aliyuncs.com",
+      "https://docker.xuanyuan.me" 
+    ]
 }
 ```
 
