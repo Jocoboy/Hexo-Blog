@@ -115,11 +115,11 @@ services:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"      
     
   mysql-db:
-    container_name: mysql-xfree-simple    
+    container_name: mysql-db 
     ports:
       - "3306:3306"
     image: mysql:8.0.1                   
-    volumes:
+    volumes: # 包含命名卷(如mysql_data:/var/lib/mysql)、主机路径卷、匿名卷、只读卷和文件挂载(如./init.sql:/docker-entrypoint-initdb.d/init.sql)等 
       - "./mysql/data:/var/lib/mysql"           
       - "./mysql/config:/etc/mysql/conf.d"     
     build: # 指定包含构建上下文的路径
@@ -143,9 +143,18 @@ services:
 
 ```
 my-app/
+├── mysql
+│   ├─ config
+│   │    └─ my.conf
+│   ├─ data
+│   ├─ sqlScript
+│   │    └─ init.sql
+│   └─ Dockerfile
+│
 ├── backend/
-│   ├── XFree.Simple.Web
-│   ├── Dockerfile  └── ABPDemo.Web.csproj
+│   ├── ABPDemo.Web
+│   │    └── ABPDemo.Web.csproj
+│   ├── Dockerfile
 │   ├── .dockerignore
 │   └── ...  
 │              
@@ -156,9 +165,61 @@ my-app/
 │   ├── nginx.conf
 │   └── ...
 ├── docker-compose.yml
-├── .env
-└── init.sql
+└── .env
 ```
+
+### 数据库Dockerfile配置
+
+数据库Dockerfile文件如下，
+
+```dockerfile
+FROM mysql:8.0.1
+COPY mysql/sqlScript/*.sql /docker-entrypoint-initdb.d/
+```
+
+其中init.sql数据库初始化脚本文件如下，
+
+```sql
+-- init.sql
+-- MySQL 数据库初始化脚本
+
+-- 设置字符集
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 创建数据库（如果不存在）
+CREATE DATABASE IF NOT EXISTS `ABPDemo` 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 使用新创建的数据库
+USE `ABPDemo`;
+
+-- 示例: 创建学生表（如果不存在）
+CREATE TABLE IF NOT EXISTS `students` (
+	`id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据唯一标识',
+	`name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '姓名',
+	PRIMARY KEY (`id`) USING BTREE,
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+
+INSERT INTO students (id, name) VALUES('3a1b6256-17fb-3551-0aed-af1436e871f1', 'John');
+
+-- 启用外键约束
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+my.conf数据库配置文件如下，
+
+```ini
+[mysqld]
+character-set-server=utf8mb4
+default-time-zone='+8:00'
+innodb_rollback_on_timeout='ON'
+max_connections=500
+innodb_lock_wait_timeout=500
+```
+
+注：如果MySQL容器初始化脚本未执行，可使用命令`cmd.exe /c "docker exec -i mysql_db mysql -uroot -p[MYSQL_ROOT_PASSWORD] < ./mysql/sqlScript/init.sql"`手动执行。
 
 ### 后端Dockerfile配置
 
@@ -276,14 +337,15 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql/data:/var/lib/mysql #mysql数据存储
+      - ./mysql/config:/etc/mysql/conf.d   #mysql的配置
+      - ./mysql/sqlScript:/docker-entrypoint-initdb.d #mysql初始化脚本  
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
-      timeout: 20s
-      retries: 10
+    #healthcheck:
+    #  test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+    #  timeout: 20s
+    #  retries: 10
     command: 
       - --default-authentication-plugin=mysql_native_password
       - --character-set-server=utf8mb4
@@ -293,13 +355,15 @@ services:
     build: ./backend
     container_name: dotnet_backend
     environment:
-      - ConnectionStrings__DefaultConnection=Server=mysql;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
+      # mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5000:80"
     depends_on:
-      mysql:
-        condition: service_healthy
+      #mysql:
+      #  condition: service_healthy
+      - mysql
     networks:
       - app-network
     restart: unless-stopped
@@ -321,37 +385,6 @@ volumes:
 networks:
   app-network:
     driver: bridge
-```
-
-其中init.sql数据库初始化脚本文件如下，
-
-```sql
--- init.sql
--- MySQL 数据库初始化脚本
-
--- 设置字符集
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- 创建数据库（如果不存在）
-CREATE DATABASE IF NOT EXISTS `ABPDemo` 
-CHARACTER SET utf8mb4 
-COLLATE utf8mb4_unicode_ci;
-
--- 使用新创建的数据库
-USE `ABPDemo`;
-
--- 示例: 创建学生表（如果不存在）
-CREATE TABLE IF NOT EXISTS `students` (
-	`id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据唯一标识',
-	`name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '姓名',
-	PRIMARY KEY (`id`) USING BTREE,
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-
-INSERT INTO students (id, name) VALUES('3a1b6256-17fb-3551-0aed-af1436e871f1', 'John');
-
--- 启用外键约束
-SET FOREIGN_KEY_CHECKS = 1;
 ```
 
 ### 环境变量配置
@@ -452,6 +485,10 @@ MYSQL_PASSWORD=root1234
 `docker rm [container-name] /`
 
 `docker container rm [container-name]`
+
+退出容器
+
+`exit`
 
 ## WSL配置Docker
 
