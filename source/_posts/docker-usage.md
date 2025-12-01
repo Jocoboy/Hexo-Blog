@@ -139,6 +139,8 @@ services:
 
 ## Docker镜像打包
 
+{% asset_img docker_compose_sample.png Docker-Compose示例 %}
+
 将一个.NET+Vue+MySQL应用打包为Docker镜像的完整方案如下，
 
 ```
@@ -269,6 +271,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+# 覆写.env.production中的值
+ARG VUE_APP_API_BASE_URL=http://localhost:5000/
+ENV VUE_APP_BASE_URL=$VUE_APP_API_BASE_URL
 RUN npm run build:prod
 
 # 生产阶段
@@ -350,13 +355,21 @@ services:
       - --default-authentication-plugin=mysql_native_password
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+      - --ssl=0 # 禁用 SSL
 
   backend:
     build: ./backend
     container_name: dotnet_backend
     environment:
-      # mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址
-      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
+      # 使用"SectionName__PropertyName"替换appsettings.json中的数据库连接字符串
+      # 例如：
+      # "ConnectionStrings": {
+      #   "DefaultConnection": "Server=127.0.0.1;port=3306;Database=ABPDemo;User=root;Password=root1234"
+      # }
+      # 对应的数据库连接字符串替换如下:
+      # - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
+      # mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址，但实测下来解析不生效，需要手动修改为对应的IP地址
+      - ConnectionStrings__DefaultConnection=Server=${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5000:80"
@@ -396,6 +409,7 @@ MYSQL_ROOT_PASSWORD=root1234
 MYSQL_DATABASE=ABPDemo
 MYSQL_USER=root
 MYSQL_PASSWORD=root1234
+MYSQL_HOST=172.19.0.2
 ```
 
 使用命令`docker-compose build`以构建上述所有镜像，使用命令`docker-compose up -d`启动镜像。
@@ -565,5 +579,7 @@ WantedBy=multi-user.target
 - [Docker官方文档](https://docs.docker.com/)
 
 - [Docker Compose官方文档](https://docs.docker.com/compose/)
+
+- [如何在Docker中通过环境变量覆写数据库连接字符串](https://kontext.tech/project/aspnet-core/article/overwrite-connecting-string-via-environment-variable-for-asp-net-core-on-docker)
 
 - [Docker集成WSL2](https://docs.docker.com/desktop/features/wsl/)
