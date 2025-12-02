@@ -69,9 +69,9 @@ Docker Compose通过一个配置文件来管理多个Docker容器。在配置文
 
 最新的Docker已经集成了docker-compose功能，可使用`docker compose version`命令查看当前版本。
 
-### 示例
+### 简单示例
 
-下面是一个Docker Compose的使用示例。
+下面是一个Docker Compose的简单示例。
 
 #### 配置文件目录结构
 
@@ -137,7 +137,7 @@ services:
 
 `docker-compose -f server.yml down`
 
-## Docker镜像打包
+### 完整示例
 
 {% asset_img docker_compose_sample.png Docker-Compose示例 %}
 
@@ -170,7 +170,7 @@ my-app/
 └── .env
 ```
 
-### 数据库Dockerfile配置
+#### 配置数据库Dockerfile
 
 数据库Dockerfile文件如下，
 
@@ -223,7 +223,7 @@ innodb_lock_wait_timeout=500
 
 注：如果MySQL容器初始化脚本未执行，可使用命令`cmd.exe /c "docker exec -i mysql_db mysql -uroot -p[MYSQL_ROOT_PASSWORD] < ./mysql/sqlScript/init.sql"`手动执行。
 
-### 后端Dockerfile配置
+#### 配置后端Dockerfile
 
 .NET后端Dockerfile文件如下，
 
@@ -260,7 +260,7 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ABPDemo.Web.dll"]
 ```
 
-### 前端Dockerfile配置
+#### 配置前端Dockerfile
 
 Vue前端Dockerfile文件如下，
 
@@ -325,7 +325,7 @@ http {
 
 注：Dockerfile中配置的后端地址`http://localhost:8081/`为代理地址(由于浏览器同源策略，必须与宿主机的前端访问地址一致)，由于宿主机的8081端口指向容器的80端口，因此容器内实际的前端地址仍然为`http://localhost:80/`。 在location中通过设置proxy_pass相对路径`http://backend:80`(Docker内置的DNS解析器会自动将backend解析为对应容器的IP地址)，将后端请求由`http://localhost:80/api/xxx`转发到`http://backend:80/api/xxx`，从而解决跨域问题。
 
-### Docker Compose配置
+#### 配置Docker Compose
 
 docker-compose.yml配置文件如下，
 
@@ -400,7 +400,7 @@ networks:
     driver: bridge
 ```
 
-### 环境变量配置
+#### 配置环境变量
 
 .env配置文件如下，
 
@@ -412,6 +412,21 @@ MYSQL_PASSWORD=root1234
 ```
 
 使用命令`docker-compose build`以构建上述所有镜像，使用命令`docker-compose up -d`启动镜像。
+
+#### 导入导出
+
+打包导出所有镜像
+`docker save -o all-images.tar $(docker-compose images -q)`
+
+导出配置
+`docker-compose config > docker-compose-export.yml`
+
+加载镜像
+`docker load -i all-images.tar`
+
+根据导出配置启动服务
+`docker-compose -f docker-compose-export.yml up -d`
+
 
 ## 常用命令
 
