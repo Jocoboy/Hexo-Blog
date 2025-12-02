@@ -27,6 +27,43 @@ Nginx是高性能的HTTP和反向代理的web服务器，处理高并发能力�
 
 {% asset_img reverse_proxy.png 反向代理架构图 %}
 
+### proxy_pass
+
+proxy_pass是Nginx中一个非常重要的指令，用于将请求代理到后端服务器。它可以用于HTTP和Stream模块，分别处理HTTP请求和TCP/UDP流量。
+
+proxy_pass的基本语法如下，
+
+```
+proxy_pass URL;
+```
+
+在proxy_pass后面的URL以斜杠/结束，表示绝对根路径。例如下面的例子中，访问`http://example.com/proxy/test.html`会被转发到`http://127.0.0.1/test.html`。
+
+```
+server {
+    listen 80;
+    server_name example.com;
+
+    location /proxy/ {
+        proxy_pass http://127.0.0.1/;
+    }
+}
+```
+
+在proxy_pass后面的URL不以斜杠/结束，表示相对路径。例如下面的例子中，访问`http://example.com/proxy/test.html`会被转发到`http://127.0.0.1/proxy/test.html`。
+
+```
+server {
+    listen 80;
+    server_name example.com;
+
+    location /proxy/ {
+        proxy_pass http://127.0.0.1
+    }
+}
+```
+
+
 ### 负载均衡
 
 负载均衡是指增加服务器的数量，然后将请求分发到各个服务器上，将原先请求集中到单个服务器上的情况改为将请求分发到多个服务器上。
@@ -49,7 +86,7 @@ http {
     server{
         ...
         location /app {
-            proxy_pass http://backend;
+            proxy_pass http://backend; 
         }
         ...
     }

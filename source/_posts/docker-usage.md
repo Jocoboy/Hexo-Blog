@@ -272,7 +272,7 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 # 覆写.env.production中的值
-ARG VUE_APP_API_BASE_URL=http://localhost:5000/
+ARG VUE_APP_API_BASE_URL=http://localhost:8081/
 ENV VUE_APP_BASE_URL=$VUE_APP_API_BASE_URL
 RUN npm run build:prod
 
@@ -309,7 +309,7 @@ http {
 
         # 代理 API 请求到后端
         location /api/ {
-            proxy_pass http://backend:80/;
+            proxy_pass http://backend:80;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection 'upgrade';
@@ -322,6 +322,8 @@ http {
     }
 }
 ```
+
+注：Dockerfile中配置的后端地址`http://localhost:8081/`为代理地址(由于浏览器同源策略，必须与宿主机的前端访问地址一致)，由于宿主机的8081端口指向容器的80端口，因此容器内实际的前端地址仍然为`http://localhost:80/`。 在location中通过设置proxy_pass相对路径`http://backend:80`(Docker内置的DNS解析器会自动将backend解析为对应容器的IP地址)，将后端请求由`http://localhost:80/api/xxx`转发到`http://backend:80/api/xxx`，从而解决跨域问题。
 
 ### Docker Compose配置
 
@@ -366,10 +368,8 @@ services:
       # "ConnectionStrings": {
       #   "DefaultConnection": "Server=127.0.0.1;port=3306;Database=ABPDemo;User=root;Password=root1234"
       # }
-      # 对应的数据库连接字符串替换如下:
-      # - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
-      # mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址，但实测下来解析不生效，需要手动修改为对应的IP地址
-      - ConnectionStrings__DefaultConnection=Server=${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
+      # 对应的数据库连接字符串替换如下(mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址):
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "5000:80"
@@ -409,7 +409,6 @@ MYSQL_ROOT_PASSWORD=root1234
 MYSQL_DATABASE=ABPDemo
 MYSQL_USER=root
 MYSQL_PASSWORD=root1234
-MYSQL_HOST=172.19.0.2
 ```
 
 使用命令`docker-compose build`以构建上述所有镜像，使用命令`docker-compose up -d`启动镜像。
