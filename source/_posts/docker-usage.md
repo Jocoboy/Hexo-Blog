@@ -415,8 +415,16 @@ MYSQL_PASSWORD=root1234
 
 #### 导入导出
 
-打包导出所有镜像
+管道方式打包导出所有镜像(使用此命令导出的镜像，在加载后为`<none>:<none>`未标签状态，需要手动打标签)
 `docker save -o all-images.tar $(docker-compose images -q)`
+
+列表方式打包导出所有镜像(列表项格式为`<image-name>:<image-tag>`)
+`docker save -o all-images.tar mysql:8.0.1 my-app-backend:latest my-app-frontend:latest`
+
+也可以将所有镜像罗列到image-list.txt当中，然后通过文件读取的方式导出
+`docker save -o all-images.tar $(cat image-list.txt)`
+
+> 注：使用列表导出时，请检查所有Dockfile中依赖的基础镜像，例如node:18-alpine等，将他们全部添加进列表中，否则后续docker-compose构建容器时会尝试联网拉取远程基础镜像。
 
 导出配置
 `docker-compose config > docker-compose-export.yml`
