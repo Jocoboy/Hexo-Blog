@@ -285,6 +285,17 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+注：执行`npm install`需要联网环境，若要断网离线构建，应先本地构建dist，然后从宿主机复制到容器，对应的Dockfile可简化为：
+
+```dockerfile
+FROM nginx:1.27.0
+COPY dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
 其中nginx.conf的配置内容如下，
 
 ```
@@ -398,6 +409,19 @@ volumes:
 networks:
   app-network:
     driver: bridge
+```
+
+注：若要断网离线构建frontend，除了修改Dockfile直接使用COPY命令，也可以修改Docker Compose使用volumes挂载文件，具体配置如下：
+```yaml
+...
+services:
+  ...
+  frontend:
+    ...
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html #前端dist部署包
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf #nginx配置
+    ...
 ```
 
 #### 配置环境变量
