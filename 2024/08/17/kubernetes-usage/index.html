@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            kubernetes核心组件与集群搭建 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        kubernetes核心组件与集群搭建
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-17 13:18:34</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Architecture/">Architecture</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/kubernetes/">kubernetes</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>10k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>38 mins. Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>kubernetes的核心组件、架构体系、环境搭建(minikube&#x2F;k3s)，以及kubectl常用命令和可视化管理工具Portainer。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>kubernetes是一个全新的基于容器技术的分布式架构领先方案。kubernetes的本质是一组服务器集群，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h3><img   src="/Hexo-Blog/2024/08/17/kubernetes-usage/kubernetes_components.png"  class="" title="kubernetes部分核心组件">
+
+<ul>
+<li>node，一个物理机或虚拟机</li>
+<li>pod，一个或多个应用容器的组合(如sidecar模式，应用容器与辅助容器共用一个Pod)。pod之间可通过内部ip地址访问</li>
+<li>svc(service)，将一组pod封装为一个服务，可以通过一个统一的入口来访问，相当于反向代理，可以解决因pod销毁导致的内部ip地址变更问题</li>
+<li>node:port，端口节点，提供内部服务对外的IP映射</li>
+<li>ing(ingress)，用来管理从集群外部访问集群内部服务的入口和方式，可以配置不同的转发规则，根据不同的规则访问不同的svc，以及svc对应的pod。此外还可以配置域名、负载均衡、SSL证书等</li>
+<li>cm(config map)，用来存储应用程序配置信息，实现应用程序与配置信息的解耦</li>
+<li>secret，为cm中的敏感信息提供Base64加密，需要配合其他安全机制(如网络控制、访问控制、身份认证)一起使用</li>
+<li>vol(volume)，可以将应用数据挂载到集群内部的本地磁盘上，或是集群外部的远程存储上，实现数据的持久化</li>
+<li>deploy(deployment)，定义和管理应用程序的副本数量，是pod上的一层抽象</li>
+<li>replicaset，介于pod与deploy之间，用于管理pod</li>
+<li>sts(stateful set)，和deploy类似，用来管理有状态的应用(如数据库、缓存、消息队列等)</li>
+</ul>
+<h2 id="Master-Worker架构"><a href="#Master-Worker架构" class="headerlink" title="Master-Worker架构"></a>Master-Worker架构</h2><p>kubernetes是典型的Master-Worker架构。Master-Node负责管理整个集群，Worker-Node负责运行应用程序和服务。</p>
+<img   src="/Hexo-Blog/2024/08/17/kubernetes-usage/kubernetes_architecture.png"  class="" title="kubernetes架构图">
+
+<ul>
+<li>kubelet，负责管理和维护每个node上的pod</li>
+<li>kube-proxy，负责提供网络代理和负载均衡服务</li>
+<li>container-runtime，负责提供容器运行时(如docker engine)</li>
+<li>kube-apiserver，负责提供API接口服务</li>
+<li>etcd，高可用的键值存储系统，负责存储集群中各种资源对象的状态信息</li>
+<li>c-m(controller manager)，负责管理集群中各种资源对象的状态</li>
+<li>sched(schedular)，负责监控集群中所有节点的资源使用情况，然后根据一些调度策略，将pod调度到合适的node上运行</li>
+<li>c-c-m(cloud controller manager)，云平台控制器，负责与云平台的api交互</li>
+</ul>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="minikube"><a href="#minikube" class="headerlink" title="minikube"></a>minikube</h3><p>minukube是一个轻量级的kubernetes实现，可在本地计算机上创建虚拟机，并部署仅包含一个节点的简单集群。</p>
+<p>kubectl是一个命令行工具，可以通过在命令行输入各种命令与MasterNode的kube-apiserver交互，从而与Kubernetes集群进行交互。</p>
+<p>在windows中使用chocolatey安装minukube</p>
+<p><code>choco install minkube</code></p>
+<p>查看版本信息验证是否安装成功</p>
+<p><code>minikube version</code></p>
+<p>创建集群(选择国内镜像源并指定版本)</p>
+<p><code>minikube start --image-mirror-country=&#39;cn&#39;  --kubernetes-version=v1.23.9</code></p>
+<p>查看集群中的节点信息</p>
+<p><code>kubectl get nodes</code></p>
+<p>Docker Desktop也自带了minukube，可手动开启。</p>
+<h3 id="k3s"><a href="#k3s" class="headerlink" title="k3s"></a>k3s</h3><p>k3s是一个CNCF认证的轻量级的kubernetes发行版，可以方便地搭建一个多节点集群。</p>
+<h4 id="准备虚拟机环境"><a href="#准备虚拟机环境" class="headerlink" title="准备虚拟机环境"></a>准备虚拟机环境</h4><p>在windows中使用chocolatey安装multipass</p>
+<p><code>choco install multipass</code></p>
+<p>创建一个名为k3s的虚拟机</p>
+<p><code>multipass launch --name k3s</code></p>
+<p>启动虚拟机</p>
+<p><code>multipass start k3s</code></p>
+<p>登录到虚拟机</p>
+<p><code>multipass shell k3s</code></p>
+<p>通过multipass创建的虚拟机默认不允许SSH远程登录，需要额外配置。</p>
+<ul>
+<li>添加用户密码 <code>sudo passwd ubuntu</code></li>
+<li>修改SSH配置 <code>sudo vi /etc/ssh/sshd_config</code>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PubkeyAuthentication yes</span><br><span class="line">PasswordAuthentication yes</span><br><span class="line">KbdInteractiveAuthentication yes    </span><br></pre></td></tr></table></figure></li>
+<li>重启SSH服务 <code>sudo service ssh restart</code></li>
+<li>使用SSH登录 <code>ssh ubuntu@ip</code></li>
+</ul>
+<h4 id="创建和配置Master节点"><a href="#创建和配置Master节点" class="headerlink" title="创建和配置Master节点"></a>创建和配置Master节点</h4><p>使用国内镜像安装k3s</p>
+<p><code>curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -</code></p>
+<p>查看当前节点(Master节点)</p>
+<p><code>sudo kubectl get nodes</code></p>
+<h4 id="创建和配置Worker节点"><a href="#创建和配置Worker节点" class="headerlink" title="创建和配置Worker节点"></a>创建和配置Worker节点</h4><p>在Master节点上获取token，作为其它节点加入集群的凭证</p>
+<p><code>sudo cat /var/lib/rancher/k3s/server/node-token</code></p>
+<p>将TOKEN保存到环境变量</p>
+<p><code>TOKEN=$(multipass exec k3s sudo cat /var/lib/rancher/k3s/server/node-token)</code></p>
+<p>保存master节点的IP地址</p>
+<p><code>MASTER_IP=$(multipass info k3s | grep IPv4 | awk &#39;&#123;print $2&#125;&#39;)</code></p>
+<p>使用刚刚的TOKEN和MASTER_IP来创建两个worker节点，并把它们加入到集群中</p>
+<ul>
+<li><p>创建两个worker节点的虚拟机</p>
+<p>  <code>multipass launch --name worker1 --cpus 2 --memory 8G --disk 10G</code></p>
+<p>  <code>multipass launch --name worker2 --cpus 2 --memory 8G --disk 10G</code></p>
+</li>
+<li><p>在worker节点虚拟机上安装k3s</p>
+<p>  <code>for f in 1 2; do   multipass exec worker$f -- bash -c &quot;curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=\&quot;https://$MASTER_IP:6443\&quot; K3S_TOKEN=\&quot;$TOKEN\&quot; sh -&quot;   done</code></p>
+</li>
+</ul>
+<h3 id="在线环境"><a href="#在线环境" class="headerlink" title="在线环境"></a>在线环境</h3><p>k8s也可通过在线环境使用</p>
+<ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://labs.play-with-k8s.com/" >labs.play-with-k8s<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://killercoda.com/" >killercoda<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+<h2 id="kubectl常用命令"><a href="#kubectl常用命令" class="headerlink" title="kubectl常用命令"></a>kubectl常用命令</h2><p>创建一个pod</p>
+<p><code>sudo kubectl run [pod-name] --image=[image-name]</code></p>
+<p>创建一个deployment，指定镜像为nginx</p>
+<p><code>sudo kubectl create deployment [deployment-name] --image=[image-name]</code></p>
+<p>通过配置文件创建一个deployment</p>
+<p><code>vi [deployment-name].yaml</code></p>
+<p><code>sudo kubectl create -f [deployment-name].yaml</code></p>
+<p>修改deployment</p>
+<p><code>sudo kubectl edit deployment [deployment-name]</code></p>
+<p>通过配置文件修改deployment</p>
+<p><code>sudo kubectl apply -f [deployment-name].yaml</code></p>
+<p>删除deployment</p>
+<p><code>sudo kubectl delete deployment [deployment-name]</code></p>
+<p>通过配置文件删除deployment</p>
+<p><code>sudo kubectl delete -f [deployment-name].yaml</code></p>
+<p>查看pod或deployment</p>
+<p><code>sudo kubectl get pod</code></p>
+<p><code>sudo kubectl get deployment</code></p>
+<p>查看pod日志</p>
+<p><code>sudo kubectl logs [pod-name]</code></p>
+<p>将deployment对外公开为service</p>
+<p><code>sudo kubectl expose deployment [deployment-name]</code></p>
+<p>查看服务详细信息</p>
+<p><code>sudo kubectl describe service [deployment-name]</code></p>
+<p>删除服务</p>
+<p><code>sudo kubectl delete service [deployment-name]</code></p>
+<p>通过配置文件创建NodePort类型的服务</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>  <span class="comment"># 使用的Kubernetes API版本，这里是v1。</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>  <span class="comment"># 定义资源类型为Service，表示创建一个服务。</span></span><br><span class="line"><span class="attr">metadata:</span>  <span class="comment"># 元数据部分，用于描述Service的基本信息。</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-service</span>  <span class="comment"># Service的名称为nginx-service。</span></span><br><span class="line"><span class="attr">spec:</span>  <span class="comment"># 规格部分，定义Service的规格。</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span>	<span class="comment"># 指定服务类型，默认为ClusterIP</span></span><br><span class="line">  <span class="attr">selector:</span>  <span class="comment"># 选择器部分，用于指定服务应该选择哪些Pod作为后端。</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span>  <span class="comment"># 选择具有标签app=nginx的Pod作为后端。</span></span><br><span class="line">  <span class="attr">ports:</span>  <span class="comment"># 端口配置，定义Service暴露的端口。</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># 使用TCP协议。</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">80</span>  <span class="comment"># Service暴露的端口号为80。</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span>  <span class="comment"># 转发到后端Pod的端口号也为80。</span></span><br><span class="line">      <span class="attr">nodePort:</span> <span class="number">30080</span></span><br></pre></td></tr></table></figure>
+
+<p><code>sudo kubectl apply -f [service-name].yaml</code></p>
+<p>查看当前集群命名空间</p>
+<p><code>sudo kubectl ns</code></p>
+<h2 id="可视化管理工具Portainer"><a href="#可视化管理工具Portainer" class="headerlink" title="可视化管理工具Portainer"></a>可视化管理工具Portainer</h2><p>安装portainer，并将其暴露在NodePort&#x3D;30777上</p>
+<p><code>kubectl apply -n portainer -f https://downloads.portainer.io/ce2-19/portainer.yaml</code></p>
+<p>在集群外部输入ip地址+端口号即可访问。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://kubernetes.io/docs/home/" >kubernetes官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://minikube.sigs.k8s.io/docs/" >minukube官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://multipass.run/docs/multipass-cli-client" >multipass官方文档-常用命令<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.rancher.cn/docs/k3s/quick-start/_index/" >k3s官方文档-快速入门<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.portainer.io/" >Portainer官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/kubernetes/">kubernetes</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/18/web-service-and-rpc/"
+                                   title="Web Service远程调用技术"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Web Service远程调用技术</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/17/rabbitmq-usage/"
+                                   title="RabbitMQ核心概念及应用场景"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">RabbitMQ核心概念及应用场景</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-text">核心组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master-Worker%E6%9E%B6%E6%9E%84"><span class="nav-text">Master-Worker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-text">环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#minikube"><span class="nav-text">minikube</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k3s"><span class="nav-text">k3s</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83"><span class="nav-text">准备虚拟机环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AEMaster%E8%8A%82%E7%82%B9"><span class="nav-text">创建和配置Master节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AEWorker%E8%8A%82%E7%82%B9"><span class="nav-text">创建和配置Worker节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%E7%8E%AF%E5%A2%83"><span class="nav-text">在线环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">kubectl常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Portainer"><span class="nav-text">可视化管理工具Portainer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-text">核心组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master-Worker%E6%9E%B6%E6%9E%84"><span class="nav-text">Master-Worker架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-text">环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#minikube"><span class="nav-text">minikube</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k3s"><span class="nav-text">k3s</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83"><span class="nav-text">准备虚拟机环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AEMaster%E8%8A%82%E7%82%B9"><span class="nav-text">创建和配置Master节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AEWorker%E8%8A%82%E7%82%B9"><span class="nav-text">创建和配置Worker节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%E7%8E%AF%E5%A2%83"><span class="nav-text">在线环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">kubectl常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Portainer"><span class="nav-text">可视化管理工具Portainer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

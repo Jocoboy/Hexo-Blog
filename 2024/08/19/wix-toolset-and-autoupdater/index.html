@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            基于Wix和AutoUpdater的客户端打包与自动更新 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        基于Wix和AutoUpdater的客户端打包与自动更新
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-19 18:46:44</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Package-Tool/">Package-Tool</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET/">.NET</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Wix-Toolset/">Wix Toolset</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>49k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>2:58 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>使用Wix Toolset和AutoUpdater.NET实现Windows桌面应用程序的打包与自动更新功能。</p>
+<span id="more"></span>
+
+<h2 id="Wix-Toolset"><a href="#Wix-Toolset" class="headerlink" title="Wix Toolset"></a>Wix Toolset</h2><p>Wix Toolset是用来打包Windows Installer的工具集，通过编译源代码，然后链接以创建可执行文件。WiX命令行构建工具适用于任何自动化构建系统，MSBuild还支持常见的CI&#x2F;CD构建系统，如GitHub Actions。</p>
+<p>使用WiX Bundle可以创建安装包来安装先决条件，例如.NET Framework和其他运行时环境以及自己的msi文件。WiX Bundle将他们组合成一个可下载的exe文件。</p>
+<p>注: 以下使用的Wix Toolset版本为5.0，与低版本的语法有所区别。在Wix语法中，[]内容为库中预定义的全局变量(安装期间可使用)，$()为用户自己定义的全局变量，!(bind.)为绑定的属性，!(wix.)为Wix编译时的变量(安装期间不可使用)，!(loc.)为本地化之后的内容。</p>
+<h3 id="Wix-Package"><a href="#Wix-Package" class="headerlink" title="Wix Package"></a>Wix Package</h3><p>Wix Package的基本功能是将应用程序打包成msi文件。此外，还支持桌面快捷方式、菜单快捷方式、卸载快捷方式添加，开机自启动，引导程序本地化等。</p>
+<p>注: 需预先使用NuGet引入依赖包WixToolset.UI、WixToolset.Util</p>
+<h4 id="快捷方式添加"><a href="#快捷方式添加" class="headerlink" title="快捷方式添加"></a>快捷方式添加</h4><p>Folders.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Wix</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://wixtoolset.org/schemas/v4/wxs&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">Fragment</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 定义桌面快捷方式目录 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">StandardDirectory</span> <span class="attr">Id</span>=<span class="string">&quot;DesktopFolder&quot;</span> /&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 定义菜单栏快捷方式目录 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">StandardDirectory</span> <span class="attr">Id</span>=<span class="string">&quot;ProgramMenuFolder&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">Fragment</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Wix</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Package.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">&lt;!--桌面快捷方式--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Component</span> <span class="attr">Id</span>=<span class="string">&quot;DesktopShortcutComponent&quot;</span> <span class="attr">Guid</span>=<span class="string">&quot;&#123;your-guid&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Shortcut</span> <span class="attr">Id</span>=<span class="string">&quot;DesktopShortcut&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;$(var.ProductName)&quot;</span> <span class="attr">Target</span>=<span class="string">&quot;[INSTALLFOLDER]&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">Icon</span>=<span class="string">&quot;&#123;your-icon-name&#125;&quot;</span> <span class="attr">Directory</span>=<span class="string">&quot;DesktopFolder&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">RegistryValue</span> <span class="attr">Root</span>=<span class="string">&quot;HKCU&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;Software\&#123;your-company-name&#125;\&#123;your-product-name&#125;&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;Installed&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;integer&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;1&quot;</span> <span class="attr">KeyPath</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--菜单栏快捷方式--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Component</span> <span class="attr">Id</span>=<span class="string">&quot;StartMenuShortcutComponent&quot;</span> <span class="attr">Guid</span>=<span class="string">&quot;&#123;your-guid&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Shortcut</span> <span class="attr">Id</span>=<span class="string">&quot;StartMenuShortcut&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;$(var.ProductName)&quot;</span> <span class="attr">Target</span>=<span class="string">&quot;[INSTALLFOLDER]&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">Icon</span>=<span class="string">&quot;&#123;your-icon-name&#125;&quot;</span> <span class="attr">Directory</span>=<span class="string">&quot;ProgramMenuFolder&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">RegistryValue</span> <span class="attr">Root</span>=<span class="string">&quot;HKCU&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;Software\&#123;your-company-name&#125;\&#123;your-product-name&#125;&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;Installed&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;integer&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;1&quot;</span> <span class="attr">KeyPath</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--卸载程序快捷方式--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Component</span> <span class="attr">Id</span>=<span class="string">&quot;UninstallShortcutComponent&quot;</span> <span class="attr">Guid</span>=<span class="string">&quot;&#123;your-guid&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Shortcut</span> <span class="attr">Id</span>=<span class="string">&quot;UninstallProduct&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;Uninstall&quot;</span> <span class="attr">Target</span>=<span class="string">&quot;[SystemFolder]msiexec.exe&quot;</span> <span class="attr">Arguments</span>=<span class="string">&quot;/x [ProductCode]&quot;</span> <span class="attr">Icon</span>=<span class="string">&quot;UninstallIcon&quot;</span> <span class="attr">Description</span>=<span class="string">&quot;Uninstall &#123;your-product-name&#125;.&quot;</span> /&gt;</span></span><br><span class="line">   </span><br><span class="line">    <span class="tag">&lt;<span class="name">RegistryValue</span> <span class="attr">Id</span>=<span class="string">&quot;RegUninstallShortcut&quot;</span> <span class="attr">Root</span>=<span class="string">&quot;HKCU&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;Software\&#123;your-company-name&#125;\&#123;your-product-name&#125;&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;UninstallShortcut&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;&quot;</span> <span class="attr">KeyPath</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="快捷方式图标设置"><a href="#快捷方式图标设置" class="headerlink" title="快捷方式图标设置"></a>快捷方式图标设置</h4><p>Package.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">&lt;!-- 引用应用程序图标 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Icon</span> <span class="attr">Id</span>=<span class="string">&quot;&#123;your-icon-name&#125;&quot;</span> <span class="attr">SourceFile</span>=<span class="string">&quot;$(var.&#123;your-product-name&#125;.ProjectDir)Resources\icon.ico&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 引用卸载图标 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Icon</span> <span class="attr">Id</span>=<span class="string">&quot;UninstallIcon&quot;</span> <span class="attr">SourceFile</span>=<span class="string">&quot;$(var.&#123;your-product-name&#125;.ProjectDir)Resources\uninstall.ico&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 控制面板引用应用程序图标 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Property</span> <span class="attr">Id</span>=<span class="string">&quot;ARPPRODUCTICON&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;&#123;your-icon-name&#125;&quot;</span> /&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="开机自启动"><a href="#开机自启动" class="headerlink" title="开机自启动"></a>开机自启动</h4><p>Package.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Component</span> <span class="attr">Id</span>=<span class="string">&quot;Register&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">RegistryKey</span> <span class="attr">ForceCreateOnInstall</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">Id</span>=<span class="string">&quot;AutoStartKey&quot;</span> <span class="attr">Root</span>=<span class="string">&quot;HKLM&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;SOFTWARE\Microsoft\Windows\CurrentVersion\Run&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">RegistryValue</span> <span class="attr">Id</span>=<span class="string">&quot;AutoStartKeyValue&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;$(var.ProductName)&quot;</span> <span class="attr">KeyPath</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">Type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;[INSTALLFOLDER]&#123;your-product-name&#125;.exe&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">RegistryValue</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">RegistryKey</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="卸载或更改前自动关闭程序进程"><a href="#卸载或更改前自动关闭程序进程" class="headerlink" title="卸载或更改前自动关闭程序进程"></a>卸载或更改前自动关闭程序进程</h4><p>Package.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--卸载或更改前关闭程序进程--&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Property</span> <span class="attr">Id</span>=<span class="string">&quot;TASKKILL&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">DirectorySearch</span> <span class="attr">Id</span>=<span class="string">&quot;SysDir&quot;</span> <span class="attr">Path</span>=<span class="string">&quot;[SystemFolder]&quot;</span> <span class="attr">Depth</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">FileSearch</span> <span class="attr">Id</span>=<span class="string">&quot;taskkillExe&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;taskkill.exe&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">DirectorySearch</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">util:CloseApplication</span> <span class="attr">Id</span>=<span class="string">&quot;CloseApp&quot;</span> <span class="attr">CloseMessage</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">Target</span>=<span class="string">&quot;&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">RebootPrompt</span>=<span class="string">&quot;no&quot;</span>  <span class="attr">PromptToContinue</span>=<span class="string">&quot;yes&quot;</span>  <span class="attr">Description</span>=<span class="string">&quot;!(loc.CloseBeforeUninstall)&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">CustomAction</span> <span class="attr">Id</span>=<span class="string">&quot;WixCloseApplications&quot;</span> <span class="attr">Property</span>=<span class="string">&quot;TASKKILL&quot;</span> <span class="attr">Execute</span>=<span class="string">&quot;immediate&quot;</span> <span class="attr">Impersonate</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">Return</span>=<span class="string">&quot;ignore&quot;</span> <span class="attr">ExeCommand</span>=<span class="string">&quot;/F /FI <span class="symbol">&amp;quot;</span>IMAGENAME eq &#123;your-product-name&#125;.exe<span class="symbol">&amp;quot;</span>&quot;</span>/&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>Package.zh-cn.wxl</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">WixLocalization</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://wixtoolset.org/schemas/v4/wxl&quot;</span> <span class="attr">Culture</span>=<span class="string">&quot;zh-CN&quot;</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">	<span class="tag">&lt;<span class="name">String</span> <span class="attr">Id</span>=<span class="string">&quot;CloseBeforeUninstall&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;请关闭应用程序后再进行卸载!&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">String</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">WixLocalization</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="x86和x64平台区分可执行文件源"><a href="#x86和x64平台区分可执行文件源" class="headerlink" title="x86和x64平台区分可执行文件源"></a>x86和x64平台区分可执行文件源</h4><p>Package.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Package</span> <span class="attr">Name</span>=<span class="string">&quot;$(var.ProductName)&quot;</span> <span class="attr">Manufacturer</span>=<span class="string">&quot;$(var.Manufacturer)&quot;</span> <span class="attr">Version</span>=<span class="string">&quot;!(bind.FileVersion.ExeFile_m2)&quot;</span> <span class="attr">UpgradeCode</span>=<span class="string">&quot;$(var.UpgradeCode)&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">MajorUpgrade</span> <span class="attr">DowngradeErrorMessage</span>=<span class="string">&quot;!(loc.DowngradeError)&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">MediaTemplate</span> <span class="attr">EmbedCab</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">Files</span> <span class="attr">Include</span>=<span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)\**&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Exclude</span> <span class="attr">Files</span>=<span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)\&#123;your-product-name&#125;.exe&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">Exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Exclude</span> <span class="attr">Files</span>=<span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)\&#123;your-product-name&#125;_x86.exe&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">Exclude</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Files</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">File</span> <span class="attr">Id</span>=<span class="string">&quot;ExeFile_m2&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">Source</span>=<span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)&#123;your-product-name&#125;_x86.exe&quot;</span> <span class="attr">Condition</span>=<span class="string">&quot;NOT VersionNT64&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">File</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">File</span> <span class="attr">Id</span>=<span class="string">&quot;ExeFile_m1&quot;</span> <span class="attr">Name</span>=<span class="string">&quot;&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">Source</span>=<span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)&#123;your-product-name&#125;.exe&quot;</span> <span class="attr">Condition</span>=<span class="string">&quot;VersionNT64&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">File</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Package</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="Wix-Bundle"><a href="#Wix-Bundle" class="headerlink" title="Wix Bundle"></a>Wix Bundle</h3><p>Wix Bundle主要用于设置系统必备组件，如各种依赖环境，可以根据目标平台区分依赖的安装包版本。此外还可引入主题文件，定制个性化安装界面。</p>
+<p>注: 需预先使用NuGet引入依赖包WixToolset.BootstrapperApplications、WixToolset.Netfx、WixToolset.Util</p>
+<h4 id="设置系统必备组件"><a href="#设置系统必备组件" class="headerlink" title="设置系统必备组件"></a>设置系统必备组件</h4><p>以下以.NET Core 6.0运行时和WebEdge WebView2运行时为例</p>
+<p>Bundle.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Chain</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Define the .NET Core Runtime 6.0 dependency --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">PackageGroupRef</span> <span class="attr">Id</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_t&quot;</span>/&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Define the Edge WebView2 Runtime dependency --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">PackageGroupRef</span> <span class="attr">Id</span>=<span class="string">&quot;WV_bootstrapper&quot;</span>/&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Other packages can be added here --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">MsiPackage</span> <span class="attr">Id</span>=<span class="string">&quot;MainPackage&quot;</span> <span class="attr">Compressed</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">SourceFile</span>= <span class="string">&quot;$(&#123;your-product-name&#125;.TargetDir)\zh-CN\&#123;your-product-name&#125;.msi&quot;</span> <span class="attr">Visible</span>=<span class="string">&quot;no&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">MsiProperty</span> <span class="attr">Name</span>=<span class="string">&quot;INSTALLFOLDER&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;[InstallFolder]&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">MsiPackage</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Chain</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Define the package group for .NET Core Runtime 6.0 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Fragment</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">netfx:DotNetCoreSearch</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">RuntimeType</span>=<span class="string">&quot;desktop&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">Platform</span>=<span class="string">&quot;x86&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">MajorVersion</span>=<span class="string">&quot;6&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">Variable</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x86&quot;</span>/&gt;</span></span><br><span class="line">		</span><br><span class="line">	<span class="tag">&lt;<span class="name">netfx:DotNetCoreSearch</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">RuntimeType</span>=<span class="string">&quot;desktop&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">Platform</span>=<span class="string">&quot;x64&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">MajorVersion</span>=<span class="string">&quot;6&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">Variable</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x64&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">WixVariable</span> <span class="attr">Id</span>=<span class="string">&quot;DesktopNetCoreRuntime_6029_Redist_DetectCondition_x86&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x86&quot;</span> <span class="attr">Overridable</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">WixVariable</span> <span class="attr">Id</span>=<span class="string">&quot;DesktopNetCoreRuntime_6029_Redist_DetectCondition_x64&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x64&quot;</span> <span class="attr">Overridable</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">PackageGroup</span> <span class="attr">Id</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_t&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">ExePackage</span> <span class="attr">Id</span>=<span class="string">&quot;NetCoreRuntime6_x86&quot;</span> <span class="attr">Cache</span>=<span class="string">&quot;remove&quot;</span> <span class="attr">Permanent</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">PerMachine</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">		 	<span class="attr">DetectCondition</span>=<span class="string">&quot;!(wix.DesktopNetCoreRuntime_6029_Redist_DetectCondition_x86)&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallCondition</span>=<span class="string">&quot;NOT VersionNT64&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallArguments</span>=<span class="string">&quot;/install /quiet&quot;</span>&gt;</span> <span class="comment">&lt;!-- 设置静默安装 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ExePackagePayload</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Name</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x86&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Size</span>=<span class="string">&quot;&#123;file-size&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">DownloadUrl</span>=<span class="string">&quot;&#123;dowload-url&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Hash</span>=<span class="string">&quot;&#123;file-hash&#125;&quot;</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ExePackage</span>&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="tag">&lt;<span class="name">ExePackage</span> <span class="attr">Id</span>=<span class="string">&quot;NetCoreRuntime6_x64&quot;</span> <span class="attr">Cache</span>=<span class="string">&quot;remove&quot;</span> <span class="attr">Permanent</span>=<span class="string">&quot;yes&quot;</span> <span class="attr">PerMachine</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">		 	<span class="attr">DetectCondition</span>=<span class="string">&quot;!(wix.DesktopNetCoreRuntime_6029_Redist_DetectCondition_x64)&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallCondition</span>=<span class="string">&quot;VersionNT64&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallArguments</span>=<span class="string">&quot;/install /quiet&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ExePackagePayload</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Name</span>=<span class="string">&quot;DESKTOPNETCORERUNTIME6_x64&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Size</span>=<span class="string">&quot;&#123;file-size&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">DownloadUrl</span>=<span class="string">&quot;&#123;dowload-url&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Hash</span>=<span class="string">&quot;&#123;file-hash&#125;&quot;</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ExePackage</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">PackageGroup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Fragment</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">&lt;!-- Define the package group for Edge WebView2 Runtime --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Fragment</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">util:RegistrySearch</span> <span class="attr">Root</span>=<span class="string">&quot;HKLM&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;Software\Microsoft\EdgeUpdate\Clients\&#123;F3017226-FE2A-4295-8BDF-00C3A9A7E4C5&#125;&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;pv&quot;</span> <span class="attr">Variable</span>=<span class="string">&quot;WVRTInstalled_x86&quot;</span>/&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">util:RegistrySearch</span> <span class="attr">Root</span>=<span class="string">&quot;HKLM&quot;</span> <span class="attr">Key</span>=<span class="string">&quot;Software\WOW6432Node\Microsoft\EdgeUpdate\Clients\&#123;F3017226-FE2A-4295-8BDF-00C3A9A7E4C5&#125;&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;pv&quot;</span> <span class="attr">Variable</span>=<span class="string">&quot;WVRTInstalled_x64&quot;</span>/&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">WixVariable</span> <span class="attr">Id</span>=<span class="string">&quot;WV_DetectCondition_x86&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;WVRTInstalled_x86&quot;</span> <span class="attr">Overridable</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">WixVariable</span> <span class="attr">Id</span>=<span class="string">&quot;WV_DetectCondition_x64&quot;</span> <span class="attr">Value</span>=<span class="string">&quot;WVRTInstalled_x64&quot;</span> <span class="attr">Overridable</span>=<span class="string">&quot;yes&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">PackageGroup</span> <span class="attr">Id</span>=<span class="string">&quot;WV_bootstrapper&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">ExePackage</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Id</span>=<span class="string">&quot;WV_bootstrapper_x86&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">PerMachine</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">DetectCondition</span>=<span class="string">&quot;!(wix.WV_DetectCondition_x86)&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallCondition</span>=<span class="string">&quot;NOT VersionNT64&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Vital</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Permanent</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Cache</span>=<span class="string">&quot;remove&quot;</span> <span class="attr">CacheId</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ExePackagePayload</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Name</span>=<span class="string">&quot;WV_bootstrapper_x86&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">DownloadUrl</span>=<span class="string">&quot;&#123;dowload-url&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Hash</span>=<span class="string">&quot;&#123;file-hash&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Size</span>=<span class="string">&quot;&#123;file-size&#125;&quot;</span>  /&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ExePackage</span>&gt;</span></span><br><span class="line">		</span><br><span class="line">		<span class="tag">&lt;<span class="name">ExePackage</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Id</span>=<span class="string">&quot;WV_bootstrapper_x64&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">PerMachine</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">DetectCondition</span>=<span class="string">&quot;!(wix.WV_DetectCondition_x64)&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">InstallCondition</span>=<span class="string">&quot;VersionNT64&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Vital</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Permanent</span>=<span class="string">&quot;yes&quot;</span></span></span><br><span class="line"><span class="tag">			<span class="attr">Cache</span>=<span class="string">&quot;remove&quot;</span> <span class="attr">CacheId</span>=<span class="string">&quot;2&quot;</span>&gt;</span> </span><br><span class="line">			<span class="tag">&lt;<span class="name">ExePackagePayload</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Name</span>=<span class="string">&quot;WV_bootstrapper_x64&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">DownloadUrl</span>=<span class="string">&quot;&#123;dowload-url&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Hash</span>=<span class="string">&quot;&#123;file-hash&#125;&quot;</span></span></span><br><span class="line"><span class="tag">				<span class="attr">Size</span>=<span class="string">&quot;&#123;file-size&#125;&quot;</span>  /&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ExePackage</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">PackageGroup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Fragment</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="定制个性化安装界面"><a href="#定制个性化安装界面" class="headerlink" title="定制个性化安装界面"></a>定制个性化安装界面</h4><p>注意: CustomTheme.xml定义了安装窗口、页面、按钮等各种UI元素以及样式、响应事件，CustomLocalize.wxl定义了个性化文本内容，具体可参照<a class="link"   target="_blank" rel="noopener" href="https://github.com/wixtoolset/wix" >Wix Toolset源码<i class="fas fa-external-link-alt"></i></a></p>
+<p>Bundle.wxs</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">Bundle</span> <span class="attr">Name</span>=<span class="string">&quot;$(var.ProductName)&quot;</span> <span class="attr">Manufacturer</span>=<span class="string">&quot;$(var.Manufacturer)&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">Version</span>=<span class="string">&quot;!(bind.packageVersion.MainPackage)&quot;</span> <span class="attr">UpgradeCode</span>=<span class="string">&quot;$(var.UpgradeCode)&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">IconSourceFile</span>=<span class="string">&quot;$(var.&#123;your-product-name&#125;.ProjectDir)Resources\&#123;your-company-name&#125;.ico&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">BootstrapperApplication</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bal:WixStandardBootstrapperApplication</span> <span class="attr">LicenseUrl</span>=<span class="string">&quot;&quot;</span> <span class="attr">Theme</span>=<span class="string">&quot;rtfLargeLicense&quot;</span> <span class="attr">ShowVersion</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">LogoFile</span> =<span class="string">&quot;$(var.&#123;your-product-name&#125;.ProjectDir)Resources\&#123;your-company-name&#125;.ico&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">ThemeFile</span>=<span class="string">&quot;CustomTheme.xml&quot;</span> <span class="attr">LocalizationFile</span>=<span class="string">&quot;CustomLocalize.wxl&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">BootstrapperApplication</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Bundle</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="AutoUpdater-NET"><a href="#AutoUpdater-NET" class="headerlink" title="AutoUpdater.NET"></a>AutoUpdater.NET</h2><p>AutoUpdater.NET是一个类库，可让.NET开发人员轻松地将自动更新功能添加到桌面应用程序项目中。AutoUpdater.NET会从服务器下载包含更新信息的XML文件。它使用该XML文件获取软件最新版本的信息。如果软件的最新版本大于用户PC上安装的软件的当前版本，AutoUpdater.NET就会向用户显示更新对话框。如果用户按下更新按钮更新软件，它就会从XML文件中提供的URL下载更新文件（安装程序），并执行刚刚下载的安装程序文件。此后，安装程序的工作就是执行更新。如果您提供的是zip文件URL而不是安装程序，AutoUpdater.NET将把zip文件的内容解压缩到应用程序目录。</p>
+<h3 id="配置XML"><a href="#配置XML" class="headerlink" title="配置XML"></a>配置XML</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>&#123;latest-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>&#123;your-download-url&#125;<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">changelog</span>&gt;</span>&#123;your-changelog-url&#125;<span class="tag">&lt;/<span class="name">changelog</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mandatory</span>&gt;</span>false<span class="tag">&lt;/<span class="name">mandatory</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="启动更新检查"><a href="#启动更新检查" class="headerlink" title="启动更新检查"></a>启动更新检查</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AutoUpdater.Start(<span class="string">&quot;&#123;your-xml-url&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="手动处理更新"><a href="#手动处理更新" class="headerlink" title="手动处理更新"></a>手动处理更新</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span>  <span class="keyword">async</span> <span class="keyword">void</span> <span class="title">AutoUpdaterOnCheckForUpdateEvent</span>(<span class="params">UpdateInfoEventArgs args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (args.IsUpdateAvailable)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="keyword">var</span> httpClient = <span class="keyword">new</span> HttpClient();</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">string</span> log = <span class="keyword">await</span> httpClient.GetStringAsync(args.ChangelogURL);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> textContent = <span class="string">$&quot;当前版本<span class="subst">&#123;args.InstalledVersion&#125;</span>, 最新版本<span class="subst">&#123;args.CurrentVersion&#125;</span>\n&quot;</span> +</span><br><span class="line">                              <span class="string">&quot;有新版本可用，是否立即更新？\n&quot;</span> + <span class="string">$&quot;<span class="subst">&#123;log&#125;</span>&quot;</span>;</span><br><span class="line"></span><br><span class="line">            MessageBoxResult result = MessageBox.Show(textContent, <span class="string">&quot;更新提示&quot;</span>, MessageBoxButton.YesNo, MessageBoxImage.Information);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (result == MessageBoxResult.Yes)</span><br><span class="line">            &#123;</span><br><span class="line">                Close();</span><br><span class="line">                AutoUpdater.DownloadUpdate(args);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (HttpRequestException e)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(e.Message);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://wixtoolset.org/docs/intro/" >Wix Toolset官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/wixtoolset/wix" >Wix Toolset开源项目地址<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/ravibpatel/AutoUpdater.NET" >AutoUpdater.NET开源项目地址<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/msi/properties" >Windows Installer在安装期间使用的全局变量<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET/">.NET</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Wix-Toolset/">Wix Toolset</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/25/ci-and-cd/"
+                                   title="持续集成、交付与部署CI/CD及Jenkins"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">持续集成、交付与部署CI/CD及Jenkins</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/18/websocket-usage/"
+                                   title="WebSocket在C#与.NET中的简单实现"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">WebSocket在C#与.NET中的简单实现</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Wix-Toolset"><span class="nav-text">Wix Toolset</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Wix-Package"><span class="nav-text">Wix Package</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E6%B7%BB%E5%8A%A0"><span class="nav-text">快捷方式添加</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E5%9B%BE%E6%A0%87%E8%AE%BE%E7%BD%AE"><span class="nav-text">快捷方式图标设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-text">开机自启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD%E6%88%96%E6%9B%B4%E6%94%B9%E5%89%8D%E8%87%AA%E5%8A%A8%E5%85%B3%E9%97%AD%E7%A8%8B%E5%BA%8F%E8%BF%9B%E7%A8%8B"><span class="nav-text">卸载或更改前自动关闭程序进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x86%E5%92%8Cx64%E5%B9%B3%E5%8F%B0%E5%8C%BA%E5%88%86%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E6%BA%90"><span class="nav-text">x86和x64平台区分可执行文件源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wix-Bundle"><span class="nav-text">Wix Bundle</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%B3%BB%E7%BB%9F%E5%BF%85%E5%A4%87%E7%BB%84%E4%BB%B6"><span class="nav-text">设置系统必备组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%89%E8%A3%85%E7%95%8C%E9%9D%A2"><span class="nav-text">定制个性化安装界面</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoUpdater-NET"><span class="nav-text">AutoUpdater.NET</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEXML"><span class="nav-text">配置XML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9B%B4%E6%96%B0%E6%A3%80%E6%9F%A5"><span class="nav-text">启动更新检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%A4%84%E7%90%86%E6%9B%B4%E6%96%B0"><span class="nav-text">手动处理更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Wix-Toolset"><span class="nav-text">Wix Toolset</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Wix-Package"><span class="nav-text">Wix Package</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E6%B7%BB%E5%8A%A0"><span class="nav-text">快捷方式添加</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E5%9B%BE%E6%A0%87%E8%AE%BE%E7%BD%AE"><span class="nav-text">快捷方式图标设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-text">开机自启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD%E6%88%96%E6%9B%B4%E6%94%B9%E5%89%8D%E8%87%AA%E5%8A%A8%E5%85%B3%E9%97%AD%E7%A8%8B%E5%BA%8F%E8%BF%9B%E7%A8%8B"><span class="nav-text">卸载或更改前自动关闭程序进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x86%E5%92%8Cx64%E5%B9%B3%E5%8F%B0%E5%8C%BA%E5%88%86%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E6%BA%90"><span class="nav-text">x86和x64平台区分可执行文件源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wix-Bundle"><span class="nav-text">Wix Bundle</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%B3%BB%E7%BB%9F%E5%BF%85%E5%A4%87%E7%BB%84%E4%BB%B6"><span class="nav-text">设置系统必备组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%89%E8%A3%85%E7%95%8C%E9%9D%A2"><span class="nav-text">定制个性化安装界面</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoUpdater-NET"><span class="nav-text">AutoUpdater.NET</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEXML"><span class="nav-text">配置XML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9B%B4%E6%96%B0%E6%A3%80%E6%9F%A5"><span class="nav-text">启动更新检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%A4%84%E7%90%86%E6%9B%B4%E6%96%B0"><span class="nav-text">手动处理更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

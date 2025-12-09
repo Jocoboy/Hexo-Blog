@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            WebSocket在C#与.NET中的简单实现 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        WebSocket在C#与.NET中的简单实现
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-18 20:53:59</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Network-Protocol/">Network-Protocol</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET/">.NET</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/WebSocket/">WebSocket</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>93k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>5:39 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>WebSocket的基本概念、应用场景，以及服务端和客户端在C#与.NET中的简单实现(包含心跳检测与自动重连)。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>WebSocket是一种在单个TCP连接上进行全双工通信的协议，它可以让客户端和服务器之间进行实时的双向通信。WebSocket使用一个长连接，在客户端和服务器之间保持持久的连接，从而可以实时地发送和接收数据。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="OSI七层网络模型"><a href="#OSI七层网络模型" class="headerlink" title="OSI七层网络模型"></a>OSI七层网络模型</h3><p>OSI(Open System Interconnect)七层网络模型是一种将计算机网络体系结构按照功能划分为七层的标准模型。</p>
+<ul>
+<li>应用层(Application Layer)，负责提供应用程序之间的通信服务，使得不同的应用程序可以在网络上进行数据交换和通信。常见协议有HTTP、HTTPS、FTP、POP3、SSH、DNS等。</li>
+<li>表示层(Presentation Layer)，负责处理数据在网络上传输时的格式和编码，以确保不同系统之间的数据交换能够有效地进行。常见协议有JPEG、PNG、MP3等。</li>
+<li>会话层(Session Layer)，负责建立、管理和终止应用程序之间的会话。常见协议有NetBIOS(网络基本输入&#x2F;输出系统)、RPC等。</li>
+<li>传输层(Transport Layer)，负责在不可靠的网络上提供可靠的数据传输服务。常见协议有TCP、UDP、SSL(安全套接层协议)、TLS(传输层安全性协议)等。TCP协议面向连接、可靠，UDP协议无连接、不可靠。</li>
+<li>网络层(Network Layer)，负责将数据包从源主机传输到目标主机。常见协议有IP等。</li>
+<li>数据链路层(Data Link Layer)，负责将网络层传输过来的数据包进行分帧，并在物理介质上进行传输。常见协议有IEEE802.2(逻辑链路控制标准)、PPP(点对点通信)等。</li>
+<li>物理层(Physical Layer)，负责将数字数据转换成物理信号并在网络中传输。常见协议有RS232(串行通信接口标准)、IEEE802.3(以太网标准)等。</li>
+</ul>
+<h3 id="串口通信与网口通信"><a href="#串口通信与网口通信" class="headerlink" title="串口通信与网口通信"></a>串口通信与网口通信</h3><p>WebSocket有串口、网口两种通信方式。</p>
+<ul>
+<li><p>串口方式‌主要基于串行接口进行数据传输，采用串口通信协议(如RS232、RS485等)。这种方式适用于点对点的数据传输，使用有限连接，只能连接两台设备，不支持网络中的多台设备之间的通信。串口通信传输速度较慢，传输距离较长，比较稳定，可以确保数据传输的可靠性。</p>
+</li>
+<li><p>网口方式‌则基于网络通信协议(如TCP&#x2F;IP、UDP等)进行数据传输。这种方式使用无限连接，适用于网络中的多台设备之间的通信。网口通信传输速度较快，传输距离有限。</p>
+</li>
+</ul>
+<h3 id="与TCP和HTTP的关系"><a href="#与TCP和HTTP的关系" class="headerlink" title="与TCP和HTTP的关系"></a>与TCP和HTTP的关系</h3><p>WebSocket协议是独立的基于TCP的协议。它和HTTP的唯一关系是建立连接的握手操作的升级请求是基于HTTP服务器的。</p>
+<p>WebSocket默认使用80端口进行连接，而基于TLS(RFC2818)的WebSocket连接是基于443端口的。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>创建一个客户端和服务端的双向数据Web应用(例如IM应用和游戏应用)需要向服务端频繁发送不同于一般HTTP请求的HTTP轮询请求来从服务端上游更新数据，这个方法存在许多问题：</p>
+<ul>
+<li>服务端被迫使用大量的的潜在的TCP连接与客户端进行交互：一部分是用来发送数据，而另一部分是用来接收数据</li>
+<li>应用层无线传输协议(HTTP)开销较大，每一个客户端到服务端的消息都有一个HTTP头</li>
+<li>客户端脚本必须包含一个发送和接收对应的映射表来进行对应数据处理</li>
+</ul>
+<p>一个简单的解决方案是使用一个简单的TCP链接来进行双向数据传输，这就是WebSocket提供的能力。结合WebSocket的API，它能够提供一个可以替代HTTP轮询的方法来满足Web页面和远端服务器的双向数据通信。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="原生实现"><a href="#原生实现" class="headerlink" title="原生实现"></a>原生实现</h3><p>C#中可以通过System.Net.WebSockets命名空间提供的类来实现WebSocket通信。</p>
+<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><p>首先创建一个WebSocket服务端类，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebSocketServer</span>: <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> _serverUri;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> HttpListener _httpListener;</span><br><span class="line">    <span class="keyword">private</span> WebSocket _webSocket;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> disposedValue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WebSocketServer</span>(<span class="params"><span class="built_in">string</span> serverUri</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _serverUri = serverUri;</span><br><span class="line">        _httpListener = <span class="keyword">new</span> HttpListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">StartAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        _httpListener.Prefixes.Add(_serverUri);</span><br><span class="line">        _httpListener.Start();</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;WebSocket服务已启动，服务地址：<span class="subst">&#123;_serverUri&#125;</span>，等待客户端连接...&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            HttpListenerContext httpContext = <span class="keyword">await</span> _httpListener.GetContextAsync();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (httpContext.Request.IsWebSocketRequest)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> HandleWebSocketConnectionAsync(httpContext);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                httpContext.Response.StatusCode = <span class="number">400</span>;</span><br><span class="line">                httpContext.Response.Close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">HandleWebSocketConnectionAsync</span>(<span class="params">HttpListenerContext httpContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        WebSocketContext webSocketContext = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            webSocketContext = <span class="keyword">await</span> httpContext.AcceptWebSocketAsync(subProtocol: <span class="literal">null</span>);</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;接收到客户端连接，WebSocket连接已建立，等待客户端消息...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            httpContext.Response.StatusCode = <span class="number">500</span>;</span><br><span class="line">            httpContext.Response.Close();</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;WebSocket连接失败: &quot;</span> + e.Message);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _webSocket = webSocketContext.WebSocket;</span><br><span class="line">        <span class="built_in">byte</span>[] buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (_webSocket.State == WebSocketState.Open)</span><br><span class="line">        &#123;</span><br><span class="line">            WebSocketReceiveResult result = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                result = <span class="keyword">await</span> _webSocket.ReceiveAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(buffer), CancellationToken.None);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception e)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;WebSocket消息接收错误 :&quot;</span> + e.Message);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Close)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="string">&quot;Closing&quot;</span>, CancellationToken.None);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;WebSocket连接已关闭!&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Text)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 处理文本消息</span></span><br><span class="line">                <span class="built_in">string</span> message = Encoding.UTF8.GetString(buffer, <span class="number">0</span>, result.Count);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;接收到客户端的消息: &quot;</span> + message);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">byte</span>[] response = Encoding.UTF8.GetBytes(<span class="string">&quot;服务端已成功收到消息&quot;</span> + message);</span><br><span class="line">                <span class="keyword">await</span> _webSocket.SendAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(response), WebSocketMessageType.Text, <span class="literal">true</span>, CancellationToken.None);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Binary)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 处理二进制消息</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!disposedValue)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (disposing)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> 释放托管状态(托管对象)</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 释放未托管的资源(未托管的对象)并重写终结器</span></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 将大型字段设置为 null</span></span><br><span class="line">            disposedValue = <span class="literal">true</span>;</span><br><span class="line">            _webSocket.Dispose();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器</span></span><br><span class="line">    ~WebSocketServer()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后启动WebSocket服务。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> serverUri = <span class="string">&quot;http://localhost:8181/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> webSocketServer = <span class="keyword">new</span> WebSocketServer(serverUri);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> webSocketServer.StartAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p>首先创建一个WebSocket客户端类，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebSocketClient</span>: <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> _uri;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> ClientWebSocket _clientWebSocket;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> disposedValue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WebSocketClient</span>(<span class="params"><span class="built_in">string</span> uri</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _uri = uri;</span><br><span class="line">        _clientWebSocket = <span class="keyword">new</span> ClientWebSocket();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">StartAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> _clientWebSocket.ConnectAsync(<span class="keyword">new</span> Uri(_uri), CancellationToken.None);</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;WebSocket客户端已连接至：&quot;</span> + _uri);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">byte</span>[] buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> input = Console.ReadLine();</span><br><span class="line">        <span class="keyword">while</span> (input != <span class="string">&quot;exit&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">byte</span>[] messageBytes = Encoding.UTF8.GetBytes(input);</span><br><span class="line">            <span class="keyword">await</span> _clientWebSocket.SendAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(messageBytes), WebSocketMessageType.Text, <span class="literal">true</span>, CancellationToken.None);</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;客户端发送消息: &quot;</span> + input);</span><br><span class="line"></span><br><span class="line">            WebSocketReceiveResult result = <span class="keyword">await</span> _clientWebSocket.ReceiveAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(buffer), CancellationToken.None);</span><br><span class="line">            <span class="built_in">string</span> response = Encoding.UTF8.GetString(buffer, <span class="number">0</span>, result.Count);</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;客户端接收到消息: &quot;</span> + response);</span><br><span class="line"></span><br><span class="line">            input = Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="string">&quot;Closing&quot;</span>, CancellationToken.None);</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;WebSocket客户端已关闭!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!disposedValue)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (disposing)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> 释放托管状态(托管对象)</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 释放未托管的资源(未托管的对象)并重写终结器</span></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 将大型字段设置为 null</span></span><br><span class="line">            disposedValue = <span class="literal">true</span>;</span><br><span class="line">            _clientWebSocket.Dispose();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器</span></span><br><span class="line">    ~WebSocketServer()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后启动WebSocket客户端。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> serverUri = <span class="string">&quot;http://localhost:8181/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> webSocketClient = <span class="keyword">new</span> WebSocketClient(serverUri.Replace(<span class="string">&quot;http&quot;</span>, <span class="string">&quot;ws&quot;</span>)); <span class="comment">// http升级请求</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> webSocketClient.StartAsync(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="支持WSS"><a href="#支持WSS" class="headerlink" title="支持WSS"></a>支持WSS</h4><p>若要使用WebSocket Secure(WSS)，即在WebSocket上使用TLS&#x2F;SSL加密通信，则需要对服务端和客户端进行一些调整。</p>
+<p>首先服务端的uri前缀需要改为https，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> serverUri = <span class="string">&quot;https://localhost:8182/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> webSocketServer = <span class="keyword">new</span> WebSocketServer(serverUri);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> webSocketServer.StartAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后客户端的http升级请求需要改为https，即从http-ws调整为https-wss，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> serverUri = <span class="string">&quot;https://localhost:8182/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> webSocketClient = <span class="keyword">new</span> WebSocketClient(serverUri.Replace(<span class="string">&quot;https&quot;</span>, <span class="string">&quot;wss&quot;</span>)); <span class="comment">// https升级请求</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> webSocketClient.StartAsync(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果服务器使用自签名证书(未经过CA认证)，客户端默认会抛出SSL错误，测试环境中可通过在代码中忽略证书验证的方式解决。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebSocketClient</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">StartAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 忽略自签名证书验证</span></span><br><span class="line">        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) =&gt; <span class="literal">true</span>;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自签名证书可以使用OpenSSL生成，</p>
+<p><code>openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes</code></p>
+<p>这将生成cert.pem(证书)和key.pem(私钥)，然后使用以下命令将PEM文件转换为PFX文件。(此PFX文件导入后颁发者默认为Internet Widgits Pty Ltd)</p>
+<p><code>openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in cert.pem</code></p>
+<p>若服务端使用HttpListener，需确保证书已绑定到服务器的端口。例如，在Windows上可以使用netsh命令，(注：IP一般使用通配地址0.0.0.0)</p>
+<p><code>netsh http add sslcert ipport=&lt;IP&gt;:&lt;PORT&gt; certhash=&lt;Certificate Thumbprint&gt; appid=&#123;&lt;Application GUID&gt;&#125;</code></p>
+<p>证书指纹可通过<code>win+r</code>输入<code>mmc</code>并添加证书单元格后在受信任的根证书颁发机构中查看，也可通过openssl命令获取。(注：通过命令获取到的指纹中的<code>:</code>需要删除，否则绑定时会报参数错误)</p>
+<p><code>openssl x509 -in cert.pem -noout -fingerprint</code></p>
+<p>可使用netsh命令检查证书是否绑定成功。</p>
+<p><code>netsh http show sslcert</code></p>
+<h4 id="支持心跳检测与自动重连"><a href="#支持心跳检测与自动重连" class="headerlink" title="支持心跳检测与自动重连"></a>支持心跳检测与自动重连</h4><p>WebSocket心跳检测(Heartbeat)是一种机制，用于确保客户端和服务器之间的连接仍然活跃，并且能够及时检测到任何连接问题。在WebSocket连接中，由于网络不稳定或服务器重启等原因，可能会导致连接意外断开，而双方并不知情。心跳检测通过定期发送小的数据包(如Ping&#x2F;Pong帧)来验证连接是否仍然存在。</p>
+<p>在ClientWebSocket中，SendAsync和ReceiveAsync是异步操作，但它们有一个重要的限制：每个操作(SendAsync和ReceiveAsync)在同一时间只能有一个未完成的任务。如果尝试同时发起多个SendAsync或ReceiveAsync调用，就会抛出异常</p>
+<blockquote>
+<p>There is already one outstanding ‘SendAsync’ call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time.</p>
+</blockquote>
+<p>ClientWebSocket的设计是线程安全的，但它不允许同时发起多个SendAsync或ReceiveAsync操作。如果你在一个线程中调用SendAsync，而在同一个操作完成之前又在另一个线程中调用SendAsync，就会触发上述异常。(ReceiveAsync同理)</p>
+<p>在ServerWebSocket的心跳检测中，如果使用异步方式调用SendAsync，可能会导致服务在”Aborted”状态下仍然被用于通信(理论上只有”Open”状态下才应当执行)，从而引发异常</p>
+<blockquote>
+<p>The ‘System.Net.WebSockets.ServerWebSocket’ instance cannot be used for communication because it has been transitioned into the ‘Aborted’ state</p>
+</blockquote>
+<p>可以通过加锁的方式确保线程安全。在异步方法中可以使用SemaphoreSlim来实现异步锁，避免阻塞线程。</p>
+<p>下面我们来实现WebSocket服务端与客户端各自的心跳检测机制，以及客户端自动重连机制。首先服务端需要启动心跳检测任务，并对客户端发送过来的Ping消息作出Pong回应。服务端完整代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebSocketServer</span>: <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> _serverUri;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> HttpListener _httpListener;</span><br><span class="line">    <span class="keyword">private</span> WebSocket _webSocket;</span><br><span class="line">    <span class="keyword">private</span> CancellationTokenSource _cancellationTokenSource;</span><br><span class="line">    <span class="keyword">private</span> CancellationToken _cancellationToken &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _cancellationTokenSource == <span class="literal">null</span> ? CancellationToken.None : _cancellationTokenSource.Token; &#125; &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> HeartbeatInterval = <span class="number">5000</span>;  <span class="comment">// 心跳间隔时间</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> PingMessage = <span class="string">&quot;Ping&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> PongMessage = <span class="string">&quot;Pong&quot;</span>;</span><br><span class="line">    <span class="comment">//private readonly object _sendLock = new object();</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> SemaphoreSlim _sendSemaphore = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">1</span>);  <span class="comment">// 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1</span></span><br><span class="line">    <span class="comment">//private readonly object _receiveLock = new object();</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> SemaphoreSlim _receiveSemaphore = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">1</span>);  <span class="comment">// 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1</span></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> disposedValue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WebSocketServer</span>(<span class="params"><span class="built_in">string</span> serverUri</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _serverUri = serverUri;</span><br><span class="line">        _httpListener = <span class="keyword">new</span> HttpListener();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">StartAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        _httpListener.Prefixes.Add(_serverUri);</span><br><span class="line">        _httpListener.Start();</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;WebSocket服务已启动，服务地址：<span class="subst">&#123;_serverUri&#125;</span>，等待客户端连接...&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            HttpListenerContext httpContext = <span class="keyword">await</span> _httpListener.GetContextAsync();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (httpContext.Request.IsWebSocketRequest)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> HandleWebSocketConnectionAsync(httpContext);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                httpContext.Response.StatusCode = <span class="number">400</span>;</span><br><span class="line">                httpContext.Response.Close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">HandleWebSocketConnectionAsync</span>(<span class="params">HttpListenerContext httpContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        WebSocketContext webSocketContext = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            webSocketContext = <span class="keyword">await</span> httpContext.AcceptWebSocketAsync(subProtocol: <span class="literal">null</span>);</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;接收到客户端连接，WebSocket连接已建立，等待客户端消息...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            httpContext.Response.StatusCode = <span class="number">500</span>;</span><br><span class="line">            httpContext.Response.Close();</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;WebSocket连接失败: &quot;</span> + e.Message);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _webSocket = webSocketContext.WebSocket;</span><br><span class="line">        _cancellationTokenSource = <span class="keyword">new</span> CancellationTokenSource();</span><br><span class="line">        <span class="built_in">byte</span>[] buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开始心跳检测</span></span><br><span class="line">        <span class="keyword">var</span> heartbeatTask = HeartbeatAsync();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (_webSocket.State == WebSocketState.Open)</span><br><span class="line">        &#123;</span><br><span class="line">            WebSocketReceiveResult result = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> _receiveSemaphore.WaitAsync(_cancellationToken); <span class="comment">// 等待锁</span></span><br><span class="line">                result = <span class="keyword">await</span> _webSocket.ReceiveAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(buffer), _cancellationToken);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception e)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;WebSocket消息接收错误 :&quot;</span> + e.Message);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">finally</span></span><br><span class="line">            &#123;</span><br><span class="line">                _receiveSemaphore.Release(); <span class="comment">// 释放锁</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Close)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="string">&quot;Closing&quot;</span>, _cancellationToken);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;WebSocket连接已关闭!&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Text)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 处理文本消息</span></span><br><span class="line">                <span class="built_in">string</span> message = Encoding.UTF8.GetString(buffer, <span class="number">0</span>, result.Count);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;接收到来自客户端的消息: &quot;</span> + message);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">await</span> SendMessageAsync(<span class="string">&quot;服务端已成功收到消息&quot;</span> + message);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (message == PingMessage)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">await</span> SendMessageAsync(PongMessage);</span><br><span class="line">                    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;PongMessage&#125;</span>已发送.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Binary)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 处理二进制消息</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _cancellationTokenSource.Cancel();</span><br><span class="line">        <span class="keyword">await</span> heartbeatTask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">SendMessageAsync</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">await</span> _sendSemaphore.WaitAsync(_cancellationToken); <span class="comment">// 等待锁</span></span><br><span class="line">            <span class="keyword">var</span> msg = Encoding.UTF8.GetBytes(message);</span><br><span class="line">            <span class="keyword">await</span> _webSocket.SendAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(msg), WebSocketMessageType.Text, <span class="literal">true</span>, _cancellationToken);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            _sendSemaphore.Release(); <span class="comment">// 释放锁</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">HeartbeatAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span> (!_cancellationToken.IsCancellationRequested)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> Task.Delay(HeartbeatInterval, _cancellationToken); </span><br><span class="line">                <span class="keyword">if</span> (_webSocket.State == WebSocketState.Open)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">await</span> SendMessageAsync(PingMessage);</span><br><span class="line">                    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;PingMessage&#125;</span>已发送.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;WebSocket已关闭，心跳已停止.&quot;</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (OperationCanceledException)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 任务被取消，跳出循环</span></span><br><span class="line">                Console.WriteLine(<span class="string">&quot;心跳检测任务被取消，跳出循环&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;心跳检测错误: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!disposedValue)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (disposing)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> 释放托管状态(托管对象)</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 释放未托管的资源(未托管的对象)并重写终结器</span></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 将大型字段设置为 null</span></span><br><span class="line">            disposedValue = <span class="literal">true</span>;</span><br><span class="line">            _webSocket.Dispose();</span><br><span class="line">            _cancellationTokenSource.Dispose();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器</span></span><br><span class="line">    ~WebSocketServer()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后客户端同样需要启动心跳检测任务，并对服务端发送过来的Ping消息作出Pong回应。此外，客户端还需要确保在连接断开后能自动重连。客户端完整代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebSocketClient</span> : <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> _uri;</span><br><span class="line">    <span class="keyword">private</span> ClientWebSocket _clientWebSocket;</span><br><span class="line">    <span class="keyword">private</span> CancellationTokenSource _cancellationTokenSource;</span><br><span class="line">    <span class="keyword">private</span> CancellationToken _cancellationToken &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _cancellationTokenSource.Token; &#125; &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> HeartbeatInterval = <span class="number">5000</span>;  <span class="comment">// 心跳间隔时间</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> ReconnectDelay = <span class="number">10000</span>; <span class="comment">// 重连延迟时间</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> PingMessage = <span class="string">&quot;Ping&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> PongMessage = <span class="string">&quot;Pong&quot;</span>;</span><br><span class="line">    <span class="comment">//private readonly object _sendLock = new object();</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> SemaphoreSlim _sendSemaphore = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">1</span>); <span class="comment">// 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1</span></span><br><span class="line">    <span class="comment">//private readonly object _receiveLock = new object();</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> SemaphoreSlim _receiveSemaphore = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">1</span>); <span class="comment">// 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1</span></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> disposedValue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WebSocketClient</span>(<span class="params"><span class="built_in">string</span> uri</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _uri = uri;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">StartAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 忽略自签名证书验证</span></span><br><span class="line">        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) =&gt; <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                _clientWebSocket = <span class="keyword">new</span> ClientWebSocket(); <span class="comment">// 对于每一次连接尝试，都要重新创建一个ClientWebSocket实例，否则会一直提示&quot;The WebSocket has already been started&quot;</span></span><br><span class="line">                _cancellationTokenSource = <span class="keyword">new</span> CancellationTokenSource(); <span class="comment">// 对于每一次连接尝试，都要重新创建一个CancellationTokenSource实例，否则会一直提示&quot;A task was canceled&quot;</span></span><br><span class="line">                <span class="keyword">await</span> _clientWebSocket.ConnectAsync(<span class="keyword">new</span> Uri(_uri), _cancellationToken); <span class="comment">// 无法对一个已经启动或已经关闭的ClientWebSocket实例再次调用ConnectAsync </span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 开始心跳检测</span></span><br><span class="line">                <span class="keyword">var</span> heartbeatTask = HeartbeatAsync();</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;客户端已连接上WebSocket服务器，握手请求后的服务地址为<span class="subst">&#123;_uri&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 接收消息</span></span><br><span class="line">                <span class="keyword">await</span> ReceiveMessagesAsync();</span><br><span class="line"></span><br><span class="line">                _cancellationTokenSource.Cancel();</span><br><span class="line">                <span class="keyword">await</span> heartbeatTask;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;WebSocket错误：<span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;在<span class="subst">&#123;ReconnectDelay / <span class="number">1000</span>&#125;</span>秒后尝试重连...&quot;</span>);</span><br><span class="line">            <span class="keyword">await</span> Task.Delay(ReconnectDelay);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">ReceiveMessagesAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (_clientWebSocket.State == WebSocketState.Open)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                    <span class="keyword">await</span> _receiveSemaphore.WaitAsync(_cancellationToken); <span class="comment">// 等待锁</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">var</span> result = <span class="keyword">await</span> _clientWebSocket.ReceiveAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(buffer), _cancellationToken);</span><br><span class="line">                    <span class="keyword">if</span> (result.MessageType == WebSocketMessageType.Close)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">await</span> _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="string">&quot;Closing&quot;</span>, _cancellationToken);</span><br><span class="line">                        Console.WriteLine(<span class="string">&quot;WebSocket客户端已关闭!&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">var</span> message = Encoding.UTF8.GetString(buffer, <span class="number">0</span>, result.Count);</span><br><span class="line">                        Console.WriteLine(<span class="string">$&quot;接收到来自服务端的消息: <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (message == PingMessage)</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="keyword">await</span> SendMessageAsync(PongMessage);</span><br><span class="line">                            Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;PongMessage&#125;</span>已发送.&quot;</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (OperationCanceledException)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 任务被取消，跳出循环</span></span><br><span class="line">                Console.WriteLine(<span class="string">&quot;消息接收任务被取消，跳出循环&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;客户端接收消息发生错误: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">finally</span></span><br><span class="line">            &#123;</span><br><span class="line">                _receiveSemaphore.Release(); <span class="comment">// 释放锁</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> Task.CompletedTask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">SendMessageAsync</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">await</span> _sendSemaphore.WaitAsync(_cancellationToken); <span class="comment">// 等待锁</span></span><br><span class="line">            <span class="keyword">var</span> msg = Encoding.UTF8.GetBytes(message);</span><br><span class="line">            <span class="keyword">await</span> _clientWebSocket.SendAsync(<span class="keyword">new</span> ArraySegment&lt;<span class="built_in">byte</span>&gt;(msg), WebSocketMessageType.Text, <span class="literal">true</span>, _cancellationToken);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            _sendSemaphore.Release(); <span class="comment">// 释放锁</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task <span class="title">HeartbeatAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span> (!_cancellationToken.IsCancellationRequested)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">await</span> Task.Delay(HeartbeatInterval, _cancellationToken);</span><br><span class="line">                <span class="keyword">if</span> (_clientWebSocket.State == WebSocketState.Open)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">await</span> SendMessageAsync(PingMessage);</span><br><span class="line">                    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;PingMessage&#125;</span>已发送.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;WebSocket已关闭，心跳已停止.&quot;</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (OperationCanceledException)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 任务被取消，跳出循环</span></span><br><span class="line">                Console.WriteLine(<span class="string">&quot;心跳检测任务被取消，跳出循环&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;心跳检测错误: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!disposedValue)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (disposing)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> 释放托管状态(托管对象)</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 释放未托管的资源(未托管的对象)并重写终结器</span></span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> 将大型字段设置为 null</span></span><br><span class="line">            disposedValue = <span class="literal">true</span>;</span><br><span class="line">            _clientWebSocket.Dispose();</span><br><span class="line">            _cancellationTokenSource.Dispose();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器</span></span><br><span class="line">    ~WebSocketClient()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中</span></span><br><span class="line">        Dispose(disposing: <span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下图展示了客户端反复掉线重连时，服务端控制台的输出情况。</p>
+<img   src="/Hexo-Blog/2024/08/18/websocket-usage/websocket_server_console.png"  class="" title="服务端控制台的输出情况">
+
+<p>下图展示了服务端反复重启时，客户端控制台的输出情况。</p>
+<img   src="/Hexo-Blog/2024/08/18/websocket-usage/websocket_client_console.png"  class="" title="客户端控制台的输出情况">
+
+<h3 id="第三方库实现"><a href="#第三方库实现" class="headerlink" title="第三方库实现"></a>第三方库实现</h3><p>.NET中也可以引入Nuget包来实现WebSocket通信。</p>
+<h4 id="服务端-1"><a href="#服务端-1" class="headerlink" title="服务端"></a>服务端</h4><p>Fleck是C#中的一个WebSocket服务器实现，Fleck不依赖于HttpListener。下面借助Fleck来模拟一个WebSocket服务端。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Fleck;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        FleckLog.Level = LogLevel.Debug;</span><br><span class="line">        <span class="keyword">var</span> allSockets = <span class="keyword">new</span> List&lt;IWebSocketConnection&gt;();</span><br><span class="line">        <span class="keyword">var</span> server = <span class="keyword">new</span> WebSocketServer(<span class="string">&quot;ws://127.0.0.1:8181&quot;</span>);</span><br><span class="line">        server.Start(socket =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            socket.OnOpen = () =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;客户端连接成功!&quot;</span>);</span><br><span class="line">                allSockets.Add(socket);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;当前客户端数量：&quot;</span> + allSockets.ToList().Count);</span><br><span class="line">            &#125;;</span><br><span class="line">            socket.OnClose = () =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;客户端已经关闭!&quot;</span>);</span><br><span class="line">                allSockets.Remove(socket);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;当前客户端数量：&quot;</span> + allSockets.ToList().Count);</span><br><span class="line">            &#125;;</span><br><span class="line">            socket.OnMessage = message =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(message);</span><br><span class="line">                allSockets.ToList().ForEach(s =&gt; s.Send(message));</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> input = Console.ReadLine();</span><br><span class="line">        <span class="keyword">while</span> (input != <span class="string">&quot;exit&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="keyword">var</span> socket <span class="keyword">in</span> allSockets.ToList())</span><br><span class="line">            &#123;</span><br><span class="line">                socket.Send(input);</span><br><span class="line">            &#125;</span><br><span class="line">            input = Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h4><p>WebSocket4Net是基于.NET的一个WebSocket客户端实现。下面借助WebSocket4Net来模拟一个WebSocket客户端。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> WebSocket4Net;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> WebSocket webSocket4Net = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">WebSocket4Net_Opened</span>(<span class="params"><span class="built_in">object</span> sender, EventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        webSocket4Net.Send(<span class="string">$&quot;客户端连接成功，准备发送数据！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">WebSocket4Net_MessageReceived</span>(<span class="params"><span class="built_in">object</span> sender, MessageReceivedEventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;服务端回复数据:<span class="subst">&#123;e.Message&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ClientSendMsgToServer</span>(<span class="params"><span class="built_in">object</span> input</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        webSocket4Net.Send((<span class="built_in">string</span>)input);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        webSocket4Net = <span class="keyword">new</span> WebSocket(<span class="string">&quot;ws://127.0.0.1:8181&quot;</span>);</span><br><span class="line">        webSocket4Net.Opened += WebSocket4Net_Opened;</span><br><span class="line">        webSocket4Net.MessageReceived += WebSocket4Net_MessageReceived;</span><br><span class="line">        webSocket4Net.Open();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> input = Console.ReadLine();</span><br><span class="line">        <span class="keyword">while</span> (input != <span class="string">&quot;exit&quot;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> ParameterizedThreadStart(ClientSendMsgToServer));</span><br><span class="line">            thread.Start(input);</span><br><span class="line">            input = Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        webSocket4Net.Dispose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="支持WSS-1"><a href="#支持WSS-1" class="headerlink" title="支持WSS"></a>支持WSS</h4><p>首先在基于Fleck实现的服务端中加载域名证书和密码，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> WebSocketServer(<span class="string">&quot;wss://127.0.0.1:8182&quot;</span>);</span><br><span class="line">server.Certificate = <span class="keyword">new</span> X509Certificate2(<span class="string">&quot;certificate.pfx&quot;</span>, <span class="string">&quot;&quot;</span>, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet); <span class="comment">// 自签名证书密码默认为&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后在基于WebSocket4Net实现的客户端中修改握手后的升级请求(ws前缀改为wss)。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webSocket4Net = <span class="keyword">new</span> WebSocket(<span class="string">&quot;wss://127.0.0.1:8182&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc6455" >RFC 6455官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://websocket.xiniushu.com/" >WebSocket协议(RFC 6455中文版)<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/statianzo/Fleck" >Fleck开源项目地址<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/kerryjiang/WebSocket4Net" >WebSocket4Net开源项目地址<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET/">.NET</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/WebSocket/">WebSocket</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/19/wix-toolset-and-autoupdater/"
+                                   title="基于Wix和AutoUpdater的客户端打包与自动更新"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">基于Wix和AutoUpdater的客户端打包与自动更新</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/18/web-service-and-rpc/"
+                                   title="Web Service远程调用技术"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Web Service远程调用技术</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSI%E4%B8%83%E5%B1%82%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="nav-text">OSI七层网络模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1%E4%B8%8E%E7%BD%91%E5%8F%A3%E9%80%9A%E4%BF%A1"><span class="nav-text">串口通信与网口通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8ETCP%E5%92%8CHTTP%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">与TCP和HTTP的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%AE%9E%E7%8E%B0"><span class="nav-text">原生实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81WSS"><span class="nav-text">支持WSS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%BF%83%E8%B7%B3%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BF%9E"><span class="nav-text">支持心跳检测与自动重连</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%AE%9E%E7%8E%B0"><span class="nav-text">第三方库实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF-1"><span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81WSS-1"><span class="nav-text">支持WSS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSI%E4%B8%83%E5%B1%82%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="nav-text">OSI七层网络模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1%E4%B8%8E%E7%BD%91%E5%8F%A3%E9%80%9A%E4%BF%A1"><span class="nav-text">串口通信与网口通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8ETCP%E5%92%8CHTTP%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">与TCP和HTTP的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%AE%9E%E7%8E%B0"><span class="nav-text">原生实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81WSS"><span class="nav-text">支持WSS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%BF%83%E8%B7%B3%E6%A3%80%E6%B5%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BF%9E"><span class="nav-text">支持心跳检测与自动重连</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%AE%9E%E7%8E%B0"><span class="nav-text">第三方库实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF-1"><span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81WSS-1"><span class="nav-text">支持WSS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

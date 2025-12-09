@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            基于PGSQL咨询锁函数实现的分布式锁 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        基于PGSQL咨询锁函数实现的分布式锁
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-30 19:45:42</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Database/">Database</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET/">.NET</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/PostgreSQL/">PostgreSQL</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Concurrency-Control/">Concurrency Control</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>36k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>2:12 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>基于PGSQL咨询锁函数实现的一个分布式锁基础设施。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>PostgreSQL提供了分布式锁服务，可以用于多个数据库实例(会话)之间协调访问资源。通过使用pg_advisory_lock等咨询锁函数，可以实现一个由应用定义其含义的分布式锁基础设施。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="乐观锁与悲观锁"><a href="#乐观锁与悲观锁" class="headerlink" title="乐观锁与悲观锁"></a>乐观锁与悲观锁</h3><p>锁的一种宏观分类方式是悲观锁和乐观锁。乐观锁和悲观锁是并发控制的一种机制，用于多线程或多进程环境下对共享资源的访问管理，以防止数据不一致或竞态条件。悲观锁与乐观锁并不是特指某个锁，而是在并发情况下的两种不同策略。</p>
+<h4 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h4><p>悲观锁是一种对资源持有较悲观态度的锁定方式。它假设数据在并发访问时极有可能发生冲突，因此每次访问数据时都会先加锁，以确保其他线程不能访问此数据直到锁被释放。</p>
+<p>悲观锁常见的实现方式是数据库中的行级锁、表级锁或行级锁等。一旦线程获得锁，其它尝试获取锁的线程都会被阻塞，直到锁被释放。</p>
+<ul>
+<li>适用场景：在高并发、数据竞争激烈的场景中使用，如金融交易、库存管理等。</li>
+<li>缺点：<ul>
+<li>可能导致系统吞吐量降低，因为锁定机制会阻止其他线程并发访问资源</li>
+<li>容易产生死锁，如果锁的持有和释放管理不当，会导致系统无法继续运行</li>
+</ul>
+</li>
+</ul>
+<h4 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h4><p>乐观锁则持相对乐观的态度，假设并发操作冲突的可能性较小，因此不会主动加锁，而是进行数据版本检查来决定是否提交操作。</p>
+<p>乐观锁一般通过版本号或时间戳等机制来实现。在数据读取时，获取当前版本号；在数据更新时，检查版本号是否与之前读取时的一致。如果一致，表示没有其他并发操作修改过数据，可以提交；否则，操作失败回滚。 </p>
+<ul>
+<li>适用场景：适用于读操作多、写操作少的场景，如一些阅读类应用、CMS系统等。因为这些场景下，冲突发生的概率较低，乐观锁可以提高系统的并发性。</li>
+<li>缺点：<ul>
+<li>在并发冲突频繁的场景下，可能会导致大量重试操作，影响性能</li>
+<li>需要开发人员显式管理版本控制机制，增加开发复杂度</li>
+</ul>
+</li>
+</ul>
+<h5 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h5><p>比较并替换(Compare-and-Swap)是乐观锁实现的基础。CAS操作包括三个步骤：读取内存值、比较内存值与预期值、如果相等则更新内存值。CAS锁可以有效地解决传统锁机制中的性能问题和死锁问题，是并发编程中常用的同步手段之一。</p>
+<h3 id="线程锁、进程锁与分布式锁"><a href="#线程锁、进程锁与分布式锁" class="headerlink" title="线程锁、进程锁与分布式锁"></a>线程锁、进程锁与分布式锁</h3><h4 id="线程锁"><a href="#线程锁" class="headerlink" title="线程锁"></a>线程锁</h4><p>线程锁也被称为互斥锁(Mutex)，主要用于控制同一进程中的多个线程对共享资源的访问。</p>
+<p>在C#中，可以使用lock关键字来实现互斥锁。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Object lockObject = <span class="keyword">new</span> Object();</span><br><span class="line">...</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 在需要保护共享资源的代码块中使用lock</span></span><br><span class="line">    <span class="keyword">lock</span> (lockObject)</span><br><span class="line">     &#123;</span><br><span class="line">        <span class="comment">// 访问和修改共享资源的代码</span></span><br><span class="line">     &#125;</span><br><span class="line">    ...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="进程锁"><a href="#进程锁" class="headerlink" title="进程锁"></a>进程锁</h4><p>进程锁是用于控制同一台机器上的多个进程对共享资源的访问。进程锁可以是系统级的，如文件锁；也可以是用户级的，如信号量。</p>
+<h4 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h4><p>分布式锁是用于控制分布式系统中的多个节点对共享资源的访问。由于分布式系统中的节点可能位于不同的物理机甚至不同的地理位置，因此分布式锁的实现比线程锁和进程锁要复杂得多。分布式锁需要在网络中的多个节点之间进行协调，以保证锁的唯一性和一致性。</p>
+<h3 id="PGSQL咨询锁"><a href="#PGSQL咨询锁" class="headerlink" title="PGSQL咨询锁"></a>PGSQL咨询锁</h3><p>PostgreSQL提供了一种由应用定义其含义的锁，这种锁被称为咨询锁(Advisory Lock)。咨询锁是一种悲观锁、分布式锁。咨询锁用一个long类型的数值或两个int类型的数值标识一把锁，long类型标识的锁和int类型标识的锁互相独立。</p>
+<p>咨询锁有两个锁定级别：会话级和事务级。</p>
+<ul>
+<li>会话级锁定会持续到显式释放或会话结束，不受会话中事务的影响</li>
+<li>事务级锁定不能显式释放，会持续锁定到事务结束</li>
+</ul>
+<p>不论哪个级别的锁定都是可重入的，即同一个线程在持有锁的情况下，可以多次获取该锁而不会造成死锁。</p>
+<p>咨询锁有两种锁定模式：独占和共享。</p>
+<ul>
+<li>独占锁定和其它的独占锁定或共享锁定都互斥</li>
+<li>共享锁定只和独占锁定互斥, 共享锁定之间不互斥</li>
+</ul>
+<p>锁定模式不受锁定级别影响，同一把锁的会话级独占锁定和事务级独占锁定会正确的互斥。</p>
+<h4 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h4><p>PGSQL一共提供了21个咨询锁函数，抛开标识类型不谈，lock和unlock分别代表获取锁定和释放锁定。以_shared结尾的代表锁定是共享的而非独占的，带_xact_关键字代表锁定级别是事务级而非会话级的，带_try_关键字代表锁定是不可等待的。</p>
+<h5 id="定义锁定模式"><a href="#定义锁定模式" class="headerlink" title="定义锁定模式"></a>定义锁定模式</h5><p>定义一个枚举作为区分锁定模式的参数。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 锁定模式</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> LockMode</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 独占</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Exclusive = <span class="number">0</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 共享</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Shared = <span class="number">1</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="定义咨询锁接口"><a href="#定义咨询锁接口" class="headerlink" title="定义咨询锁接口"></a>定义咨询锁接口</h5><p>会话级锁继承IDisposable接口，以便数据库连接等资源的释放。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ISessionLock</span> : <span class="title">IDisposable</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义不同标识类型、不同会话级别下的咨询锁接口。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IAdvisoryLock</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 对long类型的数值标识的锁进行会话级别的锁定</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function">Task&lt;ISessionLock&gt; <span class="title">LockAsync</span>(<span class="params"><span class="built_in">long</span> k, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 对由两个int类型的数值标识的锁进行会话级别的锁定</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function">Task&lt;ISessionLock&gt; <span class="title">LockAsync</span>(<span class="params"><span class="built_in">int</span> m, <span class="built_in">int</span> n, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 对long类型的数值标识的锁进行事务级别的锁定</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function">Task&lt;<span class="built_in">bool</span>&gt; <span class="title">XactLockAsync</span>(<span class="params"><span class="built_in">long</span> k, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 对由两个int类型的数值标识的锁进行事务级别的锁定</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function">Task&lt;<span class="built_in">bool</span>&gt; <span class="title">XactLockAsync</span>(<span class="params"><span class="built_in">int</span> m, <span class="built_in">int</span> n, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现会话级锁的显示释放"><a href="#实现会话级锁的显示释放" class="headerlink" title="实现会话级锁的显示释放"></a>实现会话级锁的显示释放</h5><p>由于会话级锁定会持续到显式释放或会话结束，需要实现显示释放。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PGSQLSessionLock</span> : <span class="title">ISessionLock</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> DatabaseFacade database;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">long</span>? kid;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span>? mid;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span>? nid;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> isShare;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> disposedValue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PGSQLSessionLock</span>(<span class="params">DatabaseFacade database, <span class="built_in">long</span> kid, <span class="built_in">bool</span> isShare</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.database = database;</span><br><span class="line">        <span class="keyword">this</span>.kid = kid;</span><br><span class="line">        <span class="keyword">this</span>.isShare = isShare;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PGSQLSessionLock</span>(<span class="params">DatabaseFacade database, <span class="built_in">int</span> mid, <span class="built_in">int</span> nid, <span class="built_in">bool</span> isShare</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.database = database;</span><br><span class="line">        <span class="keyword">this</span>.mid = mid;</span><br><span class="line">        <span class="keyword">this</span>.nid = nid;</span><br><span class="line">        <span class="keyword">this</span>.isShare = isShare;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ReleaseLock</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (isShare)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (kid != <span class="literal">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                database.ExecuteSqlRaw(<span class="string">&quot;select pg_advisory_unlock_shared(&#123;0&#125;)&quot;</span>, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; kid.Value &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                database.ExecuteSqlRaw(<span class="string">&quot;select pg_advisory_unlock_shared(&#123;0&#125;,&#123;1&#125;)&quot;</span>, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; mid.Value, nid.Value &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (kid != <span class="literal">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                database.ExecuteSqlRaw(<span class="string">&quot;select pg_advisory_unlock(&#123;0&#125;)&quot;</span>, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; kid.Value &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                database.ExecuteSqlRaw(<span class="string">&quot;select pg_advisory_unlock(&#123;0&#125;,&#123;1&#125;)&quot;</span>, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; mid.Value, nid.Value &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!disposedValue)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (disposing)</span><br><span class="line">            &#123;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ReleaseLock();</span><br><span class="line">            database = <span class="literal">null</span>;</span><br><span class="line">            disposedValue = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ~PGSQLSessionLock()</span><br><span class="line">    &#123;</span><br><span class="line">        Dispose(disposing: <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Dispose(disposing: <span class="literal">true</span>);</span><br><span class="line">        GC.SuppressFinalize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="实现咨询锁"><a href="#实现咨询锁" class="headerlink" title="实现咨询锁"></a>实现咨询锁</h5><p>实现不同锁定标识、不同锁定级别下的咨询锁函数，每个咨询锁函数定义了锁定标识、锁定模式、是否可等待参数。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PGSQLAdvisoryLock</span> : <span class="title">IAdvisoryLock</span>, <span class="title">ISingletonDependency</span></span><br><span class="line">&#123;</span><br><span class="line">    IDbContextProvider&lt;ABPDemoDbContext&gt; _dbContextProvider;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PGSQLAdvisoryLock</span>(<span class="params">IDbContextProvider&lt;ABPDemoDbContext&gt; dbContextProvider</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _dbContextProvider = dbContextProvider;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;ISessionLock&gt; <span class="title">LockAsync</span>(<span class="params"><span class="built_in">long</span> k, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> database = (<span class="keyword">await</span> _dbContextProvider.GetDbContextAsync()).Database;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> locked = <span class="keyword">await</span> InternalLockAsync(<span class="keyword">new</span> <span class="built_in">object</span>[] &#123; k &#125;, lockMode, waiting, <span class="literal">false</span>, database, cancellationToken);</span><br><span class="line"></span><br><span class="line">        ISessionLock result = locked ? <span class="keyword">new</span> PGSQLSessionLock(database, k, lockMode == LockMode.Shared) : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;ISessionLock&gt; <span class="title">LockAsync</span>(<span class="params"><span class="built_in">int</span> m, <span class="built_in">int</span> n, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> database = (<span class="keyword">await</span> _dbContextProvider.GetDbContextAsync()).Database;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> locked = <span class="keyword">await</span> InternalLockAsync(<span class="keyword">new</span> <span class="built_in">object</span>[] &#123; m, n &#125;, lockMode, waiting, <span class="literal">false</span>, database, cancellationToken);</span><br><span class="line"></span><br><span class="line">        ISessionLock result = locked ? <span class="keyword">new</span> PGSQLSessionLock(database, m, n, lockMode == LockMode.Shared) : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">XactLockAsync</span>(<span class="params"><span class="built_in">long</span> k, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> database = (<span class="keyword">await</span> _dbContextProvider.GetDbContextAsync()).Database;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> InternalLockAsync(<span class="keyword">new</span> <span class="built_in">object</span>[] &#123; k &#125;, lockMode, waiting, <span class="literal">true</span>, database, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">XactLockAsync</span>(<span class="params"><span class="built_in">int</span> m, <span class="built_in">int</span> n, LockMode lockMode, <span class="built_in">bool</span> waiting, CancellationToken cancellationToken = <span class="literal">default</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> database = (<span class="keyword">await</span> _dbContextProvider.GetDbContextAsync()).Database;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> InternalLockAsync(<span class="keyword">new</span> <span class="built_in">object</span>[] &#123; m, n &#125;, lockMode, waiting, <span class="literal">true</span>, database, cancellationToken);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">async</span> Task&lt;<span class="built_in">bool</span>&gt; <span class="title">InternalLockAsync</span>(<span class="params"><span class="built_in">object</span>[] parameters, LockMode lockMode, <span class="built_in">bool</span> waiting, <span class="built_in">bool</span> isXact, DatabaseFacade database, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">bool</span> locked;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> xact = isXact ? <span class="string">&quot;_xact&quot;</span> : <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> param = parameters.Length == <span class="number">1</span> ? <span class="string">&quot;&#123;0&#125;&quot;</span> : <span class="string">&quot;&#123;0&#125;,&#123;1&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> mode = lockMode <span class="keyword">switch</span></span><br><span class="line">        &#123;</span><br><span class="line">            LockMode.Exclusive =&gt; <span class="string">&quot;&quot;</span>,</span><br><span class="line">            LockMode.Shared =&gt; <span class="string">&quot;_shared&quot;</span>,</span><br><span class="line">            _ =&gt; <span class="keyword">throw</span> <span class="keyword">new</span> NotImplementedException(<span class="string">$&quot;LockMode.<span class="subst">&#123;lockMode&#125;</span> is not implemented.&quot;</span>)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (waiting)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">await</span> database.ExecuteSqlRawAsync(<span class="string">$&quot;select pg_advisory<span class="subst">&#123;xact&#125;</span>_lock<span class="subst">&#123;mode&#125;</span>(<span class="subst">&#123;param&#125;</span>)&quot;</span>, parameters);</span><br><span class="line"></span><br><span class="line">            locked = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            locked = (<span class="keyword">await</span> database.SqlQueryRaw&lt;<span class="built_in">bool</span>&gt;(<span class="string">$&quot;select pg_try_advisory<span class="subst">&#123;xact&#125;</span>_lock<span class="subst">&#123;mode&#125;</span>(<span class="subst">&#123;param&#125;</span>)&quot;</span>, parameters).ToListAsync()).Single();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> locked;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="应用方式"><a href="#应用方式" class="headerlink" title="应用方式"></a>应用方式</h4><h5 id="在应用中定义和使用"><a href="#在应用中定义和使用" class="headerlink" title="在应用中定义和使用"></a>在应用中定义和使用</h5><p>首先定义一个锁枚举，具体名称由应用的功能派生，比如定义一个更新学生信息的锁StudentUpdate。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Locks</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">long</span> StudentUpdate = <span class="number">10001</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后置于并发操作上下文(替换操作之前)即可。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> IAdvisoryLock _advisoryLock;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StudentAppService</span>(<span class="params">..., IAdvisoryLock advisoryLock</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">   ...</span><br><span class="line">    _advisoryLock = advisoryLock;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="keyword">var</span> student = <span class="keyword">await</span> _studentRepository.GetAsync(x =&gt; x.Name == input.Name, <span class="literal">false</span>, cancellationToken);</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> _advisoryLock.LockAsync(Locks.StudentUpdate, LockMode.Exclusive, <span class="literal">true</span>, cancellationToken);</span><br><span class="line"></span><br><span class="line">student.Name = input.Name;</span><br><span class="line">student.StudentLevel = input.StudentLevel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> _studentRepository.UpdateAsync(student, <span class="literal">false</span>, cancellationToken);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> ObjectMapper.Map&lt;Student,StudentDto&gt;(student);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h5 id="验证锁是否生效"><a href="#验证锁是否生效" class="headerlink" title="验证锁是否生效"></a>验证锁是否生效</h5><p>在LockAsync之后打上断点，调用API命中断点之后，使用SQL语句查看锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> pg_locks t1</span><br><span class="line"><span class="keyword">JOIN</span>  pg_stat_activity t2</span><br><span class="line"><span class="keyword">ON</span> t1.pid  <span class="operator">=</span> t2.pid</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> t1.pid;</span><br></pre></td></tr></table></figure>
+
+<img   src="/Hexo-Blog/2024/08/30/pgsql-distributed-lock/pgsql_pg_lock.png"  class="" title="命中断点后数据库锁的情况">
+
+<p>使用SQL语句再次获取该锁定标识对应的锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> pg_advisory_lock(<span class="number">10001</span>);</span><br></pre></td></tr></table></figure>
+
+<img   src="/Hexo-Blog/2024/08/30/pgsql-distributed-lock/pgsql_pg_lock_waiting.png"  class="" title="获取该锁定标识对应的锁">
+
+<p>可以看到该锁定标识对应的资源已被阻塞，将等待直到该资源变成可用。点击继续跳过断点之后即可再次成功获取。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="http://www.postgres.cn/docs/12/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS" >PGSQL中文文档-咨询锁函数<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET/">.NET</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/PostgreSQL/">PostgreSQL</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Concurrency-Control/">Concurrency Control</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/11/29/mysql-usage/"
+                                   title="MySQL常用CLI命令及SQL语句"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">MySQL常用CLI命令及SQL语句</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/27/jwt-and-ssh/"
+                                   title="加密算法在JWT、SSH中的应用"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">加密算法在JWT、SSH中的应用</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81%E4%B8%8E%E6%82%B2%E8%A7%82%E9%94%81"><span class="nav-text">乐观锁与悲观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81"><span class="nav-text">悲观锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-text">乐观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CAS"><span class="nav-text">CAS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%94%81%E3%80%81%E8%BF%9B%E7%A8%8B%E9%94%81%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">线程锁、进程锁与分布式锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%94%81"><span class="nav-text">线程锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%94%81"><span class="nav-text">进程锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">分布式锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PGSQL%E5%92%A8%E8%AF%A2%E9%94%81"><span class="nav-text">PGSQL咨询锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E9%94%81%E5%AE%9A%E6%A8%A1%E5%BC%8F"><span class="nav-text">定义锁定模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%92%A8%E8%AF%A2%E9%94%81%E6%8E%A5%E5%8F%A3"><span class="nav-text">定义咨询锁接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BC%9A%E8%AF%9D%E7%BA%A7%E9%94%81%E7%9A%84%E6%98%BE%E7%A4%BA%E9%87%8A%E6%94%BE"><span class="nav-text">实现会话级锁的显示释放</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%92%A8%E8%AF%A2%E9%94%81"><span class="nav-text">实现咨询锁</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">应用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%A8%E5%BA%94%E7%94%A8%E4%B8%AD%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="nav-text">在应用中定义和使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E9%94%81%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88"><span class="nav-text">验证锁是否生效</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81%E4%B8%8E%E6%82%B2%E8%A7%82%E9%94%81"><span class="nav-text">乐观锁与悲观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81"><span class="nav-text">悲观锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-text">乐观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CAS"><span class="nav-text">CAS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%94%81%E3%80%81%E8%BF%9B%E7%A8%8B%E9%94%81%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">线程锁、进程锁与分布式锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%94%81"><span class="nav-text">线程锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%94%81"><span class="nav-text">进程锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">分布式锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PGSQL%E5%92%A8%E8%AF%A2%E9%94%81"><span class="nav-text">PGSQL咨询锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E9%94%81%E5%AE%9A%E6%A8%A1%E5%BC%8F"><span class="nav-text">定义锁定模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%92%A8%E8%AF%A2%E9%94%81%E6%8E%A5%E5%8F%A3"><span class="nav-text">定义咨询锁接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BC%9A%E8%AF%9D%E7%BA%A7%E9%94%81%E7%9A%84%E6%98%BE%E7%A4%BA%E9%87%8A%E6%94%BE"><span class="nav-text">实现会话级锁的显示释放</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%92%A8%E8%AF%A2%E9%94%81"><span class="nav-text">实现咨询锁</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">应用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%A8%E5%BA%94%E7%94%A8%E4%B8%AD%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="nav-text">在应用中定义和使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E9%94%81%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88"><span class="nav-text">验证锁是否生效</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

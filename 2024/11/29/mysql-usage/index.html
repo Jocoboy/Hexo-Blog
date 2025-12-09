@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            MySQL常用CLI命令及SQL语句 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        MySQL常用CLI命令及SQL语句
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-11-29 14:43:02</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Database/">Database</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/MySQL/">MySQL</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>21k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>1:15 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>MySQL 数据库中的一些常用 SQL、CLI 命令，以及配置文件。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>MySQL 采用多种存储引擎，如 InnoDB 和 MyISAM 等。InnoDB 是 MySQL 默认的存储引擎，支持事务处理、行级锁和外键约束。MyISAM 存储引擎则更侧重于性能，适合以读为主的应用场景。MySQL 在简单的查询操作和高并发的读场景下，性能表现较好，但在处理复杂的嵌套查询和大规模数据写入时，性能可能会受到一定影响。MySQL 广泛应用于互联网行业的中小型应用、网站开发和云计算环境，因为它易于安装、配置和维护，能够满足大多数网站的基本数据存储和查询需求，同时拥有庞大的用户社区和丰富的文档资源及第三方工具和插件支持。</p>
+<h2 id="数据库连接"><a href="#数据库连接" class="headerlink" title="数据库连接"></a>数据库连接</h2><p>.NET 项目配置文件中数据库连接字符串如下，</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;ConnectionStrings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;MysqlConnection&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Server=localhost;userid=root;password=your-password;database=your-database;port=3306;&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="MySQL-常用-CLI-命令"><a href="#MySQL-常用-CLI-命令" class="headerlink" title="MySQL 常用 CLI 命令"></a>MySQL 常用 CLI 命令</h2><h3 id="mysqld"><a href="#mysqld" class="headerlink" title="mysqld"></a>mysqld</h3><p>mysqld，也称为 MySQL Server，是 MySQL 数据库系统中的核心组件。它是一个服务守护进程（daemon），负责管理数据库的访问和操作。在 Linux 系统中，服务通常以“d”结尾，代表守护进程。mysqld 作为服务器端程序，它处理来自客户端程序的网络连接请求，并管理对数据库的访问。</p>
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><p>初始化 mysql 服务，初始化数据目录，但不生成随机密码(设置数据库空密码)，同时指定运行 mysqld 服务器的用户名为 root，端口号为 3306</p>
+<p><code>mysqld --initialize-insecure --user=root --port=3306 --console</code></p>
+<p>安装 mysql 服务，命名为 MySQL80，并设置默认配置文件</p>
+<p><code>mysqld --install MySQL80 --defaults-file=C:\Program Files\MySQL\MySQL Server 8.0\my.ini</code></p>
+<p>启动 MySQL80 服务</p>
+<p><code>net start ANWISE-MySQL</code></p>
+<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>my.ini 配置文件内容如下，</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8mb4</span><br><span class="line"><span class="comment"># 配置免密登录 (可选)</span></span><br><span class="line"><span class="attr">user</span>=root</span><br><span class="line"><span class="attr">password</span>=your_passowrd</span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">default_authentication_plugin</span>=mysql_native_password</span><br><span class="line"><span class="attr">port</span>=<span class="number">3306</span></span><br><span class="line"><span class="attr">basedir</span>=C:\Program Files\MySQL\MySQL Server <span class="number">8.0</span></span><br><span class="line"><span class="attr">datadir</span>=C:\Program Files\MySQL\MySQL Server <span class="number">8.0</span>\data</span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">200</span></span><br><span class="line"><span class="attr">character-set-server</span>=utf8mb4</span><br><span class="line"><span class="attr">default-storage-engine</span>=InnoDB</span><br><span class="line"><span class="attr">log_timestamps</span>=SYSTEM</span><br><span class="line"><span class="attr">innodb_page_size</span>=<span class="number">64</span>K</span><br><span class="line"><span class="attr">max_allowed_packet</span>=<span class="number">1</span>G</span><br><span class="line"><span class="comment"># 配置sql_mode (可选)</span></span><br><span class="line"><span class="attr">sql_mode</span>=<span class="string">&#x27;STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h3><p>mysql 是 MySQL 自带的命令行客户端程序，用于交互式输入 SQL 语句或以批处理模式从文件执行它们。</p>
+<h4 id="常用命令-1"><a href="#常用命令-1" class="headerlink" title="常用命令"></a>常用命令</h4><p>登录 mysql</p>
+<p><code>mysql -u root -P 3306</code></p>
+<p>修改 mysql 密码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">ALTER USER <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>IDENTIFIED WITH mysql_native_password BY <span class="string">&#x27;your_passowrd&#x27;</span>;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">flush privileges;</span></span><br><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">quit;</span></span><br></pre></td></tr></table></figure>
+
+<p>查看所有数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mysql&gt;</span><span class="language-bash">show databases;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行SQL文件(需要在控制台中将字符编码设置为UTF-8)</p>
+<p><code>chcp 65001</code></p>
+<p><code>mysql -uroot -p[your_passowrd] -D[your_databse] &lt; [your_script].sql</code></p>
+<h2 id="MySQL-常用-SQL"><a href="#MySQL-常用-SQL" class="headerlink" title="MySQL 常用 SQL"></a>MySQL 常用 SQL</h2><h3 id="CREATE-GRANT"><a href="#CREATE-GRANT" class="headerlink" title="CREATE&#x2F;GRANT"></a>CREATE&#x2F;GRANT</h3><p>CREATE 可用于创建库名和用户名，配合GRANT可以在创建用户的同时赋予权限。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建数据库名</span></span><br><span class="line"><span class="keyword">CREATE</span> DATABASE `demo` <span class="type">CHARACTER</span> <span class="keyword">SET</span> <span class="string">&#x27;utf8mb4&#x27;</span> <span class="keyword">COLLATE</span> <span class="string">&#x27;utf8mb4_unicode_ci&#x27;</span>;</span><br><span class="line"><span class="comment">-- 创建用户并赋予权限</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> test@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">ON</span> demo.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;                </span><br></pre></td></tr></table></figure>
+
+<h3 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h3><p>获取数据库中所有 TRUNCATE 语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	CONCAT(<span class="string">&#x27;TRUNCATE TABLE &#x27;</span>, table_schema, <span class="string">&#x27;.&#x27;</span>, TABLE_NAME, <span class="string">&#x27;;&#x27;</span>)</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	INFORMATION_SCHEMA.TABLES</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	table_schema <span class="keyword">IN</span> (<span class="string">&#x27;db_name&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="TRUNCATE-DROP-DELETE"><a href="#TRUNCATE-DROP-DELETE" class="headerlink" title="TRUNCATE&#x2F;DROP&#x2F;DELETE"></a>TRUNCATE&#x2F;DROP&#x2F;DELETE</h3><p>TRUNCATE 只能操作表，将表中数据全部删除，在功能上和不带 WHERE 子句的 DELETE 语句相同，但是 TRUNCATE 会释放表空间，且不能回滚事务。TRUNCATE 一般会配合禁用&#x2F;启动外键约束的语句使用。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 禁用外键约束</span></span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS<span class="operator">=</span><span class="number">0</span>;</span><br><span class="line"><span class="keyword">TRUNCATE</span> <span class="keyword">TABLE</span> [table_name]</span><br><span class="line"><span class="comment">-- 开启外键约束</span></span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>DROP 将删除表的结构，以及被依赖的约束、触发器、索引。DROP 执行速度最快。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> [table_name]</span><br></pre></td></tr></table></figure>
+
+<p>DELETE 将表中数据全部删除，但是不会释放表空间，可以回滚事务。DELETE 执行速度最慢。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> <span class="keyword">TABLE</span> [table_name]</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储函数"><a href="#存储函数" class="headerlink" title="存储函数"></a>存储函数</h3><p>举例，对 int 类型的字段值进行转换</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建存储函数</span></span><br><span class="line">DELIMITER  <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">FUNCTION</span> IF <span class="keyword">EXISTS</span> convert_function <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">FUNCTION</span> convert_function([var_name] <span class="type">INT</span>) <span class="keyword">RETURNS</span> <span class="type">INT</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">DECLARE</span> res <span class="type">INT</span>;</span><br><span class="line">	IF [var_name]  <span class="operator">=</span> <span class="number">100</span> <span class="keyword">THEN</span></span><br><span class="line">		<span class="keyword">SET</span> res <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">END</span> IF;</span><br><span class="line">    <span class="keyword">RETURN</span> res;</span><br><span class="line"><span class="keyword">END</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 执行存储函数</span></span><br><span class="line"><span class="keyword">SELECT</span> convert_function(<span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h3><p>mysql支持对类型为json的字段值进行操作，例如修改类型为<strong>json</strong>的字段中的某个属性值，需要调用JSON_SET和JSON_EXTRACT</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> [table_name] t</span><br><span class="line"><span class="keyword">SET</span> t.json <span class="operator">=</span> JSON_SET(t.json, <span class="string">&#x27;$.myProperty&#x27;</span>, convert_function(JSON_EXTRACT(t.json, <span class="string">&#x27;$.myProperty&#x27;</span>)));</span><br></pre></td></tr></table></figure>
+
+<p>举例，修改类型为<strong>json数组</strong>的字段中的某个属性值</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建存储过程</span></span><br><span class="line">DELIMITER <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">PROCEDURE</span> IF <span class="keyword">EXISTS</span> update_json_array <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> update_json_array()</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">    <span class="keyword">DECLARE</span> done <span class="type">INT</span> <span class="keyword">DEFAULT</span> <span class="literal">FALSE</span>;</span><br><span class="line">    <span class="keyword">DECLARE</span> json_index <span class="type">INT</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">DECLARE</span> json_length <span class="type">INT</span>;</span><br><span class="line">    <span class="keyword">DECLARE</span> current_id <span class="type">char</span>(<span class="number">36</span>);</span><br><span class="line">    <span class="keyword">DECLARE</span> current_json JSON;</span><br><span class="line">    <span class="keyword">DECLARE</span> cursor_json <span class="keyword">CURSOR</span> <span class="keyword">FOR</span></span><br><span class="line">        <span class="keyword">SELECT</span> id, json <span class="keyword">FROM</span> [table_name];</span><br><span class="line">    <span class="keyword">DECLARE</span> CONTINUE HANDLER <span class="keyword">FOR</span> <span class="keyword">NOT</span> FOUND <span class="keyword">SET</span> done <span class="operator">=</span> <span class="literal">TRUE</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">OPEN</span> cursor_json;</span><br><span class="line">    read_loop: LOOP</span><br><span class="line">        <span class="keyword">FETCH</span> cursor_json <span class="keyword">INTO</span> current_id, current_json;</span><br><span class="line">        IF done <span class="keyword">THEN</span></span><br><span class="line">            LEAVE read_loop;</span><br><span class="line">        <span class="keyword">END</span> IF;</span><br><span class="line">        <span class="keyword">SET</span> json_length <span class="operator">=</span> JSON_LENGTH(current_json);</span><br><span class="line">        WHILE json_index <span class="operator">&lt;</span> json_length DO</span><br><span class="line">            <span class="comment">-- 更新json数组中每个对象的属性值</span></span><br><span class="line">            <span class="keyword">SET</span> current_json <span class="operator">=</span> JSON_SET(current_json,</span><br><span class="line">                CONCAT(<span class="string">&#x27;$[&#x27;</span>, json_index, <span class="string">&#x27;].myProperty&#x27;</span>), convert_function(JSON_EXTRACT(current_json, CONCAT(<span class="string">&#x27;$[&#x27;</span>, json_index, <span class="string">&#x27;].myProperty&#x27;</span>))));</span><br><span class="line">            <span class="keyword">SET</span> json_index <span class="operator">=</span> json_index <span class="operator">+</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">END</span> WHILE;</span><br><span class="line"></span><br><span class="line">        <span class="comment">-- 更新表中的记录</span></span><br><span class="line">        <span class="keyword">UPDATE</span> [table_name]</span><br><span class="line">        <span class="keyword">SET</span> files <span class="operator">=</span> current_json</span><br><span class="line">        <span class="keyword">WHERE</span> id <span class="operator">=</span> current_id;</span><br><span class="line">        <span class="keyword">SET</span> json_index <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">END</span> LOOP;</span><br><span class="line">    <span class="keyword">CLOSE</span> cursor_json;</span><br><span class="line"><span class="keyword">END</span> <span class="operator">/</span><span class="operator">/</span></span><br><span class="line">DELIMITER ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 执行存储过程</span></span><br><span class="line"><span class="keyword">CALL</span> update_json_array();</span><br></pre></td></tr></table></figure>
+
+<h3 id="全局参数修改"><a href="#全局参数修改" class="headerlink" title="全局参数修改"></a>全局参数修改</h3><blockquote>
+<p>Error Code: 1418. This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you <em>might</em> want to use the less safe log_bin_trust_function_creators variable)</p>
+</blockquote>
+<p>出现如上报错，需要修改<code>log_bin_trust_function_creators</code>的值为true，<code>log_bin_trust_function_creators</code>控制是否可以信任存储函数创建者，不会创建写入二进制日志引起不安全事件的存储函数。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">global</span> log_bin_trust_function_creators<span class="operator">=</span><span class="literal">TRUE</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://mysql.net.cn/doc/refman/8.0/en/" >MySQL 官方中文文档<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/MySQL/">MySQL</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/11/29/oracle-usage/"
+                                   title="Oracle常用SQL、PL/SQL语句"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Oracle常用SQL、PL/SQL语句</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/30/pgsql-distributed-lock/"
+                                   title="基于PGSQL咨询锁函数实现的分布式锁"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">基于PGSQL咨询锁函数实现的分布式锁</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-text">数据库连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-%E5%B8%B8%E7%94%A8-CLI-%E5%91%BD%E4%BB%A4"><span class="nav-text">MySQL 常用 CLI 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysqld"><span class="nav-text">mysqld</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql"><span class="nav-text">mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-1"><span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-%E5%B8%B8%E7%94%A8-SQL"><span class="nav-text">MySQL 常用 SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE-GRANT"><span class="nav-text">CREATE&#x2F;GRANT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT"><span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TRUNCATE-DROP-DELETE"><span class="nav-text">TRUNCATE&#x2F;DROP&#x2F;DELETE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="nav-text">存储函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-text">存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9"><span class="nav-text">全局参数修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-text">数据库连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-%E5%B8%B8%E7%94%A8-CLI-%E5%91%BD%E4%BB%A4"><span class="nav-text">MySQL 常用 CLI 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysqld"><span class="nav-text">mysqld</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql"><span class="nav-text">mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-1"><span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-%E5%B8%B8%E7%94%A8-SQL"><span class="nav-text">MySQL 常用 SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE-GRANT"><span class="nav-text">CREATE&#x2F;GRANT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT"><span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TRUNCATE-DROP-DELETE"><span class="nav-text">TRUNCATE&#x2F;DROP&#x2F;DELETE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="nav-text">存储函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-text">存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9"><span class="nav-text">全局参数修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

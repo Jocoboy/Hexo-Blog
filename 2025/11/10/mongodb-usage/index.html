@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            文档型数据库MongoDB使用介绍 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        文档型数据库MongoDB使用介绍
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-11-10 13:17:44</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Database/">Database</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/MongoDB/">MongoDB</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NoSQL/">NoSQL</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>15k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>54 mins. Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>MongoDB文档型NoSQL数据库中的使用特性、适用场景，以及命令行工具Mongo Shell、操作符表达式等使用介绍。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>MongoDB是一个开源的、面向文档的NoSQL数据库，它在设计上与传统的关系型数据库（如 MySQL、Oracle）有很大不同。它使用类似JSON的文档模型存储数据，将数据存储为BSON（Binary JSON）格式的”文档”，而不是行和列。这种格式使得数据存储非常灵活，表达非常自然和强大。MongoDB旨在为WEB应用提供可扩展的高性能数据存储解决方案。MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。</p>
+<h2 id="使用特性"><a href="#使用特性" class="headerlink" title="使用特性"></a>使用特性</h2><p>MongoDB与关系型数据库的核心概念对比如下:</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>MongoDB（文档数据库）</th>
+<th>关系型数据库（如 MySQL）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据库</td>
+<td>Database</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>表&#x2F;集合</td>
+<td>Collection</td>
+<td>Table</td>
+</tr>
+<tr>
+<td>行&#x2F;文档</td>
+<td>Document</td>
+<td>Row</td>
+</tr>
+<tr>
+<td>列&#x2F;字段</td>
+<td>Field</td>
+<td>Column</td>
+</tr>
+<tr>
+<td>主键</td>
+<td>_id（默认自动创建）</td>
+<td>Primary Key</td>
+</tr>
+<tr>
+<td>索引</td>
+<td>index</td>
+<td>index</td>
+</tr>
+<tr>
+<td>表关联</td>
+<td>引用（$lookup）或嵌入式文档</td>
+<td>Join（表连接）</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>动态模式（无模式）</td>
+<td>预定义，严格的模式</td>
+</tr>
+</tbody></table>
+<p>MongoDB与传统关系型数据库相比，具有以下优势：</p>
+<ul>
+<li>灵活的文档模式（无模式）：同一个集合（Collection）中的文档（Document）不需要具有相同的结构（字段），每个文档可以有自己的独特字段。这对于快速迭代的开发非常友好，可以在不关闭数据库的情况下，随时为数据添加新字段，极大地提高了开发效率。</li>
+<li>现代化的存储格式：文档以一种类似于JSON的格式存储，称为BSON。它支持丰富的数据类型，如字符串、数字、日期、数组，甚至嵌套的其他文档。这种格式对于现代编程语言来说非常自然，减少了数据在应用层和数据库层之间转换的复杂性。</li>
+<li>强大的查询语音：MongoDB提供了丰富的查询操作符，用于执行读取、更新、删除和聚合操作。它几乎能实现SQL的所有功能，语法同样强大且直观。</li>
+<li>高性能优化方案：支持多种索引（单字段、复合、多键、地理空间、全文等），可以极大地加快查询速度。支持内存映射，将内存管理工作交给操作系统，利用系统缓存来优化性能。提供强大的聚合框架，可以对数据进行复杂的转换和分析，类似于SQL中的 GROUP BY和聚合函数，但更灵活。</li>
+<li>高可用性与可扩展性：MongoDB通过复制集提供高可用性。一个复制集由多个节点组成（通常一主多从），主节点故障时，从节点会自动选举出新的主节点，确保服务不中断。当数据量巨大或吞吐量要求极高时，MongoDB支持分片（横向扩展）。它将一个集合的数据分布式地存储在多台机器（分片）上，形成一个数据库集群，从而突破单机性能瓶颈。</li>
+</ul>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>MongoDB的文档模型和无模式特性适用于以下场景：</p>
+<ul>
+<li>内容管理系统：文章、评论、标签等数据非常适合用文档模型来存储。</li>
+<li>社交网络：用户档案、动态、好友列表等，其中包含大量非结构化和半结构化数据。</li>
+<li>物联网：海量的设备传感器数据，通常是以时间序列的形式写入，MongoDB能够高效地处理这种写入密集型操作。</li>
+<li>实时分析：聚合管道非常适合用于生成实时报表和分析数据。</li>
+<li>产品目录：不同品类的商品拥有完全不同的属性，MongoDB的无模式特性可以完美应对这种多变性。</li>
+<li>移动应用：其灵活的schema非常适合快速迭代的移动应用后端。</li>
+</ul>
+<h2 id="数据库连接"><a href="#数据库连接" class="headerlink" title="数据库连接"></a>数据库连接</h2><p>一个标准的MongoDB连接字符串格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<ul>
+<li>本地无认证方式</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongodb://localhost:27017/?directConnection=true&amp;serverSelectionTimeoutMS=2000&amp;appName=mongosh+2.5.9</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>带认证的数据库</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongodb://myUser:myPassword@localhost:27017/myAppDatabase</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>复制集（集群）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongodb://host1:27017,host2:27017,host3:27017/myAppDatabase?replicaSet=myReplicaSet</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Atlas 云数据库</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongodb+srv://myUser:myPassword@cluster0.abcde.mongodb.net/myAppDatabase</span><br></pre></td></tr></table></figure>
+
+<h3 id="GUI方式"><a href="#GUI方式" class="headerlink" title="GUI方式"></a>GUI方式</h3><p>MongoDB Compass是MongoDB官方提供的免费、图形化界面（GUI）工具，用于与MongoDB数据库进行交互。</p>
+<h3 id="CLI方式"><a href="#CLI方式" class="headerlink" title="CLI方式"></a>CLI方式</h3><p>MongoDB Shell是MongoDB提供的命令行工具，允许用户与MongoDB数据库进行交互、执行命令和操作数据库。下载完MongoCompass后可前往<a class="link"   target="_blank" rel="noopener" href="https://www.mongodb.com/try/download/shell" >MongoDB Shell下载地址<i class="fas fa-external-link-alt"></i></a>自行下载。</p>
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><p>启动Shell</p>
+<p><code>mongosh</code></p>
+<p>此时会连接到本地MongoDB服务器，连接成功后，可以执行各种MongoDB数据库操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">show dbs <span class="comment"># 显示数据库列表</span></span></span><br><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">use &lt;database_name&gt; <span class="comment"># 切换到指定数据库</span></span></span><br><span class="line">&lt;database_name&gt; &gt; db.&lt;collection_name&gt;.insertOne(&#123; ... &#125;) # 向指定集合插入文档</span><br><span class="line">&lt;database_name&gt; &gt; db.&lt;collection_name&gt;.find() # 查询指定文档</span><br><span class="line">&lt;database_name&gt; &gt; db.&lt;collection_name&gt;.updateOne(&#123; ... &#125;) # 向指定集合更新文档</span><br><span class="line">&lt;database_name&gt; &gt; db.&lt;collection_name&gt;.deleteOne(&#123; ... &#125;) # 向指定集合删除文档</span><br></pre></td></tr></table></figure>
+
+<p>退出Shell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;database_name&gt; &gt; quit</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<ul>
+<li>插入文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mydatabase&gt; </span><span class="language-bash">db.mycollection.insertOne(&#123; name: <span class="string">&quot;Alice&quot;</span>, age: 30 &#125;)</span></span><br><span class="line">&#123;</span><br><span class="line">  acknowledged: true,</span><br><span class="line">  insertedId: ObjectId(&#x27;69118ecdae2964f29e63b112&#x27;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mydatabase&gt; </span><span class="language-bash">db.mycollection.find()</span></span><br><span class="line">[</span><br><span class="line">    &#123; _id: ObjectId(&#x27;667cd8789a69705686ed70f2&#x27;), name: &#x27;Alice&#x27;, age: 31 &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更新文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mydatabase&gt; </span><span class="language-bash">db.mycollection.updateOne(&#123; name: <span class="string">&quot;Alice&quot;</span> &#125;, &#123; <span class="variable">$set</span>: &#123; age: 31 &#125; &#125;)</span></span><br><span class="line">&#123;</span><br><span class="line">  acknowledged: true,</span><br><span class="line">  insertedId: null,</span><br><span class="line">  matchedCount: 1,</span><br><span class="line">  modifiedCount: 1,</span><br><span class="line">  upsertedCount: 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除文档</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">mydatabase&gt; </span><span class="language-bash">db.mycollection.deleteOne(&#123; name: <span class="string">&quot;Alice&quot;</span> &#125;)</span></span><br><span class="line">&#123; </span><br><span class="line">    acknowledged: true, deletedCount: 1 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="操作符表达式"><a href="#操作符表达式" class="headerlink" title="操作符表达式"></a>操作符表达式</h2><p>MongoDB的操作符表达式是其查询语言的核心，可以构建复杂且强大的查询、更新、聚合等操作。这些操作符以$符号开头。</p>
+<h3 id="查询操作符"><a href="#查询操作符" class="headerlink" title="查询操作符"></a>查询操作符</h3><p>用于find()、update()等方法中，定位符合条件的文档。</p>
+<ul>
+<li>比较操作符：例如$eq、$gt、$lt、$in等</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.find(&#123; age: &#123; $lt: 25 &#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>逻辑操作符：例如$and、$or、$not、$nor</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.find(&#123; $and: [ &#123; status: &quot;A&quot; &#125;, &#123; age: &#123; $lt: 30 &#125; &#125; ] &#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>元素操作符：例如$exists(匹配具有指定字段的文档)、$type(匹配字段是指定 BSON 类型的文档)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.find(&#123; phone: &#123; $exists: true &#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数组操作符：$all(匹配包含数组中指定的所有元素的数组)、$elemMatch(匹配数组中的元素能同时满足所有指定条件的)、$size(匹配数组大小等于指定值的文档)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.find(&#123; scores: &#123; $elemMatch: &#123; $gt: 80， $lt: 90 &#125; &#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新操作符"><a href="#更新操作符" class="headerlink" title="更新操作符"></a>更新操作符</h3><p>用于update()和findAndModify()等方法中，修改文档的内容。</p>
+<ul>
+<li>字段更新操作符：例如$set(设置字段的值)、$unset(删除指定字段)、$rename(重命名字段)、$inc(将字段的值增加指定的数量)等</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.update(&#123;&#125;, &#123; $set: &#123; status: &quot;A&quot;， modified: ISODate() &#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数组更新操作符：例如$[&lt;identifier&gt;](过滤后的位置操作符，与arrayFilters一起使用，更新所有符合过滤条件的数组元素)、$pop、$pull、$push</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection_name&gt;.update(&#123;&#125;, &#123; $set: &#123; “grades.$[elem].score”: 100 &#125; &#125;, &#123; arrayFilters: [ &#123; “elem.score”: &#123; $lte: 80 &#125; &#125; ] &#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="聚合管道操作符"><a href="#聚合管道操作符" class="headerlink" title="聚合管道操作符"></a>聚合管道操作符</h3><p>用于aggregate()方法中，对数据进行转换和计算。它们在聚合管道的各个阶段中使用。</p>
+<ul>
+<li><p>阶段操作符：例如$match、$group、$sort、$limit、$skip、$lookup(对同一数据库中的另一个集合执行左外连接)、$project(重塑文档流，例如添加、删除、重命名字段，类似于投影)</p>
+</li>
+<li><p>表达式操作符(常用于$group)：$sum、$avg、$firt、$last、$min、$max</p>
+</li>
+</ul>
+<p>示例：获取所有用户，并列出他们发表的所有文章。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$lookup</span>: &#123;</span><br><span class="line">      <span class="attr">from</span>: <span class="string">&quot;posts&quot;</span>,</span><br><span class="line">      <span class="attr">localField</span>: <span class="string">&quot;_id&quot;</span>,       <span class="comment">// users 的 _id</span></span><br><span class="line">      <span class="attr">foreignField</span>: <span class="string">&quot;authorId&quot;</span>, <span class="comment">// posts 的 authorId</span></span><br><span class="line">      <span class="attr">as</span>: <span class="string">&quot;userPosts&quot;</span>          <span class="comment">// 这个数组会包含用户的所有文章</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$project</span>: &#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="attr">email</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="string">&quot;userPosts.title&quot;</span>: <span class="number">1</span>,    <span class="comment">// 只投影出文章的 title 和 date</span></span><br><span class="line">      <span class="string">&quot;userPosts.createdAt&quot;</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://www.mongodb.com/zh-cn/docs/manual/" >MongoDB官方中文文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://www.mongodb.com/zh-cn/docs/mongodb-shell/" >MongoDB Shell使用参考<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/MongoDB/">MongoDB</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NoSQL/">NoSQL</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2025/07/17/ai-model-on-premise/"
+                                   title="AI大模型本地部署"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">AI大模型本地部署</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%89%B9%E6%80%A7"><span class="nav-text">使用特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GUI%E6%96%B9%E5%BC%8F"><span class="nav-text">GUI方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CLI%E6%96%B9%E5%BC%8F"><span class="nav-text">CLI方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">操作符表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">查询操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">更新操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%AE%A1%E9%81%93%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">聚合管道操作符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%89%B9%E6%80%A7"><span class="nav-text">使用特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5"><span class="nav-text">数据库连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GUI%E6%96%B9%E5%BC%8F"><span class="nav-text">GUI方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CLI%E6%96%B9%E5%BC%8F"><span class="nav-text">CLI方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">操作符表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">查询操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">更新操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%AE%A1%E9%81%93%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">聚合管道操作符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

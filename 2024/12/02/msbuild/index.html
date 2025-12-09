@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            基于.NET的MSBuild常用命令 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        基于.NET的MSBuild常用命令
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-12-02 16:01:11</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Package-Tool/">Package-Tool</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/MSBuild/">MSBuild</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>11k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>40 mins. Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>基于.NET的MSBuild常用命令记录。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Microsoft生成引擎是一个用于生成应用程序的平台。此引擎（也称为 MSBuild）为项目文件提供了一个XML架构，用于控制生成平台处理和生成软件的方式。Visual Studio会使用MSBuild，但MSBuild不依赖于Visual Studio。通过在项目或解决方案文件中调用msbuild.exe或dotnet build，可以在未安装Visual Studio的环境中安排和生成产品。</p>
+<h2 id="环境设置"><a href="#环境设置" class="headerlink" title="环境设置"></a>环境设置</h2><p>以VS 2022为例，MSBuild可执行文件路径为<code>C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin</code></p>
+<h2 id="项目配置文件"><a href="#项目配置文件" class="headerlink" title="项目配置文件"></a>项目配置文件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--回车符\r &amp;#xD; 换行符\n &amp;#xA; 双引号&quot; &amp;quot;--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;PostBuild&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;PostBuildEvent&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;if &#x27;$(IS_Integrated)&#x27; == &#x27;true&#x27; (<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>  xcopy $(TargetPath) $(SolutionDir)..\Outputs\  /R /Y<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>  xcopy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Outputs\  /R /Y<span class="symbol">&amp;#xD;</span><span class="symbol">&amp;#xA;</span>)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;CopyDirectory&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;Build&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CopyCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; == &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>xcopy <span class="symbol">&amp;quot;</span>$(SolutionDir)..\Outputs\*.dll<span class="symbol">&amp;quot;</span> <span class="symbol">&amp;quot;</span>$(ProjectDir)bin\$(Configuration)\netcoreapp3.1\<span class="symbol">&amp;quot;</span> /E /D /I /Y</span><br><span class="line">        <span class="tag">&lt;/<span class="name">CopyCommand</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CopyCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; != &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>cp -r <span class="symbol">&amp;quot;</span>$(SolutionDir)..\Outputs\*.dll<span class="symbol">&amp;quot;</span> <span class="symbol">&amp;quot;</span>$(ProjectDir)bin\$(Configuration)\netcoreapp3.1\<span class="symbol">&amp;quot;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">CopyCommand</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;$(CopyCommand)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">Target</span> <span class="attr">Name</span>=<span class="string">&quot;CreateFolderIfNotExists&quot;</span> <span class="attr">AfterTargets</span>=<span class="string">&quot;Build&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">uploadPath</span>&gt;</span>$(ProjectDir)bin\$(Configuration)\upload<span class="tag">&lt;/<span class="name">uploadPath</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CreateCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27; == &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>if not exist <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span> md <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span><span class="tag">&lt;/<span class="name">CreateCommand</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CreateCommand</span> <span class="attr">Condition</span>=<span class="string">&quot;&#x27;$(OS)&#x27;!= &#x27;Windows_NT&#x27;&quot;</span>&gt;</span>if [! -d <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span> ]; then mkdir -p <span class="symbol">&amp;quot;</span>$(uploadPath)<span class="symbol">&amp;quot;</span>; fi<span class="tag">&lt;/<span class="name">CreateCommand</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Exec</span> <span class="attr">Command</span>=<span class="string">&quot;$(CreateCommand)&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Target</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行构建"><a href="#命令行构建" class="headerlink" title="命令行构建"></a>命令行构建</h2><p>对于单个dotnet项目，可使用以下命令构建</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">项目文件携带环境变量的情况</span></span><br><span class="line">MSBuild [project file] /p:PropertyName=Value</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">举例</span></span><br><span class="line">MSBuild test.csproj /p:IS_Integrated = true</span><br></pre></td></tr></table></figure>
+
+<h2 id="批处理构建"><a href="#批处理构建" class="headerlink" title="批处理构建"></a>批处理构建</h2><p>对于模块较多的dotnet项目，可使用批处理脚本批量构建，并跟踪构建情况</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">set</span> totalCount=<span class="number">14</span></span><br><span class="line"><span class="built_in">set</span> failCount=<span class="number">0</span></span><br><span class="line"><span class="built_in">set</span> failList=&quot;&quot;</span><br><span class="line"><span class="built_in">chcp</span> <span class="number">65001</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> your/test.sln/<span class="built_in">path</span></span><br><span class="line"><span class="built_in">echo</span> 正在构建test模块[进度 <span class="number">1</span>/<span class="variable">%totalCount%</span>]...</span><br><span class="line">dotnet build test.sln  &gt; <span class="built_in">nul</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> <span class="variable">%errorlevel%</span> <span class="keyword">neq</span> <span class="number">0</span> (</span><br><span class="line">    <span class="built_in">echo</span> test模块构建失败</span><br><span class="line">    <span class="built_in">set</span> /a failCount=failCount + <span class="number">1</span></span><br><span class="line">    <span class="built_in">set</span> failList=&quot;<span class="variable">%failList%</span> test&quot;</span><br><span class="line">) <span class="keyword">else</span> (</span><br><span class="line">    <span class="built_in">echo</span> test模块已构建成功！</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> /a successCount=<span class="variable">%totalCount%</span> - <span class="variable">%failCount%</span></span><br><span class="line"><span class="built_in">set</span> /p DUMMY=构建成功<span class="variable">%successCount%</span>个，失败<span class="variable">%failCount%</span>个，失败的模块有[<span class="variable">%failList%</span>]，请尝试手动构建，按回车键继续...</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/cpp/build/reference/common-macros-for-build-commands-and-properties" >用于MSBuild命令和属性的常用宏<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/visualstudio/msbuild/msbuild-properties" >MSBuild 属性说明<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows-server/administration/windows-commands/xcopy" >xcopy命令参数说明<i class="fas fa-external-link-alt"></i></a></p>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/MSBuild/">MSBuild</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/12/04/sqlserver-usage/"
+                                   title="SQL Server常用SQL、T-SQL语句"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">SQL Server常用SQL、T-SQL语句</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/11/29/oracle-usage/"
+                                   title="Oracle常用SQL、PL/SQL语句"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Oracle常用SQL、PL/SQL语句</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="nav-text">环境设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">项目配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%9E%84%E5%BB%BA"><span class="nav-text">命令行构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E5%A4%84%E7%90%86%E6%9E%84%E5%BB%BA"><span class="nav-text">批处理构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE"><span class="nav-text">环境设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">项目配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%9E%84%E5%BB%BA"><span class="nav-text">命令行构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E5%A4%84%E7%90%86%E6%9E%84%E5%BB%BA"><span class="nav-text">批处理构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

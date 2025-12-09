@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            Docker虚拟化技术与容器化部署 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        Docker虚拟化技术与容器化部署
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-15 12:05:50</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Virtualization-Technology/">Virtualization-Technology</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Docker/">Docker</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>49k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>2:57 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>Docker基本概念、安装配置、容器化部署及常用命令。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Docker是一种操作系统层面的轻量级虚拟化技术，由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器(Container)。与虚拟机(VM)相比，Docker使用宿主机的操作系统，启动更快。每个容器只运行所需的应用程序和依赖项，资源消耗更少。Docker将操作系统、运行时环境、第三方软件库和依赖包、应用程序、环境变量、配置文件、启动命令等打包在一起，以便在任何环境中都能正常运行。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><img   src="/Hexo-Blog/2024/08/15/docker-usage/docker_architecture.png"  class="" title="Docker架构图">
+
+<h3 id="Docker-Daemon"><a href="#Docker-Daemon" class="headerlink" title="Docker Daemon"></a>Docker Daemon</h3><p>Docker使用Client-Server架构，Docker Clinet和Docker Daemon之间通过Socket或Restful API进行通信。</p>
+<p>Docker Daemon是服务端的守护进程，负责管理Docker的各种资源，接受并处理来自客户端的请求，然后将结果返回给客户端。</p>
+<h3 id="Docker镜像与容器"><a href="#Docker镜像与容器" class="headerlink" title="Docker镜像与容器"></a>Docker镜像与容器</h3><p>镜像(Images)是一个只读的容器模板，含有启动Docker容器所需的文件系统结构及内容。容器是Docker的运行实例，它提供了一个独立的可移植的环境。Docker以镜像和在镜像基础上构建的容器为基础，以容器开发、测试、发布的单元将应用相关的所有组件和环境进行封装，避免了应用在不同平台间迁移所带来的依赖问题，确保了应用在生产环境的各阶段达到高度一致的实际效果。</p>
+<h3 id="Docker仓库"><a href="#Docker仓库" class="headerlink" title="Docker仓库"></a>Docker仓库</h3><p>Docker仓库(Registry)是用来集中存储和管理Docker镜像的地方。常用的有Dockerhub，用户可在此分享和下载Docker镜像，以实现镜像的共享和复用。</p>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><p>Docker官网在国内需要vpn才能访问，可通过国内镜像地址下载。Docker的使用可通过命令行方式，也可通过图形化工具Docker Desktop。</p>
+<p>Windows系统中启动Docker Desktop的先决条件(以下二选一)</p>
+<ul>
+<li>安装WSL(推荐)</li>
+<li>开启Hyper-V功能</li>
+</ul>
+<h2 id="容器化与Dockerfile"><a href="#容器化与Dockerfile" class="headerlink" title="容器化与Dockerfile"></a>容器化与Dockerfile</h2><p>Dockerfile是Docker用来构建镜像的指令文件，Docker容器化包含以下三个部分</p>
+<ul>
+<li><p>创建一个Dockerfile</p>
+</li>
+<li><p>使用Dockerfile构建镜像</p>
+</li>
+<li><p>使用镜像创建和构建容器</p>
+</li>
+</ul>
+<p>例如要使用node在alpine中运行一个index.js文件，对应的Dockerfile为</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">14</span>-alpine</span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> index.js /index.js</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> node /index.js</span></span><br></pre></td></tr></table></figure>
+
+<p>.dockerignore是Docker镜像构建的ignore文件，通过合理配置可以减少Docker构建上下文大小，加快镜像构建速度，避免将敏感信息（如开发环境配置）打包进镜像，保持生产镜像的简洁性。</p>
+<h2 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h2><p>Docker Compose是一个用来定义和运行复杂应用的Docker工具。一个使用Docker容器的应用，通常由多个容器组成。使用Docker Compose不再需要使用shell脚本来启动容器。 </p>
+<p>Docker Compose通过一个配置文件来管理多个Docker容器。在配置文件中，所有的容器通过services来定义，然后使用docker-compose脚本来启动，停止和重启应用、应用中的服务以及所有依赖服务的容器，非常适合组合使用多个容器进行开发的场景。</p>
+<p>最新的Docker已经集成了docker-compose功能，可使用<code>docker compose version</code>命令查看当前版本。</p>
+<h3 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h3><p>下面是一个Docker Compose的简单示例。</p>
+<h4 id="配置文件目录结构"><a href="#配置文件目录结构" class="headerlink" title="配置文件目录结构"></a>配置文件目录结构</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">├─ etc</span><br><span class="line">   └─ docker</span><br><span class="line">       ├─ mysql</span><br><span class="line">       │   ├─ config</span><br><span class="line">       │   │    └─ my.conf</span><br><span class="line">       │   ├─ sqlScript</span><br><span class="line">       │   │    └─ createDatabase.sql</span><br><span class="line">       │   └─ Dockerfile</span><br><span class="line">       │</span><br><span class="line">       └─ redis</span><br><span class="line">            └─ conf</span><br><span class="line">                └─ redis.conf </span><br></pre></td></tr></table></figure>
+
+<h4 id="配置文件docker-compose-yml"><a href="#配置文件docker-compose-yml" class="headerlink" title="配置文件docker-compose.yml"></a>配置文件docker-compose.yml</h4><p>Docker Compose配置文件是一个定义服务，网络和卷的YAML文件，默认文件名为docker-compose.yml。与Docker运行一样，默认情况下，Dockerfile中指定的选项（例如，CMD，EXPOSE，VOLUME，ENV）都被遵守，你不需要在docker-compose.yml中再次指定它们。</p>
+<p>例如定义一个包含redis和mysql数据的容器，可使用以下配置文件。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># server.yml</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.7&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis</span> <span class="comment"># 指定一个自定义容器名称，而不是生成的默认名称 </span></span><br><span class="line">    <span class="attr">ports:</span> <span class="comment"># 端口信息。常用的简单格式：使用宿主:容器(HOST:CONTAINER)格式或者仅仅指定容器的端口(宿主将会随机选择端口)都可以。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;6379:6379&quot;</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span> <span class="comment"># 指定启动容器的镜像，可以是镜像仓库/标签或者镜像id</span></span><br><span class="line">    <span class="attr">volumes:</span> <span class="comment"># 卷挂载路径设置。可以设置宿主机路径(HOST:CONTAINER)或加上访问模式(HOST:CONTAINER:ro),挂载数据卷的默认权限是读写(rw)，可以通过ro指定为只读。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./redis/datadir:/data&quot;</span> <span class="comment"># 相对于当前compose文件的相对路径</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./redis/logs:/logs&quot;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="comment"># 覆盖容器启动后默认执行的命令</span></span><br><span class="line">      <span class="string">/bin/bash</span> <span class="string">-c</span> <span class="string">&quot;redis-server /usr/local/etc/redis/redis.conf&quot;</span>      </span><br><span class="line">    </span><br><span class="line">  <span class="attr">mysql-db:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mysql-db</span> </span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:8.0.1</span>                   </span><br><span class="line">    <span class="attr">volumes:</span> <span class="comment"># 包含命名卷(如mysql_data:/var/lib/mysql)、主机路径卷、匿名卷、只读卷和文件挂载(如./init.sql:/docker-entrypoint-initdb.d/init.sql)等 </span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./mysql/data:/var/lib/mysql&quot;</span>           </span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./mysql/config:/etc/mysql/conf.d&quot;</span>     </span><br><span class="line">    <span class="attr">build:</span> <span class="comment"># 指定包含构建上下文的路径</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span> <span class="comment"># 包含Dockerfile文件的目录路径，或者是git仓库的URL。当提供的值是相对路径时，它被解释为相对于当前compose文件的位置。该目录也是发送到Docker守护程序构建镜像的上下文。</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">mysql/Dockerfile</span> <span class="comment"># 备用Docker文件。Compose将使用备用文件来构建，还必须指定构建路径。</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="comment"># 添加环境变量。可以使用数组或字典两种形式。只给定名称的变量会自动获取它在Compose主机上的值，可以用来防止泄露不必要的数据。(如果服务指定了build选项，那么在构建过程中通过environment定义的环境变量将不会起作用，将使用build的args子选项来定义构建时的环境变量。)</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">&quot;root&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可使用以下命令构建并运行容器(使用-f使用自定义的配置文件，使用-d以后台方式运行)</p>
+<p><code>docker-compose -f server.yml up -d</code></p>
+<p>关闭或移除容器、镜像等</p>
+<p><code>docker-compose -f server.yml down</code></p>
+<h3 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h3><img   src="/Hexo-Blog/2024/08/15/docker-usage/docker_compose_sample.png"  class="" title="Docker-Compose示例">
+
+<p>将一个.NET+Vue+MySQL应用打包为Docker镜像的完整方案如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">my-app/</span><br><span class="line">├── mysql</span><br><span class="line">│   ├─ config</span><br><span class="line">│   │    └─ my.conf</span><br><span class="line">│   ├─ data</span><br><span class="line">│   ├─ sqlScript</span><br><span class="line">│   │    └─ init.sql</span><br><span class="line">│   └─ Dockerfile</span><br><span class="line">│</span><br><span class="line">├── backend/</span><br><span class="line">│   ├── ABPDemo.Web</span><br><span class="line">│   │    └── ABPDemo.Web.csproj</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   ├── .dockerignore</span><br><span class="line">│   └── ...  </span><br><span class="line">│              </span><br><span class="line">├── frontend/</span><br><span class="line">│   ├── package.json</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   ├── .dockerignore</span><br><span class="line">│   ├── nginx.conf</span><br><span class="line">│   └── ...</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">└── .env</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置数据库Dockerfile"><a href="#配置数据库Dockerfile" class="headerlink" title="配置数据库Dockerfile"></a>配置数据库Dockerfile</h4><p>数据库Dockerfile文件如下，</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> mysql:<span class="number">8.0</span>.<span class="number">1</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> mysql/sqlScript/*.sql /docker-entrypoint-initdb.d/</span></span><br></pre></td></tr></table></figure>
+
+<p>其中init.sql数据库初始化脚本文件如下，</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- init.sql</span></span><br><span class="line"><span class="comment">-- MySQL 数据库初始化脚本</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置字符集</span></span><br><span class="line"><span class="keyword">SET</span> NAMES utf8mb4;</span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建数据库（如果不存在）</span></span><br><span class="line"><span class="keyword">CREATE</span> DATABASE IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> `ABPDemo` </span><br><span class="line"><span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 </span><br><span class="line"><span class="keyword">COLLATE</span> utf8mb4_unicode_ci;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用新创建的数据库</span></span><br><span class="line">USE `ABPDemo`;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 示例: 创建学生表（如果不存在）</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> `students` (</span><br><span class="line">	`id` <span class="type">varchar</span>(<span class="number">64</span>) <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_general_ci <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;数据唯一标识&#x27;</span>,</span><br><span class="line">	`name` <span class="type">varchar</span>(<span class="number">256</span>) <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_general_ci <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">	<span class="keyword">PRIMARY</span> KEY (`id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">)ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4 <span class="keyword">COLLATE</span><span class="operator">=</span>utf8mb4_general_ci ROW_FORMAT<span class="operator">=</span><span class="keyword">DYNAMIC</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> students (id, name) <span class="keyword">VALUES</span>(<span class="string">&#x27;3a1b6256-17fb-3551-0aed-af1436e871f1&#x27;</span>, <span class="string">&#x27;John&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 启用外键约束</span></span><br><span class="line"><span class="keyword">SET</span> FOREIGN_KEY_CHECKS <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>my.conf数据库配置文件如下，</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">character-set-server</span>=utf8mb4</span><br><span class="line"><span class="attr">default-time-zone</span>=<span class="string">&#x27;+8:00&#x27;</span></span><br><span class="line"><span class="attr">innodb_rollback_on_timeout</span>=<span class="string">&#x27;ON&#x27;</span></span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">500</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span>=<span class="number">500</span></span><br></pre></td></tr></table></figure>
+
+<p>注：如果MySQL容器初始化脚本未执行，可使用命令<code>cmd.exe /c &quot;docker exec -i mysql_db mysql -uroot -p[MYSQL_ROOT_PASSWORD] &lt; ./mysql/sqlScript/init.sql&quot;</code>手动执行。</p>
+<h4 id="配置后端Dockerfile"><a href="#配置后端Dockerfile" class="headerlink" title="配置后端Dockerfile"></a>配置后端Dockerfile</h4><p>.NET后端Dockerfile文件如下，</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> mcr.microsoft.com/dotnet/aspnet:<span class="number">8.0</span> AS base</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">443</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> mcr.microsoft.com/dotnet/sdk:<span class="number">8.0</span> AS build</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /src</span></span><br><span class="line"><span class="comment"># 复制解决方案文件（如果存在）</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> *.sln .</span></span><br><span class="line"><span class="comment"># 复制项目文件进行依赖恢复</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.Web/ABPDemo.Web.csproj&quot;</span>, <span class="string">&quot;ABPDemo.Web/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.HttpApi/ABPDemo.HttpApi.csproj&quot;</span>, <span class="string">&quot;ABPDemo.HttpApi/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.Application.Contracts/ABPDemo.Application.Contracts.csproj&quot;</span>, <span class="string">&quot;ABPDemo.Application.Contracts/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.Domain.Shared/ABPDemo.Domain.Shared.csproj&quot;</span>, <span class="string">&quot;ABPDemo.Domain.Shared/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.Application/ABPDemo.Application.csproj&quot;</span>, <span class="string">&quot;ABPDemo.Application/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.Domain/ABPDemo.Domain.csproj&quot;</span>, <span class="string">&quot;ABPDemo.Domain/&quot;</span>]</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> [<span class="string">&quot;ABPDemo.EntityFrameworkCore/ABPDemo.EntityFrameworkCore.csproj&quot;</span>, <span class="string">&quot;ABPDemo.EntityFrameworkCore/&quot;</span>]</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet restore <span class="string">&quot;ABPDemo.Web/ABPDemo.Web.csproj&quot;</span></span></span><br><span class="line"><span class="comment"># 复制所有源代码</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> <span class="string">&quot;/src/ABPDemo.Web&quot;</span></span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet build <span class="string">&quot;ABPDemo.Web.csproj&quot;</span> -c Release -o /app/build</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> build AS publish</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> dotnet publish <span class="string">&quot;ABPDemo.Web.csproj&quot;</span> -c Release -o /app/publish</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> base AS final</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=publish /app/publish .</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;dotnet&quot;</span>, <span class="string">&quot;ABPDemo.Web.dll&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="配置前端Dockerfile"><a href="#配置前端Dockerfile" class="headerlink" title="配置前端Dockerfile"></a>配置前端Dockerfile</h4><p>Vue前端Dockerfile文件如下，</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建阶段</span></span><br><span class="line"><span class="keyword">FROM</span> node:<span class="number">18</span>-alpine AS build</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> package*.json ./</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="comment"># 覆写.env.production中的值</span></span><br><span class="line"><span class="keyword">ARG</span> VUE_APP_API_BASE_URL=http://localhost:<span class="number">8081</span>/</span><br><span class="line"><span class="keyword">ENV</span> VUE_APP_BASE_URL=$VUE_APP_API_BASE_URL</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm run build:prod</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生产阶段</span></span><br><span class="line"><span class="keyword">FROM</span> nginx:<span class="number">1.27</span>.<span class="number">0</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=build /app/dist /usr/share/nginx/html</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> nginx.conf /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>注：执行<code>npm install</code>需要联网环境，若要断网离线构建，应先本地构建dist，然后从宿主机复制到容器，对应的Dockfile可简化为：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> nginx:<span class="number">1.27</span>.<span class="number">0</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> dist /usr/share/nginx/html</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> nginx.conf /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>其中nginx.conf的配置内容如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line">    default_type application/octet-stream;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        root /usr/share/nginx/html;</span><br><span class="line">        index index.html;</span><br><span class="line"></span><br><span class="line">        # 处理前端路由</span><br><span class="line">        location / &#123;</span><br><span class="line">            try_files $uri $uri/ /index.html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        # 代理 API 请求到后端</span><br><span class="line">        location /api/ &#123;</span><br><span class="line">            proxy_pass http://backend:80;</span><br><span class="line">            proxy_http_version 1.1;</span><br><span class="line">            proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">            proxy_set_header Connection &#x27;upgrade&#x27;;</span><br><span class="line">            proxy_set_header Host $host;</span><br><span class="line">            proxy_cache_bypass $http_upgrade;</span><br><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：Dockerfile中配置的后端地址<code>http://localhost:8081/</code>为代理地址(由于浏览器同源策略，必须与宿主机的前端访问地址一致)，由于宿主机的8081端口指向容器的80端口，因此容器内实际的前端地址仍然为<code>http://localhost:80/</code>。 在location中通过设置proxy_pass相对路径<code>http://backend:80</code>(Docker内置的DNS解析器会自动将backend解析为对应容器的IP地址)，将后端请求由<code>http://localhost:80/api/xxx</code>转发到<code>http://backend:80/api/xxx</code>，从而解决跨域问题。</p>
+<h4 id="配置Docker-Compose"><a href="#配置Docker-Compose" class="headerlink" title="配置Docker Compose"></a>配置Docker Compose</h4><p>docker-compose.yml配置文件如下，</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:8.0.1</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mysql_db</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">$&#123;MYSQL_ROOT_PASSWORD&#125;</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">$&#123;MYSQL_DATABASE&#125;</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">$&#123;MYSQL_USER&#125;</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">$&#123;MYSQL_PASSWORD&#125;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3307:3306&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/data:/var/lib/mysql</span> <span class="comment">#mysql数据存储</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/config:/etc/mysql/conf.d</span>   <span class="comment">#mysql的配置</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql/sqlScript:/docker-entrypoint-initdb.d</span> <span class="comment">#mysql初始化脚本  </span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">app-network</span></span><br><span class="line">    <span class="comment">#healthcheck:</span></span><br><span class="line">    <span class="comment">#  test: [&quot;CMD&quot;, &quot;mysqladmin&quot;, &quot;ping&quot;, &quot;-h&quot;, &quot;localhost&quot;, &quot;-uroot&quot;, &quot;-p$&#123;MYSQL_ROOT_PASSWORD&#125;&quot;]</span></span><br><span class="line">    <span class="comment">#  timeout: 20s</span></span><br><span class="line">    <span class="comment">#  retries: 10</span></span><br><span class="line">    <span class="attr">command:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">--default-authentication-plugin=mysql_native_password</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--character-set-server=utf8mb4</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--collation-server=utf8mb4_unicode_ci</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--ssl=0</span> <span class="comment"># 禁用 SSL</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">backend:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./backend</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">dotnet_backend</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># 使用&quot;SectionName__PropertyName&quot;替换appsettings.json中的数据库连接字符串</span></span><br><span class="line">      <span class="comment"># 例如：</span></span><br><span class="line">      <span class="comment"># &quot;ConnectionStrings&quot;: &#123;</span></span><br><span class="line">      <span class="comment">#   &quot;DefaultConnection&quot;: &quot;Server=127.0.0.1;port=3306;Database=ABPDemo;User=root;Password=root1234&quot;</span></span><br><span class="line">      <span class="comment"># &#125;</span></span><br><span class="line">      <span class="comment"># 对应的数据库连接字符串替换如下(mysql是docker-compose中定义的MySQL服务名称，Docker内置的DNS解析器会自动将服务名解析为对应容器的IP地址):</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=$&#123;MYSQL_DATABASE&#125;;User=$&#123;MYSQL_USER&#125;;Password=$&#123;MYSQL_PASSWORD&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ASPNETCORE_ENVIRONMENT=Production</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5000:80&quot;</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="comment">#mysql:</span></span><br><span class="line">      <span class="comment">#  condition: service_healthy</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">app-network</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">frontend:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./frontend</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">vue_frontend</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8081:80&quot;</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">backend</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">app-network</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">mysql_data:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">app-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br></pre></td></tr></table></figure>
+
+<p>注：若要断网离线构建frontend，除了修改Dockfile直接使用COPY命令，也可以修改Docker Compose使用volumes挂载文件，具体配置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="attr">frontend:</span></span><br><span class="line">    <span class="string">...</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./frontend/dist:/usr/share/nginx/html</span> <span class="comment">#前端dist部署包</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./frontend/nginx.conf:/etc/nginx/nginx.conf</span> <span class="comment">#nginx配置</span></span><br><span class="line">    <span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h4><p>.env配置文件如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MYSQL_ROOT_PASSWORD=root1234</span><br><span class="line">MYSQL_DATABASE=ABPDemo</span><br><span class="line">MYSQL_USER=root</span><br><span class="line">MYSQL_PASSWORD=root1234</span><br></pre></td></tr></table></figure>
+
+<p>使用命令<code>docker-compose build</code>以构建上述所有镜像，使用命令<code>docker-compose up -d</code>启动镜像。</p>
+<h4 id="导入导出"><a href="#导入导出" class="headerlink" title="导入导出"></a>导入导出</h4><p>管道方式打包导出所有镜像(使用此命令导出的镜像，在加载后为<code>&lt;none&gt;:&lt;none&gt;</code>未标签状态，需要手动打标签)<br><code>docker save -o all-images.tar $(docker-compose images -q)</code></p>
+<p>列表方式打包导出所有镜像(列表项格式为<code>&lt;image-name&gt;:&lt;image-tag&gt;</code>)<br><code>docker save -o all-images.tar mysql:8.0.1 my-app-backend:latest my-app-frontend:latest</code></p>
+<p>也可以将所有镜像罗列到image-list.txt当中，然后通过文件读取的方式导出<br><code>docker save -o all-images.tar $(cat image-list.txt)</code></p>
+<blockquote>
+<p>注：使用列表导出时，请检查所有Dockfile中依赖的基础镜像，例如node:18-alpine等，将他们全部添加进列表中，否则后续docker-compose构建容器时会尝试联网拉取远程基础镜像。</p>
+</blockquote>
+<p>导出配置<br><code>docker-compose config &gt; docker-compose-export.yml</code></p>
+<p>加载镜像<br><code>docker load -i all-images.tar</code></p>
+<p>根据导出配置启动服务<br><code>docker-compose -f docker-compose-export.yml up -d</code></p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="镜像管理"><a href="#镜像管理" class="headerlink" title="镜像管理"></a>镜像管理</h3><p>拉取镜像</p>
+<p><code>docker pull [image-url]</code></p>
+<p>使用镜像源拉取(如轩辕镜像中mirror-url为<code>docker.xuanyuan.me</code>, path为<code>library</code>)</p>
+<p><code>docker pull [mirror-url]/[path]/[image-name]:[image-version]</code></p>
+<p>从本地归档文件(.tar)加载镜像到本地镜像库</p>
+<p><code>docker load -i [image-name].tar</code></p>
+<p>通过Shell重定向使用标准输入(stdin)加载镜像(适用于脚本或管道操作)</p>
+<p><code>docker load &lt; [image-name].tar</code></p>
+<p>构建镜像</p>
+<p><code>docker build -t [image-name] .</code></p>
+<p>根据镜像ID重命名镜像名称</p>
+<p><code>docker tag [image-id] [image-name]</code></p>
+<p>运行镜像(使用-d以守护进程&#x2F;后台方式运行)</p>
+<p><code>docker run [image-name] .</code></p>
+<p>查看所有镜像</p>
+<p><code>docker image ls</code></p>
+<p><code>docker images</code></p>
+<p>上传镜像</p>
+<p><code>docker push [image-url]</code></p>
+<p>删除镜像</p>
+<p><code>docker rmi [image-name] /</code></p>
+<p><code>docker image rm [image-name]</code></p>
+<p>从容器创建镜像</p>
+<p><code>docker commit [container-name] [image-name]</code></p>
+<p>保存为镜像文件</p>
+<p><code>docker save -o [image-name].tar [image-name]</code></p>
+<h3 id="容器管理"><a href="#容器管理" class="headerlink" title="容器管理"></a>容器管理</h3><p>创建容器</p>
+<p><code>docker create [image-name]</code></p>
+<p>启动运行并命名容器</p>
+<p><code>docker run  --name [container-name] [image-name]</code></p>
+<p>例如运行一个基于Ubuntu的容器，可使用以下命令</p>
+<p><code>docker run --name ubuntu_demo -itd docker.xuanyuan.me/library/ubuntu</code></p>
+<p>(注：-itd为组合参数，-i使容器保持交互状态，-t为容器分配一个伪终端，-d在后台运行容器)</p>
+<p>进入Ubuntu容器内部</p>
+<p><code>docker exec -it ubuntu_demo /bin/bash</code></p>
+<p>停止容器</p>
+<p><code>docker stop [container-name]</code></p>
+<p>删除容器</p>
+<p><code>docker rm [container-name] /</code></p>
+<p><code>docker container rm [container-name]</code></p>
+<p>退出容器</p>
+<p><code>exit</code></p>
+<h2 id="WSL配置Docker"><a href="#WSL配置Docker" class="headerlink" title="WSL配置Docker"></a>WSL配置Docker</h2><p>通过WSL使用Docker时可能会缺失一些配置文件。</p>
+<h3 id="daemon-json"><a href="#daemon-json" class="headerlink" title="daemon.json"></a>daemon.json</h3><p>daemon.json是Docker引擎的配置管理文件，可以统一设置容器的网络、存储、安全、日志等选项。</p>
+<p>docker安装后默认没有daemon.json这个配置文件，需要进行手动创建。在linux系统中，配置文件的默认径为：&#x2F;etc&#x2F;docker&#x2F;daemon.json。</p>
+<p>可使用以下命令手动创建daemon.json</p>
+<p><code>sudo mkdir -p /etc/docker</code></p>
+<p><code>sudo touch /etc/docker/daemon.json</code></p>
+<p><code>sudo nano /etc/docker/daemon.json</code></p>
+<p>例如配置docker镜像，可添加以下配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> </span><br><span class="line">      <span class="string">&quot;https://&lt;your-aliyun-id&gt;.mirror.aliyuncs.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;https://docker.xuanyuan.me&quot;</span> </span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>保存并退出后可使用以下命令重启docker</p>
+<p><code>sudo systemctl restart docker</code></p>
+<p>可使用<code>docker info</code>查看镜像配置是否生效，若仍未生效，可前往Docker Desktop手动设置。</p>
+<p>右键点击任务栏Docker图标 → Settings → Docker Engine，修改JSON配置后点击Apply &amp; Restart等待重启完成即可。</p>
+<h3 id="docker-service"><a href="#docker-service" class="headerlink" title="docker.service"></a>docker.service</h3><p>docker.service文件是用于配置和管理Docker守护进程的systemd单元文件。它定义了Docker服务的启动、停止和重启行为，以及一些关键的配置参数。</p>
+<p>如果缺失这个文件，在重启docker时会报错</p>
+<blockquote>
+<p>Failed to start docker.service: Unit docker.service not found</p>
+</blockquote>
+<p>可使用以下命令手动创建docker.service</p>
+<p><code>sudo nano /etc/systemd/system/docker.service</code></p>
+<p>可添加以下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Docker Application Container Engine</span><br><span class="line">After=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line">Restart=always</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>保存后使用以下命令重新加载systemd配置并启动服务</p>
+<p><code>sudo systemctl daemon-reload</code></p>
+<p><code>sudo systemctl start docker</code></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.docker.com/" >Docker官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.docker.com/compose/" >Docker Compose官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://kontext.tech/project/aspnet-core/article/overwrite-connecting-string-via-environment-variable-for-asp-net-core-on-docker" >如何在Docker中通过环境变量覆写数据库连接字符串<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.docker.com/desktop/features/wsl/" >Docker集成WSL2<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Docker/">Docker</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/16/linux-usage/"
+                                   title="Linux常用命令"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Linux常用命令</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/14/redis-usage/"
+                                   title="Redis数据库常用CLI命令及应用场景"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Redis数据库常用CLI命令及应用场景</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Daemon"><span class="nav-text">Docker Daemon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E9%95%9C%E5%83%8F%E4%B8%8E%E5%AE%B9%E5%99%A8"><span class="nav-text">Docker镜像与容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E4%BB%93%E5%BA%93"><span class="nav-text">Docker仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%8C%96%E4%B8%8EDockerfile"><span class="nav-text">容器化与Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose"><span class="nav-text">Docker Compose</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B"><span class="nav-text">简单示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-text">配置文件目录结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6docker-compose-yml"><span class="nav-text">配置文件docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-text">完整示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93Dockerfile"><span class="nav-text">配置数据库Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%90%8E%E7%AB%AFDockerfile"><span class="nav-text">配置后端Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%89%8D%E7%AB%AFDockerfile"><span class="nav-text">配置前端Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEDocker-Compose"><span class="nav-text">配置Docker Compose</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">配置环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA"><span class="nav-text">导入导出</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86"><span class="nav-text">镜像管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86"><span class="nav-text">容器管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WSL%E9%85%8D%E7%BD%AEDocker"><span class="nav-text">WSL配置Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#daemon-json"><span class="nav-text">daemon.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-service"><span class="nav-text">docker.service</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Daemon"><span class="nav-text">Docker Daemon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E9%95%9C%E5%83%8F%E4%B8%8E%E5%AE%B9%E5%99%A8"><span class="nav-text">Docker镜像与容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E4%BB%93%E5%BA%93"><span class="nav-text">Docker仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%8C%96%E4%B8%8EDockerfile"><span class="nav-text">容器化与Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose"><span class="nav-text">Docker Compose</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B"><span class="nav-text">简单示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-text">配置文件目录结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6docker-compose-yml"><span class="nav-text">配置文件docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-text">完整示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93Dockerfile"><span class="nav-text">配置数据库Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%90%8E%E7%AB%AFDockerfile"><span class="nav-text">配置后端Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%89%8D%E7%AB%AFDockerfile"><span class="nav-text">配置前端Dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEDocker-Compose"><span class="nav-text">配置Docker Compose</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">配置环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA"><span class="nav-text">导入导出</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86"><span class="nav-text">镜像管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86"><span class="nav-text">容器管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WSL%E9%85%8D%E7%BD%AEDocker"><span class="nav-text">WSL配置Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#daemon-json"><span class="nav-text">daemon.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-service"><span class="nav-text">docker.service</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            Redis数据库常用CLI命令及应用场景 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        Redis数据库常用CLI命令及应用场景
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-14 10:58:38</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Database/">Database</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/ABP/">ABP</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NoSQL/">NoSQL</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Redis/">Redis</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>28k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>1:42 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>Redis数据库的使用场景、使用方法、重要概念，一些常用的CLI命令，以及应用场景。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis(Remote Dictionary Server)是一个高性能的(key&#x2F;value)分布式内存数据库，基于内存运行并支持持久化的NoSQL数据库，常用于数据缓存、充当消息队列等。Redis不仅仅支持简单的key-value类型的数据(如string)，同时还提供list，set，sorted set，hash等数据结构的存储。</p>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><p>Redis在Mac&#x2F;Linux系统下可通过命令行直接安装，而在Windows系统下需要通过WSL安装一个Linux系统来安装Redis，或者通过Docker下载Redis镜像通过镜像运行Redis，也可以使用传统EXE安装包安装(不推荐)。Redis可通过CLI、API、GUI(如RedisInsight)三种方式使用。</p>
+<h3 id="通过EXE安装包启动"><a href="#通过EXE安装包启动" class="headerlink" title="通过EXE安装包启动"></a>通过EXE安装包启动</h3><p>启动Redis</p>
+<p><code>redis-server</code></p>
+<p>报错</p>
+<blockquote>
+<p>Could not create server TCP listening socket *:6379: bind: 在一个非套接字上尝试了一个操作 。</p>
+</blockquote>
+<p>Redis安装目录下，依次输入</p>
+<p><code>redis-cli.exe</code></p>
+<p><code>shutdown</code></p>
+<p><code>exit</code></p>
+<p><code>redis-server.exe redis.windows.conf</code></p>
+<h3 id="通过Docker启动"><a href="#通过Docker启动" class="headerlink" title="通过Docker启动"></a>通过Docker启动</h3><p>拉取Redis官方镜像</p>
+<p><code>docker pull redis</code></p>
+<p>启动Redis，设置端口映射(主机:容器)，设置数据持久化挂载，并启用AOF持久化</p>
+<p><code>docker run --name my-redis -p 6379:6379 -v /path/to/redis/data:/data -d redis redis-server --appendonly yes</code></p>
+<p>使用自定义配置文件启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">  --name my-redis \</span><br><span class="line">  -v /path/to/redis.conf:/usr/local/etc/redis/redis.conf \</span><br><span class="line">  -v /path/to/data:/data \</span><br><span class="line">  -d redis \</span><br><span class="line">  redis-server /usr/local/etc/redis/redis.conf</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：&#x2F;path&#x2F;to&#x2F;redis.conf为主机(HOST)上的Redis配置文件路径，&#x2F;usr&#x2F;local&#x2F;etc&#x2F;redis&#x2F;redis.conf为容器内部的默认Redis配置文件路径。容器启动时会使用主机上的配置文件替代容器内的默认配置，对主机配置文件的修改会实时生效到容器内(无需重建容器)</p>
+</blockquote>
+<h2 id="CLI常用命令"><a href="#CLI常用命令" class="headerlink" title="CLI常用命令"></a>CLI常用命令</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><h4 id="key-value"><a href="#key-value" class="headerlink" title="key-value"></a>key-value</h4><p>设置键值对</p>
+<p><code>SET [key] [value]</code></p>
+<p>获取键值</p>
+<p><code>GET [key]</code></p>
+<p>删除键值对</p>
+<p><code>DELETE [key]</code></p>
+<p>判断键值对是否存在</p>
+<p><code>EXISTS [key]</code></p>
+<p>获取所有键值对</p>
+<p><code>KEYS *</code></p>
+<p>获取所有以xx结尾的键值对</p>
+<p><code>KEYS *xx</code></p>
+<p>游标方式获取所有以xx:开头的前n个键值对(非阻塞查询)</p>
+<p><code>SCAN 0 MATCH xx:* COUNT n</code></p>
+<p>删除所有键值对</p>
+<p><code>FLUSHALL</code></p>
+<p>设置键值对过期时间</p>
+<p><code>EXPIRE [key] [seconds]</code></p>
+<p>获取键值对过期时间</p>
+<p><code>TTL [key]</code></p>
+<p>设置键值对并设置过期时间</p>
+<p><code>SETEX [key] [seconds] [value]</code></p>
+<p>设置不存在的键值对(若已存在则忽略执行)</p>
+<p><code>SETNX [key] [value]</code></p>
+<h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>创建列表并添加元素</p>
+<p><code>LPUSH [list] [value, ...]</code></p>
+<p><code>RPUSH [list] [value, ...]</code></p>
+<p>获取整个列表</p>
+<p><code>LRANGE [list] 0 -1</code></p>
+<p>删除列表元素</p>
+<p><code>LPOP [list] [count]</code></p>
+<p><code>RPOP [list] [count]</code></p>
+<p>获取列表长度</p>
+<p><code>LLEN [list]</code></p>
+<p>仅保留索引为n到m的部分列表</p>
+<p><code>LTRIME [list] n m</code></p>
+<h4 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h4><p>创建集合并添加元素</p>
+<p><code>SADD [set] [value, ...]</code></p>
+<p>获取集合中的元素</p>
+<p><code>SMEMBERS [set]</code></p>
+<p>判断元素是否在集合中</p>
+<p><code>SISMEMBER [set] [value]</code></p>
+<p>删除集合中的元素</p>
+<p><code>SREM [set] [value]</code></p>
+<h4 id="SortedSet"><a href="#SortedSet" class="headerlink" title="SortedSet"></a>SortedSet</h4><p>创建有序集合并添加元素</p>
+<p><code>ZADD [sortedset] [(score value), ...]</code></p>
+<p>获取有序集合全部元素</p>
+<p><code>ZRANGE [sortedset] 0 -1 WITHSCORES</code></p>
+<p>获取有序集合某个元素权值</p>
+<p><code>ZSCORE [sortedset] [value]</code></p>
+<p>获取有序集合某个元素排名</p>
+<p><code>ZRANK [sortedset] [value]</code></p>
+<p><code>ZREVRANK [sortedset] [value]</code></p>
+<p>删除有序集合某个元素</p>
+<p><code>ZREM [sortedset] [value]</code></p>
+<h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p>创建哈希集合</p>
+<p><code>HSET [hash] [key] [value]</code></p>
+<p>获取哈希集合中的元素</p>
+<p><code>HGET [hash] [key]</code></p>
+<p>获取哈希集合中的全部元素</p>
+<p><code>HGETALL [hash]</code></p>
+<p>删除哈希集合中的某个元素</p>
+<p><code>HDEL [hash] [key]</code></p>
+<p>判断哈希集合中的某个元素是否存在</p>
+<p><code>HEXISTS [hash] [key]</code></p>
+<p>获取哈希集合中的键</p>
+<p><code>HKEYS [hash]</code></p>
+<p>获取哈希集合长度</p>
+<p><code>HLEN [hash]</code></p>
+<h3 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式"></a>发布订阅模式</h3><p>订阅频道</p>
+<p><code>SUBSCRIBE [channel]</code></p>
+<p>发布频道消息</p>
+<p><code>PUBLISH [channel] [message]</code></p>
+<h4 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h4><p>向消息队列中添加一条消息</p>
+<p><code>XADD [stream] * [key] [value]</code></p>
+<p>获取消息队列中消息数量</p>
+<p><code>XLEN [stream]</code></p>
+<p>获取消息队列中的所有消息</p>
+<p><code>XRANGE [stream] - +</code></p>
+<p>删除消息队列中的某条消息</p>
+<p><code>XDEL [stream] [id]</code></p>
+<p>删除消息队列中的所有消息</p>
+<p><code>XTRIM [stream] MAXLEN 0</code></p>
+<p>读取消息队列中索引为i开始的n条消息，如不存在阻塞x秒</p>
+<p><code>XRED COUNT n BLOCK x STREAMS [stream] i</code></p>
+<p>创建消费者组</p>
+<p><code>XGROUP CREATE [stream] [group] [id]</code></p>
+<p>获取消费者组信息</p>
+<p><code>XINFO GROUPS [stream]</code></p>
+<p>向消费者组中添加消费者</p>
+<p><code>XGROUP CREATECONSUMER [stream] [group] [consumer]</code></p>
+<p>读取消费者组中某消费者的最新n条消息，如不存在阻塞x秒</p>
+<p><code>XREDGROUP [group] [consumer] COUNT n BLOCK x STREAMS [stream] &gt;</code></p>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>注: Redis中的事务概念与传统事务概念不同，不保证原子性</p>
+<p>标记一个事务开始</p>
+<p><code>MULTI</code></p>
+<p>提交事务</p>
+<p><code>EXEC</code></p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>Redis有RDB(Redis Database)和AOF(Append Only File)两种数据持久化方式。</p>
+<h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>RDB相当于数据快照，可在redis.confg文件中配置自动触发，例如<u>save 60 10000</u>代表60s内如果有10000次修改则触发一次快照，也可通过CLI中的save命令手动触发。</p>
+<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4><p>AOF相当于使用日志记录操作命令，可在redis.confg文件中配置参数<u>appendonly yes</u>自动触发。</p>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>Redis主从复制是指将Redis主节点数据复制到从节点，数据的复制是单向的。</p>
+<p>假设主节点端口号为6379，从节点端口号为6380。在从节点的redis.confg文件中配置参数<u>replicaof 127.0.0.1 6379</u>启用主从复制功能。启动从节点6380服务后，使用CLI命令</p>
+<p><code>redis-cli -p 6380</code></p>
+<p><code>info replication</code></p>
+<p>即可看到当前节点角色已从master变为slave。</p>
+<h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>Redis主从复制存在一个问题，如果主节点宕机了，需要手动去将从节点设置为主节点。为了实现主节点的自动故障转移，Redis引入了一个独立的进程来监视主节点，通过发布订阅模式通知从节点变更为主节点。</p>
+<p>创建配置文件sentinel.conf并配置参数<u>sentinel monitor master 127.0.0.1 6379 1</u>(1代表故障转移需要同意的哨兵的个数)，使用CLI命令</p>
+<p><code>redis-sentinel sentinel.conf</code></p>
+<p>即可启动哨兵进程。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><h3 id="Redis分布式缓存"><a href="#Redis分布式缓存" class="headerlink" title="Redis分布式缓存"></a>Redis分布式缓存</h3><p>Redis最常用的应用场景是数据缓存。Redis将高频访问数据从磁盘(数据库)移至内存，响应时间从毫秒级降至微秒级。1个Redis实例(16GB内存)可替代数百台数据库服务器的缓存负载。Redis作为独立缓存层，可以保护后端系统免受流量冲击。</p>
+<p>ABP中集成了Redis分布式缓存，下面是一个使用示例。</p>
+<p>Web层WebModule配置如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ConfigureRedis</span>(<span class="params">ServiceConfigurationContext context</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> configuration = context.Services.GetConfiguration();</span><br><span class="line"></span><br><span class="line">    Configure&lt;AbpDistributedCacheOptions&gt;(options =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        options.KeyPrefix = <span class="string">&quot;ABPDemo:&quot;</span>; <span class="comment">// 可选：设置缓存键前缀</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置Redis分布式缓存</span></span><br><span class="line">    context.Services.AddStackExchangeRedisCache(options =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        options.Configuration = configuration[<span class="string">&quot;Redis:Configuration&quot;</span>];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    context.Services.AddSingleton&lt;IConnectionMultiplexer&gt;(_ =&gt; ConnectionMultiplexer.Connect(configuration[<span class="string">&quot;Redis:Configuration&quot;</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Application层中使用示例如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StudentAppService</span> : <span class="title">ABPDemoAppService</span>, <span class="title">IStudentAppService</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IDistributedCache&lt;StudentCacheItem&gt; _distributeCache;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StudentAppService</span>(<span class="params">..., IDistributedCache&lt;StudentCacheItem&gt; distributedCache</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">        _distributeCache = distributedCache;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Authorize(Roles = ABPDemoRoles.Admin)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;StudentCacheItem&gt; <span class="title">GetStudentFromCacheAsync</span>(<span class="params">Guid id, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> key = <span class="string">$&quot;Student:<span class="subst">&#123;id&#125;</span>&quot;</span>; <span class="comment">// 缓存Key</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> _distributeCache.GetOrAddAsync(</span><br><span class="line">            key, </span><br><span class="line">            <span class="keyword">async</span> () =&gt;  <span class="comment">// 如果缓存不存在，从数据库加载</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> student = <span class="keyword">await</span> _studentRepository.GetAsync(id, <span class="literal">false</span>, cancellationToken);</span><br><span class="line">                <span class="keyword">var</span> studentCacheItem = ObjectMapper.Map&lt;Student, StudentCacheItem&gt; (student);</span><br><span class="line">                <span class="keyword">return</span> studentCacheItem;</span><br><span class="line">            &#125;,</span><br><span class="line">            () =&gt; <span class="keyword">new</span> DistributedCacheEntryOptions</span><br><span class="line">            &#123;</span><br><span class="line">                AbsoluteExpiration = DateTimeOffset.Now.AddHours(<span class="number">1</span>) <span class="comment">// 1小时后过期</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="literal">null</span>, <span class="literal">false</span>, cancellationToken</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有些场景需要手动清除Redis缓存，为此引入RedisCacheManager，开发环境中Redis缓存清除可以使用<code>KEYS</code>。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RedisCacheManager</span> :  <span class="title">ITransientDependency</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IConnectionMultiplexer _redis;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RedisCacheManager</span>(<span class="params">IConnectionMultiplexer redis</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _redis = redis;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">ClearByPrefixAsync</span>(<span class="params"><span class="built_in">string</span> keyPrefix</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> db = _redis.GetDatabase();</span><br><span class="line">        <span class="keyword">var</span> server = _redis.GetServer(_redis.GetEndPoints().First());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> keys = <span class="keyword">new</span> List&lt;RedisKey&gt;();</span><br><span class="line">        <span class="keyword">await</span> <span class="keyword">foreach</span> (<span class="keyword">var</span> key <span class="keyword">in</span> server.KeysAsync(pattern: <span class="string">$&quot;<span class="subst">&#123;keyPrefix&#125;</span>*&quot;</span>))</span><br><span class="line">        &#123;</span><br><span class="line">           keys.Add(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        批量删除</span><br><span class="line">        <span class="keyword">if</span> (keys.Count != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">           <span class="keyword">await</span> db.KeyDeleteAsync(keys.ToArray());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>KEYS是Redis的一个命令，用于模式匹配查询键(如<code>KEYS user:*</code>)，但会阻塞整个Redis服务直到扫描完成，在生产环境中推荐使用<code>SCAN</code>。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RedisCacheManager</span> :  <span class="title">ITransientDependency</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IConnectionMultiplexer _redis;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RedisCacheManager</span>(<span class="params">IConnectionMultiplexer redis</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _redis = redis;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">ClearByPrefixAsync</span>(<span class="params"><span class="built_in">string</span> keyPrefix</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> db = _redis.GetDatabase();</span><br><span class="line"></span><br><span class="line">        <span class="meta">#<span class="keyword">region</span> 使用 SCAN 迭代查询（避免 KEYS 阻塞）</span></span><br><span class="line">        <span class="keyword">var</span> script = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">                        local keys = redis.call(&#x27;SCAN&#x27;, 0, &#x27;MATCH&#x27;, ARGV[1], &#x27;COUNT&#x27;, 1000)</span></span><br><span class="line"><span class="string">                        for i, key in ipairs(keys[2]) do</span></span><br><span class="line"><span class="string">                            redis.call(&#x27;DEL&#x27;, key)</span></span><br><span class="line"><span class="string">                        end</span></span><br><span class="line"><span class="string">                        return keys[1]&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 递归扫描直到返回的游标为 0</span></span><br><span class="line">            <span class="built_in">long</span> cursor;</span><br><span class="line">            <span class="keyword">do</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> result = (RedisResult[])<span class="keyword">await</span> db.ScriptEvaluateAsync(script, values: <span class="keyword">new</span> RedisValue[] &#123; <span class="string">$&quot;<span class="subst">&#123;keyPrefix&#125;</span>*&quot;</span> &#125;);</span><br><span class="line"></span><br><span class="line">                cursor = (<span class="built_in">long</span>)result[<span class="number">0</span>];</span><br><span class="line">            &#125; <span class="keyword">while</span> (cursor != <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> &#123; &#125;</span><br><span class="line">        <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis分布式锁"><a href="#Redis分布式锁" class="headerlink" title="Redis分布式锁"></a>Redis分布式锁</h3><p>Redis可以作为分布式锁，替代基于数据库的锁方案。Redis拥有内存级操作和单命令原子性。Redis基于内存的原子操作(如<code>SETNX</code>)，获取&#x2F;释放锁的延迟通常在毫秒级，远优于基于数据库的锁方案。Redis的<code>SET key value NX PX 30000</code>可原子性实现「加锁+过期时间设置」，避免多命令竞态条件。</p>
+<p>ABP中同样集成了Redis分布式锁，下面是一个使用示例。</p>
+<p>Web层WebModule配置如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ConfigureRedis</span>(<span class="params">ServiceConfigurationContext context</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> configuration = context.Services.GetConfiguration();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置Redis分布式锁</span></span><br><span class="line">    context.Services.AddSingleton&lt;IDistributedLockProvider&gt;(sp =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> connection = ConnectionMultiplexer.Connect(configuration[<span class="string">&quot;Redis:Configuration&quot;</span>]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RedisDistributedSynchronizationProvider(connection.GetDatabase());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Application层中使用示例如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StudentAppService</span> : <span class="title">ABPDemoAppService</span>, <span class="title">IStudentAppService</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> IAbpDistributedLock _abpDistributedLock;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StudentAppService</span>(<span class="params">..., IAbpDistributedLock abpDistributedLock</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">        _abpDistributedLock = abpDistributedLock;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Authorize(Roles = ABPDemoRoles.Admin)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">UpdateStudentLevelWithLockAsync</span>(<span class="params">Guid id, StudentLevelType level, CancellationToken cancellationToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 定义锁的名称</span></span><br><span class="line">        <span class="keyword">var</span> lockName = <span class="string">$&quot;Student:<span class="subst">&#123;id&#125;</span>:UpdateLock&quot;</span>;</span><br><span class="line">        <span class="comment">// 尝试获取锁</span></span><br><span class="line">        <span class="keyword">await</span> <span class="keyword">using</span> <span class="keyword">var</span> handle = <span class="keyword">await</span> _abpDistributedLock.TryAcquireAsync(lockName, TimeSpan.Zero, cancellationToken);</span><br><span class="line">        <span class="keyword">if</span> (handle != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 临界区代码</span></span><br><span class="line">            <span class="keyword">var</span> student = <span class="keyword">await</span> _studentRepository.GetAsync(id, <span class="literal">false</span>, cancellationToken);</span><br><span class="line">            student.StudentLevel = level;</span><br><span class="line">            <span class="keyword">await</span> _studentRepository.UpdateAsync(student, <span class="literal">true</span>, cancellationToken);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a class="link"   target="_blank" rel="noopener" href="https://redis.io/docs/latest/commands/" >Redis CLI命令官方文档<i class="fas fa-external-link-alt"></i></a></p>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/ABP/">ABP</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NoSQL/">NoSQL</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Redis/">Redis</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/15/docker-usage/"
+                                   title="Docker虚拟化技术与容器化部署"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Docker虚拟化技术与容器化部署</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/13/abp-and-ddd/"
+                                   title="领域驱动设计与ABP框架"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">领域驱动设计与ABP框架</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87EXE%E5%AE%89%E8%A3%85%E5%8C%85%E5%90%AF%E5%8A%A8"><span class="nav-text">通过EXE安装包启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87Docker%E5%90%AF%E5%8A%A8"><span class="nav-text">通过Docker启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLI%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">CLI常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#key-value"><span class="nav-text">key-value</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List"><span class="nav-text">List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set"><span class="nav-text">Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SortedSet"><span class="nav-text">SortedSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash"><span class="nav-text">Hash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="nav-text">发布订阅模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Stream"><span class="nav-text">Stream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-text">事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-text">哨兵模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98"><span class="nav-text">Redis分布式缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">Redis分布式锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87EXE%E5%AE%89%E8%A3%85%E5%8C%85%E5%90%AF%E5%8A%A8"><span class="nav-text">通过EXE安装包启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87Docker%E5%90%AF%E5%8A%A8"><span class="nav-text">通过Docker启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLI%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">CLI常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#key-value"><span class="nav-text">key-value</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List"><span class="nav-text">List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set"><span class="nav-text">Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SortedSet"><span class="nav-text">SortedSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash"><span class="nav-text">Hash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F"><span class="nav-text">发布订阅模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Stream"><span class="nav-text">Stream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-text">事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-text">哨兵模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98"><span class="nav-text">Redis分布式缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="nav-text">Redis分布式锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

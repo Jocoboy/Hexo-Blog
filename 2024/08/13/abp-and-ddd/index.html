@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            领域驱动设计与ABP框架 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        领域驱动设计与ABP框架
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-13 12:54:29</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Framework/">Framework</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/ABP/">ABP</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET/">.NET</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/ASP-NET-Core/">ASP.NET Core</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>8.2k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>30 mins. Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>领域驱动设计核心概念与ABP框架实践。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ABP框架基于.NET和ASP.NET Core，是对领域驱动设计(Domain Driven Design，简称DDD)的一种实现，主要目标是为应用程序开发引入的一种架构方法。</p>
+<blockquote>
+<ul>
+<li>.NET Framework仅支持Windows平台，适用于传统的Windows桌面和Web应用开发</li>
+<li>.NET Core是一个全新的、从头开发的.NET 实现，支持跨平台，适用于构建现代化的云原生应用、微服务、跨平台应用等</li>
+<li>.NET融合了.NET Core和.NET Framework的优点，支持跨平台，适用于各种类型的应用开发，包括桌面应用、Web 应用、云服务、移动应用等</li>
+<li>ASP.NET是一个Web应用程序开发框架，仅支持Windows平台，使用.NET Framework运行时</li>
+<li>ASP.NET Core是对ASP.NET的重构，更加轻量、高性能，支持跨平台，使用.NET Core运行时</li>
+</ul>
+</blockquote>
+<h2 id="领域驱动设计"><a href="#领域驱动设计" class="headerlink" title="领域驱动设计"></a>领域驱动设计</h2><p>领域驱动设计是一种针对复杂需求的软件开发方法，它适用于复杂领域和大规模应用，关注核心领域逻辑而不是基础设施细节。</p>
+<h3 id="基本分层"><a href="#基本分层" class="headerlink" title="基本分层"></a>基本分层</h3><p>DDD分层设计包含表现层(Presentation Layer)、应用层(Application Layer)、领域层(Domain Layer)、基础设施层(Infrastructure Layer)四个部分。</p>
+<ul>
+<li>表现层包含应用的UI组件，通过API网关连接前端应用和后端微服务</li>
+<li>应用层用于协调表现层和领域层，不包含领域逻辑，只负责调用领域层的功能</li>
+<li>领域层包含基本的业务对象，是独立的可重用的领域逻辑，不依赖于任何层</li>
+<li>基础设施层提供数据持久化、消息传递和第三方集成等服务，包括数据库访问层、消息队列等</li>
+</ul>
+<p>领域层和应用层是业务逻辑的核心部分。</p>
+<h4 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h4><p>应用层包含应用服务、数据传输对象(DTO)、工作单元(UOW)等基本概念。</p>
+<ul>
+<li>数据传输对象用于表现层和应用层之间传输数据</li>
+<li>工作单元是事务边界，其中的所有状态更改必须以原子方式实现</li>
+</ul>
+<h4 id="领域层"><a href="#领域层" class="headerlink" title="领域层"></a>领域层</h4><p>领域层包含实体(Entity)、值对象(Value Object)、聚合(Aggregate)和聚合根(AggregateRoot)、仓储(IRepository)、领域服务(Domain Service)、领域事件(Domain Event)等基本概念。</p>
+<ul>
+<li>值对象与实体不同之处在于，没有唯一标识符，如果两个值对象的所有属性都相同，则它们被认为是相同的(c# 9.0中record新特性与此类似)</li>
+<li>聚合根通常是一个具有唯一标识(‌如GUID)的实体，‌它负责协调聚合内部的其他实体和值对象，‌确保数据的一致性和完整性</li>
+<li>领域服务是实现核心业务规则的无状态服务(类命名通常以Manager为结尾)，它的实现依赖于多种聚合或外部服务</li>
+</ul>
+<h2 id="ABP框架"><a href="#ABP框架" class="headerlink" title="ABP框架"></a>ABP框架</h2><p>在使用ABP框架时，需要特别注意项目之间的引用和依赖关系。</p>
+<h3 id="设计演变"><a href="#设计演变" class="headerlink" title="设计演变"></a>设计演变</h3><p>按照DDD的最初设计，ABP框架应当包含以下四个部分</p>
+<ul>
+<li>[company].[application].Web</li>
+<li>[company].[application].Application</li>
+<li>[company].[application].Domain</li>
+<li>[company].[application].Infrastructure</li>
+</ul>
+<p>基础设施层通常需要包含一种对象关系映射(ORM)方式，ABP中使用了EntityFrameworkCore，<br>由此框架演变为</p>
+<ul>
+<li>[company].[application].Web</li>
+<li>[company].[application].Application</li>
+<li>[company].[application].Domain</li>
+<li>[company].[application].EntityFrameworkCore</li>
+</ul>
+<p>由于Web层直接引用Application，而Application直接引用Domain，这将导致Application间接引用Domain，这不符合抽象和实现分层原则，因此ABP引入了Application.Contracts</p>
+<ul>
+<li>[company].[application].Web</li>
+<li>[company].[application].Application.Contracts</li>
+<li>[company].[application].Application</li>
+<li>[company].[application].Domain</li>
+<li>[company].[application].EntityFrameworkCore</li>
+</ul>
+<p>由于我们将接口定义和DTO存放在了Application.Contracts，而DTO有时需要重用Domain中的枚举类型，但Application.Contracts又无法直接添加对Domain的引用，为了解决这个问题，ABP引入了Domain.Shared</p>
+<ul>
+<li>[company].[application].Web</li>
+<li>[company].[application].Application.Contracts</li>
+<li>[company].[application].Application</li>
+<li>[company].[application].Domain</li>
+<li>[company].[application].Domain.Shared</li>
+<li>[company].[application].EntityFrameworkCore</li>
+</ul>
+<p>为了将REST API与UI分离，ABP引入了HttpApi，此外还引入了HttpApi.Client客户端代理系统和数据库迁移工具DbMigrator，由此完整的项目框架为</p>
+<ul>
+<li>[company].[application].Web</li>
+<li>[company].[application].HttpApi</li>
+<li>[company].[application].HttpApi.Client</li>
+<li>[company].[application].Application.Contracts</li>
+<li>[company].[application].Application</li>
+<li>[company].[application].Domain</li>
+<li>[company].[application].Domain.Shared</li>
+<li>[company].[application].EntityFrameworkCore</li>
+<li>[company].[application].DbMigrator</li>
+</ul>
+<img   src="/Hexo-Blog/2024/08/13/abp-and-ddd/abp_layer_deps.png"  class="" title="ABP框架中各层之间的依赖关系">
+
+<p>从上图可以看出，Domain层无法直接使用Application.Contracts中的DTO，必要时可使用Domain.Shared中的Value Object代替DTO。</p>
+<p>此外，ABP框架中test文件夹中还包含了每一层单独配置的单元&#x2F;集成测试项目。</p>
+<h3 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h3><h4 id="安装cli"><a href="#安装cli" class="headerlink" title="安装cli"></a>安装cli</h4><p>使用donet tool命令行工具下载abp-cli(第一代)</p>
+<p><code>dotnet tool install -g Volo.Abp.Cli</code></p>
+<p>查看是否安装成功</p>
+<p><code>dotnet tool list -g</code></p>
+<h4 id="数据库迁移"><a href="#数据库迁移" class="headerlink" title="数据库迁移"></a>数据库迁移</h4><p>EFCore提供了一套原生的数据库迁移系统，基于Code First原则。</p>
+<p>在Domain层创建好相关实体后，将EntityFrameworkCore模块设为启动项目，打开Nuget Package Manager Console输入以下命令</p>
+<p><code>Add-Migration &quot;Initial&quot;</code></p>
+<p><code>Update-Database</code></p>
+<p>最后将DbMigrator模块设为启动项后，运行即可完成种子数据迁移</p>
+<h3 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h3><h4 id="PGSQL时间类型问题"><a href="#PGSQL时间类型问题" class="headerlink" title="PGSQL时间类型问题"></a>PGSQL时间类型问题</h4><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/abpframework/abp/issues/11437" >PGSQL issues with 5.1.2 (and earlier, due to Npgsql 6+) #11437<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote>
+<p>Cannot write DateTime with Kind&#x3D;Local to PostgreSQL type ‘timestamp with time zone’, only UTC is supported.</p>
+</blockquote>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">// adding the below to the WebModule, DbMigratorModule and TestBaseModule </span></span><br><span class="line"><span class="comment">// if postgres is used there as well</span></span><br><span class="line">Configure&lt;AbpClockOptions&gt;(options =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    options.Kind = DateTimeKind.Utc;</span><br><span class="line">&#125;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="Autofac依赖注入问题"><a href="#Autofac依赖注入问题" class="headerlink" title="Autofac依赖注入问题"></a>Autofac依赖注入问题</h4><blockquote>
+<p>Autofac.Core.DependencyResolutionException:<br>An exception was thrown while activating xxxController -&gt; xxxAppService.<br>—&gt; Autofac.Core.DependencyResolutionException:<br>None of the constructors found on type ‘xxxAppService’ can be invoked with the available services and parameters:<br>Cannot resolve parameter<br>‘Microsoft.AspNetCore.Identity.SignInManager`1[Volo.Abp.Identity.IdentityUser] signInManager’ of constructor<br>‘Void .ctor(Microsoft.AspNetCore.Identity.SignInManager&#96;1[Volo.Abp.Identity.IdentityUser], …)’.</p>
+</blockquote>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// add AbpIdentityAspNetCoreModule to your WebModule,</span></span><br><span class="line"><span class="comment">// be careful about the difference between Volo.Abp.Identity.AspNetCore and Microsoft.AspNetCore.Identity</span></span><br><span class="line">[<span class="meta">DependsOn(</span></span><br><span class="line"><span class="meta">    ...</span></span><br><span class="line"><span class="meta">    typeof(AbpIdentityAspNetCoreModule)</span></span><br><span class="line"><span class="meta">    )</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history#c-version-9" >C# 9.0 新特性<i class="fas fa-external-link-alt"></i></a></li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://abp.io/docs/latest/" >ABP官方文档<i class="fas fa-external-link-alt"></i></a></li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs" >EFCore数据库迁移<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/ABP/">ABP</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET/">.NET</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/ASP-NET-Core/">ASP.NET Core</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/14/redis-usage/"
+                                   title="Redis数据库常用CLI命令及应用场景"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Redis数据库常用CLI命令及应用场景</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/12/pgsql-usage/"
+                                   title="PostgreSQL常用SQL语句"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">PostgreSQL常用SQL语句</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1"><span class="nav-text">领域驱动设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E5%B1%82"><span class="nav-text">基本分层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E5%B1%82"><span class="nav-text">领域层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ABP%E6%A1%86%E6%9E%B6"><span class="nav-text">ABP框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%BC%94%E5%8F%98"><span class="nav-text">设计演变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cli"><span class="nav-text">安装cli</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB"><span class="nav-text">数据库迁移</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98"><span class="nav-text">相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PGSQL%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B%E9%97%AE%E9%A2%98"><span class="nav-text">PGSQL时间类型问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E9%97%AE%E9%A2%98"><span class="nav-text">Autofac依赖注入问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1"><span class="nav-text">领域驱动设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E5%B1%82"><span class="nav-text">基本分层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%86%E5%9F%9F%E5%B1%82"><span class="nav-text">领域层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ABP%E6%A1%86%E6%9E%B6"><span class="nav-text">ABP框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%BC%94%E5%8F%98"><span class="nav-text">设计演变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cli"><span class="nav-text">安装cli</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB"><span class="nav-text">数据库迁移</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98"><span class="nav-text">相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PGSQL%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B%E9%97%AE%E9%A2%98"><span class="nav-text">PGSQL时间类型问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E9%97%AE%E9%A2%98"><span class="nav-text">Autofac依赖注入问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

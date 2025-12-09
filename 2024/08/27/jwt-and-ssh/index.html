@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            加密算法在JWT、SSH中的应用 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        加密算法在JWT、SSH中的应用
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-27 19:44:50</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Cyber-Security/">Cyber-Security</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/JWT/">JWT</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/SSH/">SSH</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>18k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>1:05 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>对称加密、非对称加密算法在不同场景中的应用，如使用JWT进行单点登录、使用SSH进行远程免密登录等。</p>
+<span id="more"></span>
+
+
+<h2 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h2><h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密是一种加密和解密所使用的密钥是相同的加密算法。在对称加密中，发送方和接收方使用相同的密钥对数据进行加密和解密。常见的对称加密算法包括DES、3DES、AES等。</p>
+<p>对称加密的优势在于速度快，加解密过程简单，适合用于传输大量数据。但是对称加密无法提供身份验证和数据完整性保护，即无法判断消息的发送方是否可信以及数据是否被篡改。</p>
+<p>对称加密通常与其他的加密技术(如数字签名、消息认证码等)结合使用，以提供更高的安全性保护。</p>
+<h4 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h4><p>高级加密标准(Advanced Encryption Standard, 简称AES)为最常见的对称加密算法，在密码学中又称Rijndael加密法。AES算是Rijndael算法的一种特殊实现，选的分组为128bit（16字节），密钥可以使用128、192和256bit三种，而Rijndael使用的密钥和区块长度可以是32位的整数倍，以128位为下限，256比特为上限。加密过程中使用的密钥是由Rijndael密钥生成方案产生。</p>
+<p>在AES加密中，密钥(key)、初始化向量(Initialization Vector, 简称IV)是两个重要的组成部分。此外，还可设置加密方式(Mode, 默认为CBC)和填充方式(Padding, 默认为PKCS7)，其中CBC模式需要有IV，ECB模式不需要IV。</p>
+<ul>
+<li><p>key</p>
+<ul>
+<li>定义：key是用于AES加密和解密的密钥，它是双方协商或生成的秘密信息，用于确保加密数据的安全性。</li>
+<li>长度：AES支持多种长度的密钥，包括128位（16字节）、192位（24字节）和256位（32字节）。选择哪种长度的密钥取决于安全需求和性能考虑。</li>
+<li>重要性：密钥的保密性至关重要，如果密钥被泄露，加密的数据就可能被解密，从而失去保护。</li>
+</ul>
+</li>
+<li><p>iv</p>
+<ul>
+<li>定义：iv是一个随机或伪随机的值，它与密钥一起用于加密过程中的初始化。它确保了即使使用相同的密钥加密相同的明文，每次加密得到的密文也会不同，从而增强了加密的安全性。</li>
+<li>长度：AES的iv长度通常是128位（16字节），这与AES的数据块长度相同。</li>
+<li>重要性：iv的随机性对于防止重放攻击和统计分析攻击至关重要。使用固定的iv或可预测的iv会降低加密的安全性。</li>
+</ul>
+</li>
+</ul>
+<p>在AES加密过程中，首先会将明文分成多个128位的数据块（如果最后一个数据块不足128位，则需要进行填充，常用的填充方式包括PKCS5Padding、PKCS7Padding和ZeroPadding等）。然后，使用密钥和iv对数据进行加密。加密过程通常包括多个轮次，每轮都会执行一系列复杂的操作，如字节替换、行移位、列混合和轮密钥加等。最终，所有的数据块都被加密成密文。</p>
+<p>以下是c#中AES加密与解密的实现方式，</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> AES加密</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">AESEncrypt</span>(<span class="params"><span class="built_in">string</span> plainText, <span class="built_in">string</span> key, <span class="built_in">string</span> iv</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[] keyBytes = Encoding.UTF8.GetBytes(key);</span><br><span class="line">    <span class="built_in">byte</span>[] ivBytes = Encoding.UTF8.GetBytes(iv);</span><br><span class="line">    <span class="keyword">using</span> (Aes aesAlg = Aes.Create())</span><br><span class="line">    &#123;</span><br><span class="line">        aesAlg.Key = keyBytes;</span><br><span class="line">        aesAlg.IV = ivBytes;</span><br><span class="line">        aesAlg.Mode = CipherMode.CBC;</span><br><span class="line">        aesAlg.Padding = PaddingMode.PKCS7;</span><br><span class="line"></span><br><span class="line">        ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">using</span> (MemoryStream ms = <span class="keyword">new</span> MemoryStream())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">using</span> (CryptoStream cs = <span class="keyword">new</span> CryptoStream(ms, encryptor, CryptoStreamMode.Write))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">using</span> (StreamWriter sw = <span class="keyword">new</span> StreamWriter(cs))</span><br><span class="line">                &#123;</span><br><span class="line">                    sw.Write(plainText);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> Convert.ToBase64String(ms.ToArray());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> AES加密</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">AESDecrypt</span>(<span class="params"><span class="built_in">string</span> cipherText, <span class="built_in">string</span> key, <span class="built_in">string</span> iv</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[] keyBytes = Encoding.UTF8.GetBytes(key);</span><br><span class="line">    <span class="built_in">byte</span>[] ivBytes = Encoding.UTF8.GetBytes(iv);</span><br><span class="line">    <span class="built_in">byte</span>[] cipherBytes = Convert.FromBase64String(cipherText);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> (Aes aesAlg = Aes.Create())</span><br><span class="line">    &#123;</span><br><span class="line">        aesAlg.Key = keyBytes;</span><br><span class="line">        aesAlg.IV = ivBytes;</span><br><span class="line">        aesAlg.Mode = CipherMode.CBC;</span><br><span class="line">        aesAlg.Padding = PaddingMode.PKCS7;</span><br><span class="line"></span><br><span class="line">        ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">using</span> (MemoryStream ms = <span class="keyword">new</span> MemoryStream(cipherBytes))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">using</span> (CryptoStream cs = <span class="keyword">new</span> CryptoStream(ms, decryptor, CryptoStreamMode.Read))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">using</span> (StreamReader sr = <span class="keyword">new</span> StreamReader(cs))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">return</span> sr.ReadToEnd();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>非对称加密是一种加密算法，与对称加密不同，非对称加密使用一对不同的密钥来进行加密和解密。这对密钥中的一个被称为私钥(private key)，另一个被称为公钥(public key)。私钥只能由密钥的拥有者持有并保密，不对外公开，而公钥可以向任何人公开。常见的非对称加密算法包括RSA、ECC等。</p>
+<p>在非对称加密中，加密和解密过程如下：</p>
+<ol>
+<li>发送方使用接收方的公钥对明文进行加密，生成密文</li>
+<li>接收方使用自己的私钥对密文进行解密，恢复为明文</li>
+</ol>
+<p>非对称加密算法的特点是安全性高，能够提供身份验证和数据完整性保护。但是非对称加密的缺点是速度较慢，加解密过程相对复杂，适合处理少量的数据。</p>
+<p>因此，通常会将对称加密和非对称加密相结合，在传输数据时使用非对称加密来交换对称加密所需的密钥，然后使用对称加密算法来加密和解密实际的数据。</p>
+<h2 id="消息认证码"><a href="#消息认证码" class="headerlink" title="消息认证码"></a>消息认证码</h2><p>消息认证码(Message Authentication Code, 简称MAC)是一种确认完整性并进行认证的技术。</p>
+<p>消息认证码的输入包括任意长度的消息和一个发送者与接收者之间共享的密钥，它可以输出固定长度的数据，这个数据称为MAC值。要计算MAC值必须持有共享密钥，消息认证码正是利用这一性质来完成身份认证的。此外，消息认证码通过类似单向散列函数的散列值来确保数据完整性。</p>
+<p>HMAC是一种使用单向散列函数来构造消息认证码的方法。HMAC中所使用的单向散列函数并不仅限于一种，任何高强度的单向散列函数都可以被用于HMAC，如果将来设计出新的单向散列函数，也同样可以使用。使用SHA-256、MD5、RIPEMD-160所构造的HMAC，分别称为HMAC-SHA-256、HMAC-MD5和HMAC-RlPEMD。</p>
+<p>消息认证码中，由于发送者和接收者共享相同的密钥，因此会产生无法对第三方证明以及无法防止否认等问题。</p>
+<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>数字签名(又称公钥数字签名)是只有信息的发送者才能产生的别人无法伪造的一段数字串。数字签名中也同样会使用公钥和私钥组成的密钥对，不过这两个密钥的用法和非对称加密是相反的，即用私钥加密相当于生成签名，而用公钥解密则相当于验证签名。通常情况下，为了提高传输效率，不会直接对原始数据进行数字签名，而是对原始数据的Hash值进行签名。</p>
+<p>数字签名的过程如下：</p>
+<ol>
+<li><p>生成签名：</p>
+<ul>
+<li><p>对原始数据进行哈希运算(使用预先约定的哈希算法)，得到Hash值</p>
+</li>
+<li><p>使用非对称加密的私钥对Hash值加密，得到签名</p>
+</li>
+<li><p>发送原始数据及签名</p>
+</li>
+</ul>
+</li>
+<li><p>验证签名：</p>
+<ul>
+<li><p>接收原始数据及签名</p>
+</li>
+<li><p>对数字签名使用公钥解密, 得到Hash值</p>
+</li>
+<li><p>对原始数据进行哈希运算得到新的Hash值，如果两者一致，则签名验证成功；如果两者不一致，则签名验证失败</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a>JWT</h2><p>JWT(JSON Web Token)是目前最流行的跨域身份验证解决方案，适用于身份鉴权、授权、信息交换、单点登录等场景。JWT可以使用密钥(使用HMAC算法)或使用RSA或ECDSA的公钥&#x2F;私钥对进行签名。</p>
+<p>应用程序获取JWT并用于访问API等资源的过程如下：</p>
+<ol>
+<li>客户端向授权服务器请求授权</li>
+<li>授权服务器校验用户身份，如果校验成功，返回访问令牌(token)</li>
+<li>应用程序使用访问令牌访问受保护的资源，服务端通过验证JWT的签名来确认用户的身份，通过解析JWT中的声明信息判断用户是否有权限执行特定的操作或访问特定的资源</li>
+</ol>
+<p>JWT由Header、Payload、Signature三部分组成：</p>
+<ul>
+<li><p>JWT的头部通常由两部分组成，分别是令牌类型(typ)和加密算法(alg)。一般情况下，头部会采用Base64编码。</p>
+  <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;alg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HS256&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;typ&quot;</span><span class="punctuation">:</span> <span class="string">&quot;JWT&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>JWT的载荷也称为声明信息(claims)，包含了一些有关实体(通常是用户)的信息以及其他元数据。通常包含预定义的字段，如iss(发行者)、sub(主题)、aud(受众)、exp(过期时间)、nbf(生效时间)、iat(发布时间)和jti(JWT ID)等，以及自定义字段。</p>
+  <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;sub&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1234567890&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;jti&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5a3cd526-caa4-4952-a5ba-f44245fe1762&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;iat&quot;</span><span class="punctuation">:</span> <span class="number">1681102951</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;nbf&quot;</span><span class="punctuation">:</span> <span class="number">1681102951</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;exp&quot;</span><span class="punctuation">:</span> <span class="number">1681189351</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;iss&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Jocoboy&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;aud&quot;</span><span class="punctuation">:</span> <span class="string">&quot;WebUser&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;admin&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JWT的签名是由头部、载荷和密钥(通常为32个字节)共同生成的，用于验证JWT的真实性和完整性。使用Header里面指定的签名算法(默认是HMAC-SHA256)，按照下面的公式产生签名</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">base64UrlEncode(header) + <span class="string">&quot;.&quot;</span> +</span><br><span class="line">base64UrlEncode(payload),</span><br><span class="line">secret)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>.NET使用HMAC-SHA256对称加密算法生成JWT的部分代码如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">var</span> key = <span class="keyword">new</span> SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authOptions.Secret));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> credentials = <span class="keyword">new</span> SigningCredentials(key, SecurityAlgorithms.HmacSha256);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> token = <span class="keyword">new</span> JwtSecurityToken(_authOptions.Issuer,</span><br><span class="line">    _authOptions.Audience,</span><br><span class="line">    claims,</span><br><span class="line">    DateTime.Now,</span><br><span class="line">    DateTime.Now.AddMinutes(_authOptions.Expiration),</span><br><span class="line">    credentials);</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> JwtSecurityTokenHandler().WriteToken(token);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><p>安全外壳协议(Secure Shell, 简称SSH)是一种建立在应用层基础上，在不安全网络上用于安全远程登录和其他安全网络服务的协议。</p>
+<p>SSH建立在非对称加密之上，建立远程连接的过程如下：</p>
+<ol>
+<li>远程主机(虚拟机)收到本地主机的登录请求，把自己的公钥发给本地主机</li>
+<li>本地主机使用这个公钥，将登录密码加密后，发送给远程主机</li>
+<li>远程主机用自己的私钥，解密登录密码，如果密码正确，则同意本地主机登录</li>
+</ol>
+<h3 id="口令登录"><a href="#口令登录" class="headerlink" title="口令登录"></a>口令登录</h3><p>Linux系统中以用户名username，登录远程主机remote_host的命令如下</p>
+<p><code>ssh username@remote_host</code></p>
+<p>初次连接会提示公钥指纹，确认指纹无误后输入密码，远程主机的公钥就会自动保存到本地主机的.ssh&#x2F;known_hosts文件中。</p>
+<h3 id="公钥登录"><a href="#公钥登录" class="headerlink" title="公钥登录"></a>公钥登录</h3><p>公钥登录可以省去输入密码的步骤。用户将自己的公钥储存在远程主机上，登录时远程主机会向用户发送一段随机字符串，用户用自己的私钥加密后再发回来。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录。</p>
+<p>在本地主机生成一对公钥和私钥，然后将公钥添加到远程主机的 ~&#x2F;.ssh&#x2F;authorized_keys文件中(Windows系统中把.ssh&#x2F;id_rsa.pub的内容复制出来，手动追加即可)</p>
+<p><code>ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;</code></p>
+<p><code>ssh-copy-id username@remote_host</code></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/api/system.security.cryptography.aes" >.NET中的AES类<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://jwt.io/introduction" >JWT官方文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent" >Generating new SSH key<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/JWT/">JWT</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/SSH/">SSH</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/30/pgsql-distributed-lock/"
+                                   title="基于PGSQL咨询锁函数实现的分布式锁"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">基于PGSQL咨询锁函数实现的分布式锁</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/25/ci-and-cd/"
+                                   title="持续集成、交付与部署CI/CD及Jenkins"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">持续集成、交付与部署CI/CD及Jenkins</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-text">加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">对称加密</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AES"><span class="nav-text">AES</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">非对称加密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81"><span class="nav-text">消息认证码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-text">数字签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT"><span class="nav-text">JWT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH"><span class="nav-text">SSH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A3%E4%BB%A4%E7%99%BB%E5%BD%95"><span class="nav-text">口令登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E9%92%A5%E7%99%BB%E5%BD%95"><span class="nav-text">公钥登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-text">加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">对称加密</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AES"><span class="nav-text">AES</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">非对称加密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81"><span class="nav-text">消息认证码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-text">数字签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT"><span class="nav-text">JWT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH"><span class="nav-text">SSH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A3%E4%BB%A4%E7%99%BB%E5%BD%95"><span class="nav-text">口令登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E9%92%A5%E7%99%BB%E5%BD%95"><span class="nav-text">公钥登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

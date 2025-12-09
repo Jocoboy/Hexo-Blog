@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            C#进阶语法 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        C#进阶语法
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-03-20 14:57:10</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Language/">Language</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/c/">c#</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>57k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>3:26 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>c#进阶语法，包含委托与事件、动态类型与泛型、并发访问控制等。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>c#中的一些进阶语法使用记录，包含委托(Delegate)与事件(Event)、动态类型(Dynamic Types)与泛型(Generics)、并发访问控制(信号量、并发字典)等。 </p>
+<h2 id="委托与事件"><a href="#委托与事件" class="headerlink" title="委托与事件"></a>委托与事件</h2><h3 id="委托-Delegate"><a href="#委托-Delegate" class="headerlink" title="委托(Delegate)"></a>委托(Delegate)</h3><p>在C#中，委托(Delegate)是一种类型安全的函数指针，用于封装一个或多个方法。委托允许你将方法作为参数传递、存储方法引用，并支持事件和回调机制。委托是C#中实现事件驱动编程和多播委托的基础。</p>
+<p>下面是一个委托定义、实例化和调用的示例:</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义委托</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">MathOperation</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义符合委托签名的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span> =&gt; a + b;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Subtract</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span> =&gt; a - b;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 实例化委托</span></span><br><span class="line">        MathOperation operation = Add;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用委托</span></span><br><span class="line">        <span class="built_in">int</span> result = operation(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Addition Result: <span class="subst">&#123;result&#125;</span>&quot;</span>); <span class="comment">// 输出: Addition Result: 15</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 重新指向另一个方法</span></span><br><span class="line">        operation = Subtract;</span><br><span class="line">        result = operation(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Subtraction Result: <span class="subst">&#123;result&#125;</span>&quot;</span>); <span class="comment">// 输出: Subtraction Result: 5</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C#支持匿名方法和Lambda表达式，简化了委托的使用，上面的委托实例化可以简写为：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MathOperation operation = <span class="built_in">delegate</span>(<span class="built_in">int</span> a, <span class="built_in">int</span> b) &#123; <span class="keyword">return</span> a + b; &#125;; <span class="comment">// 匿名方法</span></span><br><span class="line">MathOperation operation = (a, b) =&gt; a + b; <span class="comment">// Lambda表达式</span></span><br></pre></td></tr></table></figure>
+
+<p>委托可以指向多个方法，称为多播委托。通过+&#x3D;和-&#x3D;运算符，可以添加或移除方法。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义委托</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">DisplayMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义符合委托签名的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span> =&gt; Console.WriteLine(<span class="string">$&quot;Message: <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowWarning</span>(<span class="params"><span class="built_in">string</span> message</span>)</span> =&gt; Console.WriteLine(<span class="string">$&quot;Warning: <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 实例化多播委托</span></span><br><span class="line">        DisplayMessage display = ShowMessage;</span><br><span class="line">        display += ShowWarning; <span class="comment">// 添加第二个方法</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用多播委托（会依次调用所有方法）</span></span><br><span class="line">        display(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C#提供了几种内置的泛型委托类型，避免了手动定义委托。</p>
+<ul>
+<li><p>Action: 表示没有返回值的方法，最多支持16个参数。示例：</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Action&lt;<span class="built_in">string</span>&gt; print = message =&gt; Console.WriteLine(message);</span><br><span class="line">print(<span class="string">&quot;Hello, Action!&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>Func: 表示有返回值的方法，最后一个泛型参数是返回值类型。示例：</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>, <span class="built_in">int</span>&gt; <span class="keyword">add</span> = (a, b) =&gt; a + b;</span><br><span class="line"><span class="built_in">int</span> result = <span class="keyword">add</span>(<span class="number">10</span>, <span class="number">5</span>); </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Predicate: 表示返回布尔值的方法，通常用于条件判断。</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Predicate&lt;<span class="built_in">int</span>&gt; isEven = num =&gt; num % <span class="number">2</span> == <span class="number">0</span>;</span><br><span class="line"><span class="built_in">bool</span> result = isEven(<span class="number">10</span>); </span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>委托的应用场景有很多，例如事件处理、回调机制(将方法作为参数传递给其他方法，用于异步编程或延迟执行)、LINQ查询等。</p>
+<h3 id="事件-Event"><a href="#事件-Event" class="headerlink" title="事件(Event)"></a>事件(Event)</h3><p>委托是C#事件的基础。在C#中，事件(Event)是一种特殊的委托，用于实现发布-订阅模式(观察者模式)。事件允许一个类(发布者)通知其他类(订阅者)某些事情发生了。事件的核心是委托，它定义了事件处理方法的签名。</p>
+<p>下面是一个事件的定义、触发、订阅和取消的示例：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Publisher</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义委托</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">EventHandler</span>(<span class="params"><span class="built_in">string</span> message</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义事件</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler OnMessageReceived;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 触发事件的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SendMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Publisher: Sending message - <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line">        OnMessageReceived?.Invoke(message); <span class="comment">// 触发事件</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Subscriber</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 事件处理方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">HandleMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Subscriber: Received message - <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 创建发布者和订阅者</span></span><br><span class="line">        Publisher publisher = <span class="keyword">new</span> Publisher();</span><br><span class="line">        Subscriber subscriber = <span class="keyword">new</span> Subscriber();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 订阅事件</span></span><br><span class="line">        publisher.OnMessageReceived += subscriber.HandleMessage;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 发布者发送消息，触发事件</span></span><br><span class="line">        publisher.SendMessage(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 取消订阅事件</span></span><br><span class="line">        publisher.OnMessageReceived -= subscriber.HandleMessage;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 再次发送消息，不会触发事件</span></span><br><span class="line">        publisher.SendMessage(<span class="string">&quot;This message will not be received.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C#提供了标准的EventHandler委托和EventArgs类，推荐使用它们来定义事件，下面是一个使用示例(调用方式同上)：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Publisher</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义事件</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler&lt;CustomEventArgs&gt; OnMessageReceived;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 触发事件的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SendMessage</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Publisher: Sending message - <span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line">        OnMessageReceived?.Invoke(<span class="keyword">this</span>, <span class="keyword">new</span> CustomEventArgs &#123; Message = message &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CustomEventArgs</span> : <span class="title">EventArgs</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Message &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Subscriber</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 事件处理方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">HandleMessage</span>(<span class="params"><span class="built_in">object</span> sender, CustomEventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Subscriber: Received message - <span class="subst">&#123;e.Message&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>事件的使用场景有很多，例如用户界面事件、异步编程事件(如文件下载完成事件)、自定义通知机制(如状态更新)等。</p>
+<h2 id="动态类型与泛型"><a href="#动态类型与泛型" class="headerlink" title="动态类型与泛型"></a>动态类型与泛型</h2><h3 id="动态类型-Dynamic-Types"><a href="#动态类型-Dynamic-Types" class="headerlink" title="动态类型(Dynamic Types)"></a>动态类型(Dynamic Types)</h3><p>dynamic是c#中的一个动态类型，属性的访问是在运行时解析的，因此需要确保运行时对象具有你访问的属性。</p>
+<p>可以通过下面的方式创建一个dynamic对象：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dynamic</span> item = <span class="keyword">new</span> &#123; Name = <span class="string">&quot;Alice&quot;</span>, Age = <span class="number">25</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>要对<code>List&lt;dynamic&gt;</code>使用Where语句，可通过反射检查属性是否存在，确保dynamic对象具有需要访问的属性：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">List&lt;<span class="built_in">dynamic</span>&gt; dynamicList = <span class="keyword">new</span> List&lt;<span class="built_in">dynamic</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span> &#123; Name = <span class="string">&quot;Alice&quot;</span>, Age = <span class="number">25</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> &#123; Name = <span class="string">&quot;Bob&quot;</span>, Age = <span class="number">30</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span> &#123; Name = <span class="string">&quot;Charlie&quot;</span>, Age = <span class="number">20</span> &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">dynamicList = dynamicList.Where(item =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> property = item.GetType().GetProperty(<span class="string">&quot;Name&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> property != <span class="literal">null</span> &amp;&amp; (<span class="built_in">string</span>)property.GetValue(item) != <span class="string">&quot;Charlie&quot;</span>;</span><br><span class="line">&#125;).ToList();</span><br></pre></td></tr></table></figure>
+
+<p>dynamic是提供用于在运行时指定动态行为的基类。必须继承此类；不能直接对其进行实例化。通常用到的是它的继承类ExpandoObject。</p>
+<p><code>System.Dynamic.ExpandoObject</code>是一个动态对象，允许在运行时添加或删除属性。它可以像字典一样操作(实现了 <code>IDictionary&lt;string, object&gt;</code>)，也可以像普通对象一样访问属性。</p>
+<p>可以通过下面的方式创建一个ExpandoObject对象：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dynamic</span> item = <span class="keyword">new</span> ExpandoObject();</span><br><span class="line">item.Name = <span class="string">&quot;Alice&quot;</span>;</span><br><span class="line">item.Age = <span class="number">25</span>;</span><br><span class="line">Console.WriteLine(((IDictionary&lt;<span class="built_in">string</span>, <span class="built_in">object</span>&gt;)item)[<span class="string">&quot;Name&quot;</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>要对<code>List&lt;ExpandoObject&gt;</code>使用Where语句，通常需要将其视为<code>IDictionary&lt;string, object&gt;</code>，然后根据键值对进行过滤。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">List&lt;ExpandoObject&gt; expandoList = <span class="keyword">new</span> List&lt;ExpandoObject&gt;();</span><br><span class="line"></span><br><span class="line"><span class="built_in">dynamic</span> item1 = <span class="keyword">new</span> ExpandoObject();</span><br><span class="line">item1.Name = <span class="string">&quot;Alice&quot;</span>;</span><br><span class="line">item1.Age = <span class="number">25</span>;</span><br><span class="line">expandoList.Add(item1);</span><br><span class="line"></span><br><span class="line"><span class="built_in">dynamic</span> item2 = <span class="keyword">new</span> ExpandoObject();</span><br><span class="line">item2.Name = <span class="string">&quot;Bob&quot;</span>;</span><br><span class="line">item2.Age = <span class="number">30</span>;</span><br><span class="line">expandoList.Add(item2);</span><br><span class="line"></span><br><span class="line"><span class="built_in">dynamic</span> item3 = <span class="keyword">new</span> ExpandoObject();</span><br><span class="line">item3.Name = <span class="string">&quot;Charlie&quot;</span>;</span><br><span class="line">item3.Age = <span class="number">20</span>;</span><br><span class="line">expandoList.Add(item3);</span><br><span class="line"></span><br><span class="line">expandoList = expandoList.Where(item =&gt;</span><br><span class="line">                            ((IDictionary&lt;<span class="built_in">string</span>, <span class="built_in">object</span>&gt;)item).ContainsKey(<span class="string">&quot;Name&quot;</span>) &amp;&amp;</span><br><span class="line">                            (<span class="built_in">string</span>)((IDictionary&lt;<span class="built_in">string</span>, <span class="built_in">object</span>&gt;)item)[<span class="string">&quot;Name&quot;</span>] != <span class="string">&quot;Charlie&quot;</span></span><br><span class="line">                        ).ToList();</span><br></pre></td></tr></table></figure>
+
+<h3 id="泛型-Generics"><a href="#泛型-Generics" class="headerlink" title="泛型(Generics)"></a>泛型(Generics)</h3><p>在C#中，泛型允许你编写可以处理多种类型的代码，而无需为每种类型重复编写逻辑。泛型在编译时确定类型，并提供类型安全和性能优势。</p>
+<p>泛型(Generics)和动态类型(Dynamic Types)是两种不同的特性，用于处理类型不确定的场景。它们的主要区别在于类型检查的时机、安全性、性能和使用场景等。以下是他们的主要区别：</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>泛型(Generics)</th>
+<th>动态类型(Dynamic Types)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型检查时机</td>
+<td>编译时</td>
+<td>运行时</td>
+</tr>
+<tr>
+<td>类型安全</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>高性能(避免装箱和拆箱)</td>
+<td>较低(运行时解析类型)</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>较低(类型在编译时确定)</td>
+<td>高(类型在运行时确定)</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>类型安全的通用代码、集合类、高性能场景</td>
+<td>动态语言交互、未知类型处理、灵活性需求</td>
+</tr>
+</tbody></table>
+<h2 id="并发访问控制"><a href="#并发访问控制" class="headerlink" title="并发访问控制"></a>并发访问控制</h2><h3 id="信号量Semaphore与SemaphoreSlim"><a href="#信号量Semaphore与SemaphoreSlim" class="headerlink" title="信号量Semaphore与SemaphoreSlim"></a>信号量Semaphore与SemaphoreSlim</h3><p>Semaphore和SemaphoreSlim是.NET中用于控制并发访问的同步原语，他们的主要区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>Semaphore</th>
+<th>SemaphoreSlim</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>跨进程支持</td>
+<td>支持跨进程同步，可以用于不同进程之间的线程同步</td>
+<td>仅支持单进程内的线程同步</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>性能相对较低，因为它依赖于操作系统内核对象</td>
+<td>性能更高，因为它完全基于.NET运行时</td>
+</tr>
+<tr>
+<td>异步支持</td>
+<td>不支持异步操作</td>
+<td>支持异步操作</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>适用于需要跨进程同步的场景</td>
+<td>适用于单进程内需要高性能同步的场景</td>
+</tr>
+</tbody></table>
+<h4 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h4><p>Semaphore用于限制可同时访问某一资源或资源池的线程数。下面是一个简单的使用示例：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个信号量，初始计数为0，最大计数为3</span></span><br><span class="line">Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">semaphore.WaitOne();</span><br><span class="line"><span class="comment">// 临界区代码</span></span><br><span class="line">semaphore.Release();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Semaphore第一个参数是初始计数initialCount，代表未执行Release方法之前允许通过的信号量</li>
+<li>Semaphore第二个参数是最大计数maximumCount，代表执行Release方法之后允许通过的最大信号量</li>
+<li>释放之前的数量加上释放数量releaseCount应当不超过最大计数，即Release(releaseCount) + releaseCount &lt;&#x3D; maximumCount，其中Release(releaseCount)初始值为initialCount</li>
+</ul>
+<p>以下示例展示了信号量Semaphore是如何控制并发访问的：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore _semaphore;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> _padding;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Worker</span>(<span class="params"><span class="built_in">object</span> num</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 开始并等待进入信号量.&quot;</span>, num);</span><br><span class="line">        _semaphore.WaitOne();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> padding = Interlocked.Add(<span class="keyword">ref</span> _padding, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 进入信号量.&quot;</span>, num);</span><br><span class="line"></span><br><span class="line">        Thread.Sleep(<span class="number">1000</span> + padding);</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 从信号量中释放.&quot;</span>, num);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 释放之前信号量中的可用资源数: &#123;1&#125;&quot;</span>,</span><br><span class="line">            num, _semaphore.Release());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (SemaphoreFullException)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;警告: 释放数量超过信号量最大计数！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _semaphore = <span class="keyword">new</span> Semaphore(initialCount: <span class="number">1</span>, maximumCount: <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            Thread t = <span class="keyword">new</span> Thread(<span class="keyword">new</span> ParameterizedThreadStart(Worker));</span><br><span class="line"></span><br><span class="line">            t.Start(i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Thread.Sleep(<span class="number">500</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> releaseCount = <span class="number">4</span>;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;主线程尝试释放<span class="subst">&#123;releaseCount&#125;</span>个资源&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            _semaphore.Release(releaseCount);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (SemaphoreFullException)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;警告: 释放数量超过信号量最大计数！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">&quot;主线程退出&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台输出内容如下：</p>
+<blockquote>
+<p>线程 2 开始并等待进入信号量.<br>线程 5 开始并等待进入信号量.<br>线程 3 开始并等待进入信号量.<br>线程 1 开始并等待进入信号量.<br>线程 4 开始并等待进入信号量.<br>线程 2 进入信号量.<br>主线程尝试释放4个资源<br>主线程退出<br>线程 3 进入信号量.<br>线程 5 进入信号量.<br>线程 4 进入信号量.<br>线程 1 进入信号量.<br>线程 2 从信号量中释放.<br>线程 2 释放之前信号量中的可用资源数: 0<br>线程 5 从信号量中释放.<br>线程 5 释放之前信号量中的可用资源数: 1<br>线程 1 从信号量中释放.<br>线程 1 释放之前信号量中的可用资源数: 2<br>线程 3 从信号量中释放.<br>线程 3 释放之前信号量中的可用资源数: 3<br>线程 4 从信号量中释放.<br>警告: 释放数量超过信号量最大计数！</p>
+</blockquote>
+<h4 id="SemaphoreSlim"><a href="#SemaphoreSlim" class="headerlink" title="SemaphoreSlim"></a>SemaphoreSlim</h4><p>SemaphoreSlim是对可同时访问资源或资源池的线程数加以限制的Semaphore的轻量替代。下面是一个简单的使用示例：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个信号量，初始计数为0，最大计数为3</span></span><br><span class="line">SemaphoreSlim semaphoreSlim = <span class="keyword">new</span> SemaphoreSlim(<span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">await</span> semaphoreSlim.WaitAsync();</span><br><span class="line"><span class="comment">// 临界区代码</span></span><br><span class="line">semaphoreSlim.Release();</span><br></pre></td></tr></table></figure>
+
+<p>以下示例展示了信号量SemaphoreSlim是如何控制并发访问的：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SemaphoreSlim _semaphoreSlim;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> _padding;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Worker</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 开始并等待进入信号量.&quot;</span>, Task.CurrentId);</span><br><span class="line">        _semaphoreSlim.Wait();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> semaphoreCount;</span><br><span class="line"></span><br><span class="line">        Interlocked.Add(<span class="keyword">ref</span> _padding, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 进入信号量.&quot;</span>, Task.CurrentId);</span><br><span class="line"></span><br><span class="line">        Thread.Sleep(<span class="number">1000</span> + _padding);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 从信号量中释放.&quot;</span>, Task.CurrentId);</span><br><span class="line">            semaphoreCount = _semaphoreSlim.Release();</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;线程 &#123;0&#125; 释放之前信号量中的可用资源数: &#123;1&#125;&quot;</span>, Task.CurrentId, semaphoreCount);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (SemaphoreFullException)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;警告: 释放数量超过信号量最大计数！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _semaphoreSlim = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">4</span>);</span><br><span class="line">        Task[] tasks = <span class="keyword">new</span> Task[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">4</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            tasks[i] = Task.Run(Worker);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Thread.Sleep(<span class="number">500</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> releaseCount = <span class="number">4</span>;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;主线程尝试释放<span class="subst">&#123;releaseCount&#125;</span>个资源&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            _semaphoreSlim.Release(releaseCount);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (SemaphoreFullException)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;警告: 释放数量超过信号量最大计数！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Task.WaitAll(tasks);</span><br><span class="line"></span><br><span class="line">        Console.WriteLine(<span class="string">&quot;主线程退出&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台输出内容与Semaphore类似，此处不再展示。</p>
+<p>SemaphoreSlim还可用于异步锁，避免线程阻塞，下面是一个简单示例：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> SemaphoreSlim _semaphoreSlim = <span class="keyword">new</span> SemaphoreSlim(<span class="number">1</span>, <span class="number">1</span>);  <span class="comment">// 使用SemaphoreSlim实现异步锁，初始化时设置最大并发数为 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">DoWork</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> _semaphoreSlim.WaitAsync(); <span class="comment">// 等待锁</span></span><br><span class="line">        <span class="comment">// TODO</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span></span><br><span class="line">    &#123;</span><br><span class="line">        _semaphoreSlim.Release(); <span class="comment">// 释放锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="并发字典ConcurrentDictionary"><a href="#并发字典ConcurrentDictionary" class="headerlink" title="并发字典ConcurrentDictionary"></a>并发字典ConcurrentDictionary</h3><p>在C#中，线程安全集合是一种特殊的数据结构，能够在多线程环境下安全地访问和修改集合元素。线程安全集合通常是通过加锁或者使用其他同步机制来实现线程安全。C#中提供了多种线程安全集合，包括ConcurrentDictionary、ConcurrentQueue、ConcurrentStack、ConcurrentBag等。</p>
+<p>ConcurrentDictionary是C#中用于处理多线程并发访问的线程安全字典。它的设计目标是高效地支持多个线程同时读写数据，而无需显式加锁。它的核心特性使其在高并发场景下表现出色，以下是它的主要特性：</p>
+<ul>
+<li>线程安全：允许多个线程同时读取和写入数据，而不会导致数据损坏或抛出异常。它通过内部锁和无锁技术(如CAS操作)来实现高效的并发访问</li>
+<li>原子操作：提供了一系列原子操作方法(TryAdd、TryUpdate、TryRemove、AddOrUpdate、GetOrAdd等)，确保在多线程环境下的操作是线程安全的，避免了手动加锁的复杂性</li>
+<li>高性能：针对高并发场景进行了优化，使用了分区锁(lock striping)技术，将字典分成多个段(segments)，每个段使用独立的锁。这样可以减少锁竞争，提高并发性能</li>
+<li>无锁读取：大多数情况下读取操作是无锁的(lock-free)，这意味着多个线程可以同时读取数据而不会阻塞。这使得读取操作非常高效</li>
+</ul>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><p>ConcurrentDictionary的应用场景很多，例如缓存系统、共享数据存储、统计和聚合数据、任务调度和状态管理、并发日志记录、分布式锁或资源管理、实时数据处理等。</p>
+<h5 id="统计和聚合数据"><a href="#统计和聚合数据" class="headerlink" title="统计和聚合数据"></a>统计和聚合数据</h5><p>在并发任务中，ConcurrentDictionary可以用于统计或聚合数据，例如计数、求和等。</p>
+<p>下面这个示例使用了常规字典Dictionary对字符串列表进行统计，由于Dictionary是线程不安全的，统计结果将会不可预知。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dict = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">int</span>&gt;();</span><br><span class="line"><span class="built_in">string</span>[] words = &#123; <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;orange&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟多线程环境</span></span><br><span class="line">Parallel.ForEach(words, word =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dict.ContainsKey(word))</span><br><span class="line">    &#123;</span><br><span class="line">        dict[word] += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        dict[word] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> kvp <span class="keyword">in</span> dict)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;kvp.Key&#125;</span>: <span class="subst">&#123;kvp.Value&#125;</span>&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码运行后有概率会出现以下错误提示：</p>
+<blockquote>
+<p>1.<code>Object reference not set to an instance of an object</code>.<br>2.<code>Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection&#39;s state is no longer correct.</code></p>
+</blockquote>
+<p>更改非并发集合的操作必须具有独占访问权限。对非并发集合执行并发更新将会损坏其状态，集合的状态将不再正确。可以使用lock关键字手动添加互斥锁避免竞态条件，也可以直接使用ConcurrentDictionary。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> concurrentDict = <span class="keyword">new</span> ConcurrentDictionary&lt;<span class="built_in">string</span>, <span class="built_in">int</span>&gt;();</span><br><span class="line"><span class="built_in">string</span>[] words = &#123; <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;orange&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟多线程环境</span></span><br><span class="line">Parallel.ForEach(words, word =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    concurrentDict.AddOrUpdate(word, <span class="number">1</span>, (key, oldValue) =&gt; oldValue + <span class="number">1</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> kvp <span class="keyword">in</span> concurrentDict)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;kvp.Key&#125;</span>: <span class="subst">&#123;kvp.Value&#125;</span>&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="并发日志记录"><a href="#并发日志记录" class="headerlink" title="并发日志记录"></a>并发日志记录</h5><p>在并发环境中，ConcurrentDictionary可以用于记录日志或事件。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> log = <span class="keyword">new</span> ConcurrentDictionary&lt;DateTime, <span class="built_in">string</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LogEvent</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    log.TryAdd(DateTime.Now, message);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟多线程环境</span></span><br><span class="line">Parallel.For(<span class="number">0</span>, <span class="number">10</span>, i =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    LogEvent(<span class="string">$&quot;Event <span class="subst">&#123;i&#125;</span> occurred&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> kvp <span class="keyword">in</span> log)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;kvp.Key&#125;</span>: <span class="subst">&#123;kvp.Value&#125;</span>&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码输出的日志记录个数是不确定的，因为同一时间只会记录一条记录。</p>
+<h5 id="分布式锁或资源管理"><a href="#分布式锁或资源管理" class="headerlink" title="分布式锁或资源管理"></a>分布式锁或资源管理</h5><p>ConcurrentDictionary可以用于实现简单的分布式锁或资源管理。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> resourceLocks = <span class="keyword">new</span> ConcurrentDictionary&lt;<span class="built_in">int</span>, <span class="built_in">object</span>&gt;();</span><br><span class="line"><span class="keyword">var</span> lockObj = <span class="keyword">new</span> <span class="built_in">object</span>();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">AccessResource</span>(<span class="params"><span class="built_in">int</span> resourceId</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> resourceLock = resourceLocks.GetOrAdd(resourceId, id =&gt; <span class="keyword">new</span> <span class="built_in">object</span>());</span><br><span class="line">    <span class="keyword">lock</span>(resourceLock)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Resource <span class="subst">&#123;resourceId&#125;</span> is being accessed by thread <span class="subst">&#123;Task.CurrentId&#125;</span>&quot;</span>);</span><br><span class="line">        Task.Delay(<span class="number">1000</span>).Wait(); <span class="comment">// 模拟资源访问</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多线程访问资源</span></span><br><span class="line">Parallel.For(<span class="number">1</span>, <span class="number">10</span>, i =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    AccessResource(i % <span class="number">3</span>); <span class="comment">// 重复访问相同的资源</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上述代码对于同一资源的访问赋予了独占访问权限，若使用普通锁(将resourceLock改为lockObj)，那么某个进程访问资源池中的某个资源时，将会导致资源池中的其他资源也无法被访问。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/csharp/programming-guide" >C#编程指南<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/api/" >.NET API参考文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/fundamentals/runtime-libraries/system-dynamic-expandoobject" >System.Dynamic.ExpandoObject类使用说明<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/c/">c#</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2025/03/25/resumable-upload-and-download/"
+                                   title=".NET实现断点续传(上传/下载)"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">.NET实现断点续传(上传/下载)</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2025/03/04/http-client-usage/"
+                                   title=".NET HttpClient使用详解"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">.NET HttpClient使用详解</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6"><span class="nav-text">委托与事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A7%94%E6%89%98-Delegate"><span class="nav-text">委托(Delegate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6-Event"><span class="nav-text">事件(Event)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B%E4%B8%8E%E6%B3%9B%E5%9E%8B"><span class="nav-text">动态类型与泛型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B-Dynamic-Types"><span class="nav-text">动态类型(Dynamic Types)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B-Generics"><span class="nav-text">泛型(Generics)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-text">并发访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8FSemaphore%E4%B8%8ESemaphoreSlim"><span class="nav-text">信号量Semaphore与SemaphoreSlim</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Semaphore"><span class="nav-text">Semaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SemaphoreSlim"><span class="nav-text">SemaphoreSlim</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E5%AD%97%E5%85%B8ConcurrentDictionary"><span class="nav-text">并发字典ConcurrentDictionary</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%92%8C%E8%81%9A%E5%90%88%E6%95%B0%E6%8D%AE"><span class="nav-text">统计和聚合数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95"><span class="nav-text">并发日志记录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%88%96%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86"><span class="nav-text">分布式锁或资源管理</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6"><span class="nav-text">委托与事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A7%94%E6%89%98-Delegate"><span class="nav-text">委托(Delegate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6-Event"><span class="nav-text">事件(Event)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B%E4%B8%8E%E6%B3%9B%E5%9E%8B"><span class="nav-text">动态类型与泛型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B-Dynamic-Types"><span class="nav-text">动态类型(Dynamic Types)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B-Generics"><span class="nav-text">泛型(Generics)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-text">并发访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8FSemaphore%E4%B8%8ESemaphoreSlim"><span class="nav-text">信号量Semaphore与SemaphoreSlim</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Semaphore"><span class="nav-text">Semaphore</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SemaphoreSlim"><span class="nav-text">SemaphoreSlim</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E5%AD%97%E5%85%B8ConcurrentDictionary"><span class="nav-text">并发字典ConcurrentDictionary</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%92%8C%E8%81%9A%E5%90%88%E6%95%B0%E6%8D%AE"><span class="nav-text">统计和聚合数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95"><span class="nav-text">并发日志记录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%88%96%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86"><span class="nav-text">分布式锁或资源管理</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

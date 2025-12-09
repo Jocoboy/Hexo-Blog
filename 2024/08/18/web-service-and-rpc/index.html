@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            Web Service远程调用技术 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        Web Service远程调用技术
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-08-18 14:15:36</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Dec 09 2025 03:13:20 GMT+0000">2025-12-09 11:13:20</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Remote-Procedure-Call/">Remote-Procedure-Call</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET/">.NET</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/ASP-NET-Core/">ASP.NET Core</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Web-Service/">Web Service</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/NET-Framework/">.NET Framework</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>37k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>2:15 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>Web Service远程调用技术(RPC)的基本概念及实现方式。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Web Service即web服务，是一种跨编程语言和跨操作系统平台的远程调用技术。Web服务包含了一套标准,例如HTTP、XML、SOAP、WSDL、UDDI等，定义了应用程序如何在Web上实现互操作，可以在任何支持这些标准的平台（如Windows、Linux）中使用。</p>
+<p>Web Service与Web API相比，更加适合端到端的应用场景(C&#x2F;S架构)，适合作为内部服务使用。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="SOAP"><a href="#SOAP" class="headerlink" title="SOAP"></a>SOAP</h3><p>SOAP即简单对象访问协议(Simple Object Access Protocol)，是Web Service的通信协议，基于XML文件并绑定在HTTP协议上传递。SOAP消息包括Envelope、Header和Body元素。</p>
+<p>一条SOAP消息就是一个普通的XML文档，文档包括下列元素：</p>
+<ul>
+<li>Envelope元素，必选，可把此XML文档标识为一条SOAP消息</li>
+<li>Header元素，可选，包含头部信息</li>
+<li>Body元素，必选，包含所有的调用和响应信息</li>
+</ul>
+<p>目前WebSerivce的协议主要有SOAP1.1与SOAP1.2，二者的区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>SOAP1.1</th>
+<th>SOAP1.2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命名空间</td>
+<td><code>http://schemas.xmlsoap.org/soap/envelope/</code></td>
+<td><code>http://www.w3.org/2003/05/soap-envelope</code></td>
+</tr>
+<tr>
+<td>请求与响应</td>
+<td>请求头包含SOAPAction，且请求与响应的Content-Type为text&#x2F;xml，以soap作为前缀</td>
+<td>请求头不包含SOAPAction，且请求与响应的Content-Type为application&#x2F;soap+xml，以soap12作为前缀</td>
+</tr>
+<tr>
+<td>错误处理</td>
+<td>使用SOAP Fault元素，包含faultcode, faultstring, faultactor, detail</td>
+<td>使用Code和Reason元素，提供更结构化的错误信息</td>
+</tr>
+<tr>
+<td>协议绑定</td>
+<td>主要支持HTTP绑定</td>
+<td>支持更多协议绑定，如SMTP、FTP等</td>
+</tr>
+<tr>
+<td>数据模型</td>
+<td>数据模型较为简单</td>
+<td>引入了更复杂的数据模型，支持更多数据类型和编码方式</td>
+</tr>
+<tr>
+<td>处理规则</td>
+<td>处理规则较为宽松</td>
+<td>处理规则更严格，要求必须忽略未知的SOAP头元素</td>
+</tr>
+<tr>
+<td>规范文档</td>
+<td>由W3C提交，非正式推荐标准</td>
+<td>由W3C正式推荐，文档更详细</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>扩展性有限</td>
+<td>扩展性更强，支持更多扩展机制</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>安全性较弱</td>
+<td>安全性增强，支持更多安全机制</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>兼容性较好，广泛支持</td>
+<td>兼容性稍差，部分旧系统可能不支持</td>
+</tr>
+</tbody></table>
+<h3 id="WSDL"><a href="#WSDL" class="headerlink" title="WSDL"></a>WSDL</h3><p>Web Service描述语言(WebService Definition Language，简称WSDL)就是用机器能阅读的方式提供的一个正式描述文档而基于XML的语言，用于描述Web Service及其函数、参数和返回值。</p>
+<p>在WSDL说明书中，描述了</p>
+<ul>
+<li>对外发布的服务名称（类）</li>
+<li>接口方法名称（方法）</li>
+<li>接口参数（方法参数）</li>
+<li>​服务返回的数据类型（方法返回值）</li>
+</ul>
+<p>WSDL目前有1.1和2.0两个版本，它们在语法、结构和功能上有显著差异，二者的区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>WSDL1.1</th>
+<th>WSDL2.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命名空间</td>
+<td><code>http://schemas.xmlsoap.org/wsdl/</code></td>
+<td><code>http://www.w3.org/ns/wsdl</code></td>
+</tr>
+<tr>
+<td>文档结构</td>
+<td>根元素为<code>&lt;wsdl:definitions&gt;</code>，主要部分包括<code>&lt;wsdl:types&gt;</code>、<code>&lt;wsdl:message&gt;</code>、<code>&lt;wsdl:portType&gt;</code>、<code>&lt;wsdl:binding&gt;</code>、<code>&lt;wsdl:service&gt;</code></td>
+<td>根元素为<code>&lt;wsdl:description&gt;</code>，使用<code>&lt;wsdl:interface&gt;</code>替代<code>&lt;wsdl:portType&gt;</code></td>
+</tr>
+<tr>
+<td>操作定义</td>
+<td>使用<code>&lt;wsdl:portType&gt;</code>定义操作，操作类型包括One-way、Request-response、Solicit-response、Notification</td>
+<td>使用<code>&lt;wsdl:interface&gt;</code>定义操作，操作类型包括One-way、Request-response、Robust In-only、In-out</td>
+</tr>
+<tr>
+<td>消息定义</td>
+<td>使用<code>&lt;wsdl:message&gt;</code>定义消息，消息由<code>&lt;wsdl:part&gt;</code>组成，每个部分可以引用类型或元素</td>
+<td>取消了 <code>&lt;wsdl:message&gt;</code>和<code>&lt;wsdl:part&gt;</code>，直接在操作中定义输入和输出消息的类型</td>
+</tr>
+<tr>
+<td>绑定支持</td>
+<td>主要支持SOAP1.1绑定，支持HTTP GET&#x2F;POST和MIME绑定，但使用较少</td>
+<td>支持SOAP1.1和SOAP1.2绑定，增强了对HTTP GET&#x2F;POST和MIME绑定的支持，支持更多协议绑定（如JMS、SMTP等）</td>
+</tr>
+<tr>
+<td>错误处理</td>
+<td>错误处理依赖于SOAP的Fault消息</td>
+<td>引入了<code>&lt;wsdl:fault&gt;</code>元素，直接在操作中定义错误消息</td>
+</tr>
+<tr>
+<td>模块化</td>
+<td>模块化支持较弱，主要通过<code>&lt;wsdl:import&gt;</code>引入外部WSDL或XSD文件</td>
+<td>增强了模块化支持，允许更灵活地组合和重用 WSDL文档</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>扩展性较差，主要通过<code>&lt;wsdl:documentation&gt;</code>和<code>&lt;wsdl:extensibility&gt;</code>实现</td>
+<td>增强了扩展性，支持更多的自定义元素和属性</td>
+</tr>
+<tr>
+<td>标准化</td>
+<td>未被正式标准化，但被广泛使用</td>
+<td>是WSDL1.1的改进和标准化版本</td>
+</tr>
+</tbody></table>
+<h3 id="UDDI"><a href="#UDDI" class="headerlink" title="UDDI"></a>UDDI</h3><p>UDDI(Universal Description，Discovery and Integration)，也就是通用的描述、发现以及整合，是一套基于Web的、分布式的、为WebService提供的、信息注册中心的实现标准规范。用户可以通过UDDI来注册和搜索Web服务。</p>
+<h2 id="SOA架构"><a href="#SOA架构" class="headerlink" title="SOA架构"></a>SOA架构</h2><p>面向服务架构(Service Oriented Architecture，简称SOA)，是一个组件模型，它将应用程序的不同功能单元(服务)通过预先定义的接口和契约联系起来。接口是采用中立的方式进行定义的，独立于实现服务的硬件平台、操作系统和编程语言，构建在系统中的服务以一种统一和通用的方式进行交互。</p>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>注: 以下项目基于.NET Framework，.NET中无法使用</p>
+<h3 id="创建服务"><a href="#创建服务" class="headerlink" title="创建服务"></a>创建服务</h3><p>使用ASP.NET Web应用程序(.NET Framework)创建一个Web服务(asmx文件)</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Web.Services;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">WebApplicationDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">WebService(Namespace = <span class="string">&quot;http://tempuri.org/&quot;</span>)</span>] <span class="comment">// 定义命名空间</span></span><br><span class="line">    [<span class="meta">WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)</span>] <span class="comment">// 绑定规范</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebServiceTest</span> : <span class="title">WebService</span></span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="meta">WebMethod(Description = <span class="string">&quot;测试方法&quot;</span>)</span>]</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Sum</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> a + b;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="调用服务"><a href="#调用服务" class="headerlink" title="调用服务"></a>调用服务</h2><h3 id="静态引用"><a href="#静态引用" class="headerlink" title="静态引用"></a>静态引用</h3><p>根据提供的Web Service地址，通过Connected Services添加WCF Web服务引用，生成cs文件，然后直接调用。</p>
+<p>以下是在控制台程序以及ASP.NET Web API项目中的调用方式。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    WebServiceTestSoapClient client = <span class="keyword">new</span> WebServiceTestSoapClient();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> res = client.SumAsync(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(res.Result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Route(<span class="string">&quot;api/Test&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">ApiController</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">HttpGet</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//创建 HTTP 绑定对象</span></span><br><span class="line">        <span class="keyword">var</span> binding = <span class="keyword">new</span> BasicHttpBinding();</span><br><span class="line">        <span class="comment">//根据 WebService 的 URL 构建终端点对象，参数是提供的WebService地址</span></span><br><span class="line">        <span class="keyword">var</span> endpoint = <span class="keyword">new</span> EndpointAddress(<span class="string">@&quot;http://localhost:8083/WebServiceTest.asmx&quot;</span>);</span><br><span class="line">        <span class="comment">//创建调用接口的工厂，注意这里泛型只能传入接口 泛型接口里面的参数是WebService里面定义的类名+Soap</span></span><br><span class="line">        <span class="keyword">var</span> factory = <span class="keyword">new</span> ChannelFactory&lt;WebServiceTestSoap&gt;(binding, endpoint);</span><br><span class="line">        <span class="comment">//从工厂获取具体的调用实例</span></span><br><span class="line">        <span class="keyword">var</span> callClient = factory.CreateChannel();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> task = callClient.SumAsync(<span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line">        <span class="keyword">var</span> res = task.Result;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="string">$&quot;WebService中Sum方法返回结果为<span class="subst">&#123;res&#125;</span>&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="反射调用"><a href="#反射调用" class="headerlink" title="反射调用"></a>反射调用</h3><p>将Web Service地址存放到配置文件中，通过读取地址生成代理类，动态在项目中生成代理类文件，然后通过反射调用。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> res = (<span class="built_in">int</span>)WebServiceProxy.InvokeWebService(<span class="string">&quot;https://localhost:44319/WebServiceTest.asmx&quot;</span>, <span class="string">&quot;WebServiceTest&quot;</span>, <span class="string">&quot;Sum&quot;</span>, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; <span class="number">1</span>, <span class="number">2</span> &#125;);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 反射代理类</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WebServiceProxy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">object</span> <span class="title">InvokeWebService</span>(<span class="params"><span class="built_in">string</span> url,<span class="built_in">string</span> ns, <span class="built_in">string</span> methodname, <span class="built_in">object</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//获取WSDL</span></span><br><span class="line">            WebClient wc = <span class="keyword">new</span> WebClient();</span><br><span class="line">            Stream stream = wc.OpenRead(url + <span class="string">&quot;?WSDL&quot;</span>);</span><br><span class="line">            ServiceDescription sd = ServiceDescription.Read(stream);</span><br><span class="line">            <span class="built_in">string</span> classname = sd.Services[<span class="number">0</span>].Name;</span><br><span class="line">            ServiceDescriptionImporter sdi = <span class="keyword">new</span> ServiceDescriptionImporter();</span><br><span class="line">            sdi.AddServiceDescription(sd, <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">            CodeNamespace cn = <span class="keyword">new</span> CodeNamespace(ns);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//生成客户端代理类代码</span></span><br><span class="line">            CodeCompileUnit ccu = <span class="keyword">new</span> CodeCompileUnit();</span><br><span class="line">            ccu.Namespaces.Add(cn);</span><br><span class="line">            sdi.Import(cn, ccu);</span><br><span class="line">            CSharpCodeProvider csc = <span class="keyword">new</span> CSharpCodeProvider();</span><br><span class="line">            ICodeCompiler icc = csc.CreateCompiler();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//设定编译参数</span></span><br><span class="line">            CompilerParameters cplist = <span class="keyword">new</span> CompilerParameters();</span><br><span class="line">            cplist.GenerateExecutable = <span class="literal">false</span>;</span><br><span class="line">            cplist.GenerateInMemory = <span class="literal">true</span>;</span><br><span class="line">            cplist.ReferencedAssemblies.Add(<span class="string">&quot;System.dll&quot;</span>);</span><br><span class="line">            cplist.ReferencedAssemblies.Add(<span class="string">&quot;System.XML.dll&quot;</span>);</span><br><span class="line">            cplist.ReferencedAssemblies.Add(<span class="string">&quot;System.Web.Services.dll&quot;</span>);</span><br><span class="line">            cplist.ReferencedAssemblies.Add(<span class="string">&quot;System.Data.dll&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//编译代理类</span></span><br><span class="line">            CompilerResults cr = icc.CompileAssemblyFromDom(cplist, ccu);</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">true</span> == cr.Errors.HasErrors)</span><br><span class="line">            &#123;</span><br><span class="line">                System.Text.StringBuilder sb = <span class="keyword">new</span> System.Text.StringBuilder();</span><br><span class="line">                <span class="keyword">foreach</span> (System.CodeDom.Compiler.CompilerError ce <span class="keyword">in</span> cr.Errors)</span><br><span class="line">                &#123;</span><br><span class="line">                    sb.Append(ce.ToString());</span><br><span class="line">                    sb.Append(System.Environment.NewLine);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(sb.ToString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//生成代理实例，并调用方法</span></span><br><span class="line">            System.Reflection.Assembly assembly = cr.CompiledAssembly;</span><br><span class="line">            Type t = assembly.GetType(ns + <span class="string">&quot;.&quot;</span> + classname, <span class="literal">true</span>, <span class="literal">true</span>);</span><br><span class="line">            <span class="built_in">object</span> obj = Activator.CreateInstance(t);</span><br><span class="line">            System.Reflection.MethodInfo mi = t.GetMethod(methodname);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> mi.Invoke(obj, args);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用HTTP方式调用"><a href="#使用HTTP方式调用" class="headerlink" title="使用HTTP方式调用"></a>使用HTTP方式调用</h3><p>Web Service还可以使用HTTP方式，通过发送SOAP请求体进行调用。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span> (HttpClient client = <span class="keyword">new</span> HttpClient())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> webServiceUri = <span class="string">&quot;http://localhost:8083/WebServiceTest.asmx&quot;</span>;</span><br><span class="line">        <span class="built_in">string</span> soapRequest = <span class="string">@&quot;&lt;?xml version=&quot;&quot;1.0&quot;&quot; encoding=&quot;&quot;utf-8&quot;&quot;?&gt;</span></span><br><span class="line"><span class="string">                              &lt;soap:Envelope xmlns:xsi=&quot;&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&quot; xmlns:xsd=&quot;&quot;http://www.w3.org/2001/XMLSchema&quot;&quot; xmlns:soap=&quot;&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&quot;&gt;</span></span><br><span class="line"><span class="string">                                &lt;soap:Body&gt;</span></span><br><span class="line"><span class="string">                                  &lt;Sum xmlns=&quot;&quot;http://tempuri.org/&quot;&quot;&gt;</span></span><br><span class="line"><span class="string">                                    &lt;a&gt;1&lt;/a&gt;</span></span><br><span class="line"><span class="string">                                    &lt;b&gt;2&lt;/b&gt;</span></span><br><span class="line"><span class="string">                                  &lt;/Sum&gt;</span></span><br><span class="line"><span class="string">                                &lt;/soap:Body&gt;</span></span><br><span class="line"><span class="string">                              &lt;/soap:Envelope&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// var request = new HttpRequestMessage(HttpMethod.Post, &quot;http://localhost:8083/WebServiceTest.asmx&quot;);</span></span><br><span class="line">        <span class="comment">// request.Headers.Add(&quot;SOAPAction&quot;, &quot;\&quot;http://tempuri.org/Sum\&quot;&quot;);</span></span><br><span class="line">        <span class="comment">// request.Content = new StringContent(soapRequest, Encoding.UTF8, &quot;text/xml&quot;);</span></span><br><span class="line">        <span class="comment">// HttpResponseMessage response = client.SendAsync(request).Result;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> content = <span class="keyword">new</span> StringContent(soapRequest, Encoding.UTF8, <span class="string">&quot;text/xml&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> response =  client.PostAsync(webServiceUri, content).Result;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">string</span> responseContent;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (response.IsSuccessStatusCode)</span><br><span class="line">        &#123;</span><br><span class="line">            responseContent = response.Content.ReadAsStringAsync().Result;</span><br><span class="line">            <span class="comment">// 解析XML响应</span></span><br><span class="line">            XDocument xmlResponse = XDocument.Parse(responseContent);</span><br><span class="line">            <span class="comment">// 处理XML</span></span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;<span class="subst">&#123;xmlResponse&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;Error: <span class="subst">&#123;response.StatusCode&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Console.ReadKey();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>请求返回的soap消息如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">soap:Envelope</span> <span class="attr">xmlns:soap</span>=<span class="string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">soap:Body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">SumResponse</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://tempuri.org/&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">SumResult</span>&gt;</span>3<span class="tag">&lt;/<span class="name">SumResult</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">SumResponse</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">soap:Body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">soap:Envelope</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="soap消息解析"><a href="#soap消息解析" class="headerlink" title="soap消息解析"></a>soap消息解析</h4><p>假设返回的soap消息包含xml数据如下，</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">soap:Envelope</span> <span class="attr">xmlns:soap</span>=<span class="string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">soap:Body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">getMqResponse</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://tempuri.org/&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">getMqResult</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maindata</span> <span class="attr">table</span>=<span class="string">&quot;person&quot;</span> <span class="attr">disid</span>=<span class="string">&quot;1&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">item</span> <span class="attr">opeType</span>=<span class="string">&quot;insert&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">idno</span>&gt;</span>1001<span class="tag">&lt;/<span class="name">idno</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">maindata</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">getMqResult</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">getMqResponse</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">soap:Body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">soap:Envelope</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果想要解析带命名空间的xml并获取其中某些节点的属性值和内容，则需要使用命名空间管理器。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载SOAP响应的XML数据</span></span><br><span class="line">XmlDocument xmlDoc = <span class="keyword">new</span> XmlDocument();</span><br><span class="line">xmlDoc.LoadXml(soapResponse);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建命名空间管理器，并添加SOAP命名空间</span></span><br><span class="line">XmlNamespaceManager namespaceManager = <span class="keyword">new</span> XmlNamespaceManager(xmlDoc.NameTable);</span><br><span class="line">namespaceManager.AddNamespace(<span class="string">&quot;soap&quot;</span>, <span class="string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>);</span><br><span class="line">namespaceManager.AddNamespace(<span class="string">&quot;ns&quot;</span>, <span class="string">&quot;http://tempuri.org/&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用XPath表达式提取所需的数据</span></span><br><span class="line">XmlNode mainDataNode = xmlDoc.SelectSingleNode(<span class="string">&quot;/soap:Envelope/soap:Body/ns:getMqResponse/ns:getMqResult/maindata&quot;</span>, namespaceManager);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取maindata中disid的属性值</span></span><br><span class="line">XmlElement mainDataElement = (XmlElement)mainDataNode;</span><br><span class="line"><span class="keyword">var</span> disid = mainDataElement.GetAttribute(<span class="string">&quot;disid&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> childNodes = mainDataNode.SelectNodes(<span class="string">&quot;item&quot;</span>);</span><br><span class="line"><span class="keyword">foreach</span>(<span class="keyword">var</span> itemNode <span class="keyword">in</span> childNodes)</span><br><span class="line">&#123;</span><br><span class="line">    XmlElement itemElement = (XmlElement)itemNode;</span><br><span class="line">    <span class="comment">// 获取item中opeType的属性值</span></span><br><span class="line">    <span class="keyword">var</span> opeType = itemElement.GetAttribute(<span class="string">&quot;opeType&quot;</span>);</span><br><span class="line">    <span class="comment">// 获取idno的文本值</span></span><br><span class="line">    <span class="keyword">var</span> idno = itemElement.SelectSingleNode(<span class="string">&quot;idno&quot;</span>).InnerText;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="xml字符串转义问题"><a href="#xml字符串转义问题" class="headerlink" title="xml字符串转义问题"></a>xml字符串转义问题</h4><p>在WebService方法返回XML数据的时候，将XML处理成字符串返回，在客户端得到的XML字符串会出现被转义的情况。</p>
+<p>将已经为HTTP传输进行过HTML编码的字符串转换为已解码的字符串，可在不改动服务端代码的情况下解决转义问题。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">result = System.Net.WebUtility.HtmlDecode(xmlResponse.ToString());</span><br></pre></td></tr></table></figure>
+
+<p>string类型和XmlDocument类型在WebService序列化过程中的处理方法不同。如果返回可序列化的标准XML对象，可从根本上解决转义问题。</p>
+<p>对应的服务端代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">WebMethod(Description = <span class="string">&quot;测试方法&quot;</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> System.Xml.<span class="function">XmlDocument <span class="title">GetMainData</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// your xml response</span></span><br><span class="line">    <span class="keyword">var</span> res = <span class="string">@&quot;&lt;maindata&gt;</span></span><br><span class="line"><span class="string">                 &lt;item&gt;&lt;/item&gt;</span></span><br><span class="line"><span class="string">                &lt;/maindata&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    System.Xml.XmlDocument xmldoc = <span class="keyword">new</span> System.Xml.XmlDocument();</span><br><span class="line">    xmldoc.LoadXml(res);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> xmldoc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/api/?view=netframework-4.8.1" >.NET Framework API参考文档<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/framework/wcf/" >使用WCF开发面向服务的应用程序<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+<li><p><a class="link"   target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/api/system.net.webutility.htmldecode" >WebUtility.HtmlDecode方法<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET/">.NET</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/ASP-NET-Core/">ASP.NET Core</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Web-Service/">Web Service</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/NET-Framework/">.NET Framework</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2024/08/18/websocket-usage/"
+                                   title="WebSocket在C#与.NET中的简单实现"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">WebSocket在C#与.NET中的简单实现</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2024/08/17/kubernetes-usage/"
+                                   title="kubernetes核心组件与集群搭建"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">kubernetes核心组件与集群搭建</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SOAP"><span class="nav-text">SOAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WSDL"><span class="nav-text">WSDL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDDI"><span class="nav-text">UDDI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SOA%E6%9E%B6%E6%9E%84"><span class="nav-text">SOA架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1"><span class="nav-text">创建服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%9C%8D%E5%8A%A1"><span class="nav-text">调用服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%BC%95%E7%94%A8"><span class="nav-text">静态引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E8%B0%83%E7%94%A8"><span class="nav-text">反射调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8HTTP%E6%96%B9%E5%BC%8F%E8%B0%83%E7%94%A8"><span class="nav-text">使用HTTP方式调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#soap%E6%B6%88%E6%81%AF%E8%A7%A3%E6%9E%90"><span class="nav-text">soap消息解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xml%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B9%89%E9%97%AE%E9%A2%98"><span class="nav-text">xml字符串转义问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2025
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SOAP"><span class="nav-text">SOAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WSDL"><span class="nav-text">WSDL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDDI"><span class="nav-text">UDDI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SOA%E6%9E%B6%E6%9E%84"><span class="nav-text">SOA架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1"><span class="nav-text">创建服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%9C%8D%E5%8A%A1"><span class="nav-text">调用服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%BC%95%E7%94%A8"><span class="nav-text">静态引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E8%B0%83%E7%94%A8"><span class="nav-text">反射调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8HTTP%E6%96%B9%E5%BC%8F%E8%B0%83%E7%94%A8"><span class="nav-text">使用HTTP方式调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#soap%E6%B6%88%E6%81%AF%E8%A7%A3%E6%9E%90"><span class="nav-text">soap消息解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xml%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B9%89%E9%97%AE%E9%A2%98"><span class="nav-text">xml字符串转义问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
