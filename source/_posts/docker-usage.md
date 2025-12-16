@@ -260,6 +260,18 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ABPDemo.Web.dll"]
 ```
 
+注：执行`dotnet restore`需要联网环境，若要断网离线构建，应先本地构建bin/Release/net5.0/publish，然后从宿主机复制到容器，对应的Dockfile可简化为：
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM base AS final
+WORKDIR /app
+ENTRYPOINT ["dotnet", "XFreeSimpleService.Host.dll"]
+```
+
 #### 配置前端Dockerfile
 
 Vue前端Dockerfile文件如下，
@@ -411,10 +423,16 @@ networks:
     driver: bridge
 ```
 
-注：若要断网离线构建frontend，除了修改Dockfile直接使用COPY命令，也可以修改Docker Compose使用volumes挂载文件，具体配置如下：
+注：若要断网离线构建backend和frontend，除了修改Dockfile直接使用COPY命令，也可以修改Docker Compose使用volumes挂载文件，具体配置如下：
 ```yaml
 ...
 services:
+  ...
+  backend:
+    ...
+    volumes:
+      -  ./backend/ABPDemo.Web/bin/Release/net5.0/publish:/app
+    ...
   ...
   frontend:
     ...
