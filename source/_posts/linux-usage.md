@@ -142,6 +142,28 @@ Linux系统中各级目录含义如下图所示。
 
 `rm -r [dir]`
 
+### 调整文件夹大小
+
+查看磁盘空间使用情况
+
+`df -hl` 
+
+查找占用空间大的目录
+
+`du -h --max-depth=1 /home`
+
+删除不需要的文件
+
+`rm -rf /home/user/.cache/*`
+
+压缩文件夹
+
+`tar -czvf backup.tar.gz /home/user/documents`
+
+移动文件到其他目录
+
+`mv /home/user/documents/* /home/user/backup/`
+
 ### dotnet程序包更新
 
 切换到root用户(使用`su - [username]`返回当前用户)
