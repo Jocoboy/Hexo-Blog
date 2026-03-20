@@ -597,7 +597,9 @@ docker安装后默认没有daemon.json这个配置文件，需要进行手动创
 }
 ```
 
-保存并退出后可使用以下命令重启docker
+保存并退出后可使用以下命令重新加载系统配置，并重启docker服务
+
+`sudo systemctl daemon-reload`
 
 `sudo systemctl restart docker`
 
