@@ -97,7 +97,7 @@ def get_machine_fingerprint() -> str:
     env_id = os.environ.get("HOST_MACHINE_ID")
     if env_id:
         print("Using machine ID from environment variable")
-        return hashlib.sha256(env_id.encode()).hexdigest()
+        return env_id
     
     # 2. 备选：使用 py-machineid 直接读取
     #    （如果文件没有被挂载覆盖，在容器内读取到的就是容器 ID）
@@ -126,17 +126,7 @@ import json
 import machineid
 
 def get_machine_fingerprint() -> str:
-
-    # 获取原始机器ID（不包含应用标识）
-    machine_id = machineid.id()
-
-    # 或者获取匿名化的哈希版本（推荐用于License场景）
-    # 传入你的应用ID，确保不同应用获取不同的ID
-    hashed_id = machineid.hashed_id('your_app_name')
-    
-    print("Using direct machine ID from system")
-    # 返回SHA256哈希作为指纹
-    return hashlib.sha256(hashed_id.encode()).hexdigest()
+    # 同上省略
 
 machine_id = get_machine_fingerprint()
 
@@ -285,5 +275,305 @@ with open("license.lic", "r") as f:
 res = verify_license(lic)
 print(res)
 ```
+
+## Docker集成测试
+
+demo目录结构如下，
+
+```
+docker
+├─ Dockerfile
+├─ license.lic
+├─ public_key.pem
+├─ requirements.txt
+└─ server_validate.py
+```
+
+其中许可证书license.lic和公钥public_key.pem的生成方式如前文所述，不再赘述。
+
+requirements.txt包含FastAPI运行所需的依赖，本demo示例需要的依赖如下，
+
+```
+fastapi==0.104.1
+uvicorn==0.24.0
+cryptography==41.0.7
+pydantic==2.5.0
+python-multipart==0.0.6
+py-machineid==1.0.0
+```
+
+server_validate.py是一个简单的FastAPI示例，该应用会自动检查py-machineid依赖库是否加载成功，自动加载许可证书license.lic和公钥public_key.pem
+
+```python
+import json
+import base64
+import hashlib
+import os
+from datetime import datetime, timezone
+from fastapi import FastAPI, Depends, HTTPException, Request
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from pydantic import BaseModel
+from typing import Optional
+
+# 导入 py-machineid 库
+try:
+    import machineid
+    MACHINEID_AVAILABLE = True
+    print("✓ py-machineid 库加载成功")
+except ImportError:
+    MACHINEID_AVAILABLE = False
+    print("⚠️ py-machineid 库未安装，将使用备用方案")
+
+app = FastAPI(title="License Validation Service")
+
+# 加载公钥
+def load_public_key():
+    """从文件加载公钥"""
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    public_key_path = os.path.join(current_dir, "public_key.pem")
+    
+    try:
+        with open(public_key_path, "rb") as f:
+            public_key = serialization.load_pem_public_key(f.read())
+        print("✓ 公钥加载成功")
+        return public_key
+    except Exception as e:
+        print(f"✗ 公钥加载失败: {e}")
+        return None
+
+PUBLIC_KEY = load_public_key()
+
+# 加载License文件
+def load_license():
+    """从文件加载License"""
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    license_path = os.path.join(current_dir, "license.lic")
+    
+    try:
+        with open(license_path, "r") as f:
+            license_str = f.read().strip()
+        print("✓ License文件加载成功")
+        return license_str
+    except Exception as e:
+        print(f"✗ License文件加载失败: {e}")
+        return None
+
+LICENSE_STR = load_license()
+
+def get_machine_fingerprint() -> str:
+    # 1. 优先从环境变量获取（适用于容器）
+
+    env_id = os.environ.get("HOST_MACHINE_ID")
+    if env_id:
+        print("Using machine ID from environment variable")
+        return env_id
+    
+    # 2. 备选：使用 py-machineid 直接读取
+    #    （如果文件没有被挂载覆盖，在容器内读取到的就是容器 ID）
+
+    # 获取原始机器ID（不包含应用标识）
+    machine_id = machineid.id()
+
+    # 或者获取匿名化的哈希版本（推荐用于License场景）
+    # 传入你的应用ID，确保不同应用获取不同的ID
+    hashed_id = machineid.hashed_id('vv')
+    
+    print("Using direct machine ID from system")
+    # 返回SHA256哈希作为指纹
+    return hashlib.sha256(hashed_id.encode()).hexdigest()
+
+
+def verify_license(license_str : str) -> dict:
+    """验证License并返回授权信息"""
+    if not PUBLIC_KEY:
+        raise HTTPException(status_code=500, detail="公钥未正确加载")
+    
+    try:
+        # 1. 拆分License数据和签名
+        if '.' not in license_str:
+            raise ValueError("Invalid license format")
+        
+        data_b64, signature_b64 = license_str.split('.')
+        payload_bytes = base64.b64decode(data_b64)
+        signature = base64.b64decode(signature_b64)
+        
+        # 2. 验证签名
+        PUBLIC_KEY.verify(
+            signature,
+            payload_bytes,
+            padding.PKCS1v15(),
+            hashes.SHA256()
+        )
+        
+        # 3. 解析授权数据
+        payload = json.loads(payload_bytes)
+        
+        # 4. 验证有效期
+        expire_time = datetime.fromisoformat(payload["expire"])
+        current_time = datetime.now(timezone.utc)
+        
+        if expire_time < current_time:
+            raise HTTPException(status_code=403, detail="License已过期")
+        
+        # 5. 验证机器指纹（关键步骤）
+        current_fingerprint = get_machine_fingerprint()
+        bound_fingerprint = payload.get("machine_id")
+        
+        if bound_fingerprint and current_fingerprint != bound_fingerprint:
+            raise HTTPException(
+                status_code=403, 
+                detail=f"License与当前设备不匹配\n期望: {bound_fingerprint[:32]}...\n实际: {current_fingerprint[:32]}..."
+            )
+        
+        return payload
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=f"License验证失败: {str(e)}")
+
+
+def get_current_license(request: Request) -> dict:
+    """从请求中获取并验证License"""
+    # 支持从Header或Query参数获取License
+    license_key = request.headers.get("X-License-Key")
+    if not license_key:
+        license_key = request.query_params.get("license_key")
+
+    if not license_key:
+        license_key = LICENSE_STR
+
+    if not license_key:
+    raise HTTPException(status_code=401, detail="请提供License (X-License-Key header 或 license_key参数)")
+    
+    return verify_license(license_key)
+
+
+# ==================== API 路由 ====================
+
+@app.get("/")
+async def root():
+    """根路径"""
+    return {
+        "service": "License Validation Service",
+        "status": "running",
+        "version": "2.0.0",
+        "machineid_available": MACHINEID_AVAILABLE
+    }
+
+
+@app.get("/health")
+async def health_check():
+    """健康检查接口"""
+    return {
+        "status": "healthy",
+        "public_key_loaded": PUBLIC_KEY is not None,
+        "license_loaded": LICENSE_STR is not None,
+        "machineid_available": MACHINEID_AVAILABLE
+    }
+
+
+@app.get("/machine-fingerprint")
+async def get_fingerprint():
+    """获取当前机器的指纹（用于生成License）"""
+    fingerprint = get_machine_fingerprint()
+    return {
+        "machine_fingerprint": fingerprint,
+        "machineid_available": MACHINEID_AVAILABLE,
+        "note": "请将此指纹提供给管理员以生成License"
+    }
+
+
+@app.get("/validate")
+async def validate_license(license_info: dict = Depends(get_current_license)):
+    """验证License接口"""
+    return {
+        "valid": True,
+        "message": "License验证通过",
+        "license_info": {
+            "machine_id": license_info.get("machine_id", ""),
+            "expire_days": license_info.get("expire")
+        }
+    }
+
+
+@app.get("/protected")
+async def protected_endpoint(license_info: dict = Depends(get_current_license)):
+    """受保护的API示例"""
+    return {
+        "message": "访问成功！",
+        "license_valid": True,
+        "expires_at": license_info.get("expire")
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    print("=" * 50)
+    print("License Validation Service Starting...")
+    print(f"Public Key: {'✓ Loaded' if PUBLIC_KEY else '✗ Failed'}")
+    print(f"License: {'✓ Loaded' if LICENSE_STR else '✗ Not found'}")
+    print(f"py-machineid: {'✓ Available' if MACHINEID_AVAILABLE else '✗ Not installed'}")
+    print(f"Machine Fingerprint: {get_machine_fingerprint()[:48]}...")
+    print("=" * 50)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+Dockerfile文件如下，使用命令`docker build -t your-image:latest .`以构建镜像，
+
+使用命令`docker run -d -e HOST_MACHINE_ID="your-actual-host-machine-id-here" --name your-image -p 8000:8000 your-image:latest `以创建并运行容器，同时传入环境变量HOST_MACHINE_ID
+
+```Dockerfile
+# 使用官方Python镜像
+FROM python:3.11-slim
+
+# 设置工作目录
+WORKDIR /app
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    TZ=Asia/Shanghai
+
+# 安装系统依赖（py-machineid 在某些系统上需要）
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 安装Python依赖
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用程序文件
+COPY server_validate.py .
+COPY public_key.pem .
+COPY license.lic .
+
+# 创建非root用户运行应用
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+
+# 启动命令
+CMD ["uvicorn", "server_validate:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+
+使用curl命令`curl http://localhost:8000/machine-fingerprint`测试获取机器指纹(若容器启动时未添加环境变量，则获取的为容器的ID而非宿主机)。
+
+使用curl命令`curl http://localhost:8000/validate`测试校验许可证是否有效(许可证机器指纹与宿主机一致，且未过有效期)。
+
+也可以使用curl命令`curl http://localhost:8000/validate?license_key="your-license-key" `从请求中获取并验证License。
 
 ## 参考文档
