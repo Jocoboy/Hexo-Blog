@@ -550,9 +550,13 @@ MYSQL_PASSWORD=root1234
 
 (注：-itd为组合参数，-i使容器保持交互状态，-t为容器分配一个伪终端，-d在后台运行容器)
 
+若要添加端口映射和卷挂载，可在上述命令基础上添加-p和-v参数
+
+`docker run --name ubuntu_demo -itd -p 8080:80 -v [host-path]:/home/ubuntu docker.xuanyuan.me/library/ubuntu `
+
 进入Ubuntu容器内部
 
-`docker exec -it ubuntu_demo /bin/bash`
+`docker exec -it ubuntu_demo bash`
 
 停止容器
 
