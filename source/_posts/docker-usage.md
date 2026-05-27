@@ -554,6 +554,10 @@ MYSQL_PASSWORD=root1234
 
 `docker run -itd --name ubuntu_demo -p 8080:80 -v [host-path]:/home/ubuntu -e [environment-variable]="[your-environment-variable]" docker.xuanyuan.me/library/ubuntu `
 
+查看指定容器的挂载详情
+
+`docker inspect --format='{{json .Mounts}}' [container-name] | python -m json.tool`
+
 进入Ubuntu容器内部
 
 `docker exec -it ubuntu_demo bash`

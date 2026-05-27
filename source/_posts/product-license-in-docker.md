@@ -34,16 +34,20 @@ FastAPI是一个现代、快速（高性能）的Web框架，用于基于标准P
 ```python
 # key_generate.py
 
+import os
 # 运行一次，生成 private_key.pem 和 public_key.pem
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+
+# 使用脚本所在目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 生成私钥
 private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 public_key = private_key.public_key()
 
 # 保存私钥 (你自己留着，用来给客户生成License文件)
-with open("private_key.pem", "wb") as f:
+with open(script_dir + "/private_key.pem", "wb") as f:
     f.write(private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
@@ -51,7 +55,7 @@ with open("private_key.pem", "wb") as f:
     ))
 
 # 保存公钥 (这个和下面的代码一起给客户)
-with open("public_key.pem", "wb") as f:
+with open(script_dir + "/public_key.pem", "wb") as f:
     f.write(public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo
@@ -123,7 +127,11 @@ def get_machine_fingerprint() -> str:
 
 import hashlib
 import json
+import os
 import machineid
+
+# 使用脚本所在目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 def get_machine_fingerprint() -> str:
     # 同上省略
@@ -137,7 +145,7 @@ data = {
 }
 
 # 写入JSON文件
-with open('license_info.json', 'w', encoding='utf-8') as f:
+with open(script_dir + '/license_info.json', 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=4)
 
 print("license_info.json file generated")
@@ -152,13 +160,17 @@ print("license_info.json file generated")
 
 import json
 import base64
+import os
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from datetime import datetime, timedelta, timezone
 
+# 使用脚本所在目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 def generate_license(customer_machine_id: str, expire_days: int = 365):
     # 1. 加载你的私钥
-    with open("private_key.pem", "rb") as f:
+    with open(script_dir + "/private_key.pem", "rb") as f:
         private_key = serialization.load_pem_private_key(f.read(), password=None)
 
     # 2. 构建授权数据
@@ -188,13 +200,13 @@ def generate_license(customer_machine_id: str, expire_days: int = 365):
 
 def write_license_simple(license_content):
     """最简单的写入方式"""
-    with open("license.lic", "w") as f:
+    with open(script_dir + "/license.lic", "w") as f:
         f.write(license_content)
     
     print("License file created: license.lic")
 
 # 读取JSON配置文件
-with open('license_info.json', 'r') as f:
+with open(script_dir + '/license_info.json', 'r') as f:
     config = json.load(f)
 
 # 提取参数到变量
@@ -210,19 +222,23 @@ write_license_simple(lic)
 ```python
 # server_validate.py
 
-import platform
-import uuid
-from fastapi import FastAPI, Depends, HTTPException, Request
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+import os
 import json
 import base64
+import hashlib
+import machineid
 from datetime import datetime, timezone
+from fastapi import FastAPI, HTTPException
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 
 app = FastAPI()
 
+# 使用脚本所在目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 # 加载公钥 (你需要把生成的 public_key.pem 随代码一起提供给客户)
-with open("public_key.pem", "rb") as f:
+with open(script_dir + "/public_key.pem", "rb") as f:
     PUBLIC_KEY = serialization.load_pem_public_key(f.read())
 
 import subprocess
@@ -268,7 +284,7 @@ def verify_license(license_str: str):
         raise HTTPException(status_code=403, detail=f"License validate failed: {str(e)}")
 
 # 加载license
-with open("license.lic", "r") as f:
+with open(script_dir + "/license.lic", "r") as f:
     lic = f.read()
     print(f"read content: '{lic}'")
 
@@ -313,8 +329,9 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Depends, HTTPException, Request
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
-from pydantic import BaseModel
-from typing import Optional
+
+# 使用脚本所在目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 导入 py-machineid 库
 try:
@@ -330,9 +347,7 @@ app = FastAPI(title="License Validation Service")
 # 加载公钥
 def load_public_key():
     """从文件加载公钥"""
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    public_key_path = os.path.join(current_dir, "public_key.pem")
-    
+    public_key_path = script_dir + "/public_key.pem"
     try:
         with open(public_key_path, "rb") as f:
             public_key = serialization.load_pem_public_key(f.read())
@@ -347,8 +362,7 @@ PUBLIC_KEY = load_public_key()
 # 加载License文件
 def load_license():
     """从文件加载License"""
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    license_path = os.path.join(current_dir, "license.lic")
+    license_path = script_dir + "/license.lic"
     
     try:
         with open(license_path, "r") as f:
