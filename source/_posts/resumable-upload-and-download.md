@@ -1565,7 +1565,12 @@ public class ResumableDownloadService
             var fileTotalLength = response.Content.Headers.ContentLength;
 
             using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            using var fileStream = new FileStream(destinationPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None);
+            /*
+              FileShare.None: 以独占方式打开文件
+              FileShare.ReadWrite: 允许其他进程(包括已打开该文件的进程)以读/写方式访问同一文件，从而避免冲突
+              FileShare.None为默认行为，使用FileStream指定共享模式为ReadWrite，可以允许其他进程同时读写
+            */
+            using var fileStream = new FileStream(destinationPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None); 
             var buffer = new byte[8192];
             int bytesRead;
             long totalRead = 0;
