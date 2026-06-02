@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            基于Docker的应用软件离线许可证颁发方案 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        基于Docker的应用软件离线许可证颁发方案
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2026-05-14 17:34:09</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Tue Jun 02 2026 10:04:46 GMT+0000">2026-06-02 18:04:46</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Software-License/">Software-License</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Docker/">Docker</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Python/">Python</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Fast-API/">Fast API</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Asymmetric-Encryption/">Asymmetric Encryption</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>64k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>3:54 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>为构建并部署在Docker容器中的FastAPI应用设计一个离线的软件许可证颁发方案。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>FastAPI是一个现代、快速（高性能）的Web框架，用于基于标准Python类型提示构建API。<br>在商业化场景中，需要为FastAPI添加软件许可验证机制，而现代化的FastAPI应用通常部署在Docker容器中(与宿主机隔离)。<br>为此，本文设计了一种基于Docker的应用软件离线许可证颁发方案，使用非对称加密技术，无需通过联网环境即可完成软件&#x2F;产品的许可验证。</p>
+<h2 id="许可证生成架构图"><a href="#许可证生成架构图" class="headerlink" title="许可证生成架构图"></a>许可证生成架构图</h2><img   src="/Hexo-Blog/2026/05/14/product-license-in-docker/product-license-generate-diagram.png"  class="" title="许可证生成架构图">
+
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><h3 id="私钥与公钥生成"><a href="#私钥与公钥生成" class="headerlink" title="私钥与公钥生成"></a>私钥与公钥生成</h3><p>使用非对称加密算法，生成一组私钥和公钥。其中私钥用于生成License.lic，用户的FastAPI应用里只用公钥验证，整个过程完全离线。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># key_generate.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="comment"># 运行一次，生成 private_key.pem 和 public_key.pem</span></span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives <span class="keyword">import</span> serialization</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.asymmetric <span class="keyword">import</span> rsa</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用脚本所在目录</span></span><br><span class="line">script_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成私钥</span></span><br><span class="line">private_key = rsa.generate_private_key(public_exponent=<span class="number">65537</span>, key_size=<span class="number">2048</span>)</span><br><span class="line">public_key = private_key.public_key()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存私钥 (你自己留着，用来给客户生成License文件)</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/private_key.pem&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(private_key.private_bytes(</span><br><span class="line">        encoding=serialization.Encoding.PEM,</span><br><span class="line">        <span class="built_in">format</span>=serialization.PrivateFormat.PKCS8,</span><br><span class="line">        encryption_algorithm=serialization.NoEncryption()</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存公钥 (这个和下面的代码一起给客户)</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/public_key.pem&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(public_key.public_bytes(</span><br><span class="line">        encoding=serialization.Encoding.PEM,</span><br><span class="line">        <span class="built_in">format</span>=serialization.PublicFormat.SubjectPublicKeyInfo</span><br><span class="line">    ))</span><br></pre></td></tr></table></figure>
+
+<p>运行后你将得到private_key.pem与public_key.pem两个文件。</p>
+<h3 id="许可证信息准备"><a href="#许可证信息准备" class="headerlink" title="许可证信息准备"></a>许可证信息准备</h3><p>在配置文件license_info.json中配置机器码machine_id和许可证过期时间expire_days。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span>     </span><br><span class="line">    <span class="attr">&quot;machine_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;e29633fade0fc20cbf6a4ff8144f8b09ea97db1e83830e4a9551cef7ae482b94&quot;</span><span class="punctuation">,</span>     </span><br><span class="line">    <span class="attr">&quot;expire_days&quot;</span><span class="punctuation">:</span> <span class="number">365</span> </span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中machine_id可用跨平台机器ID库py-machineid获取。</p>
+<p><code>pip install py-machineid</code></p>
+<p>该库在被调用时，会直接尝试读取宿主机的硬件信息（如Windows注册表、Linux的&#x2F;etc&#x2F;machine-id或macOS的硬件序列号）。这部分操作完全由Python代码执行，绕过了Kubernetes的环境注入机制。<br>由于容器内的Python进程看到的是独立的文件系统和注册表，py-machineid会读取容器内部的machine-id。这个ID通常是Docker为容器生成的虚拟ID，会随容器的重建而发生改变。</p>
+<p>为了使py-machineid读取的始终为宿主机的ID，常规方法是通过挂载将宿主机的machine-id文件覆盖容器内的同名文件。例如宿主机为Linux系统，在运行容器时添加-v参数:</p>
+<p><code>docker run -d -v /etc/machine-id:/etc/machine-id:ro your-image:latest</code></p>
+<p>由于不同操作系统文件路径差异较大，最稳妥的方式还是通过环境变量传递machine-id，可在运行容器时添加-e参数:</p>
+<p><code>docker run -d -e HOST_MACHINE_ID=&quot;your-actual-host-machine-id-here&quot; your-image:latest</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> machineid</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_machine_fingerprint</span>() -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="comment"># 1. 优先从环境变量获取（适用于容器）</span></span><br><span class="line"></span><br><span class="line">    env_id = os.environ.get(<span class="string">&quot;HOST_MACHINE_ID&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> env_id:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Using machine ID from environment variable&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> env_id</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 备选：使用 py-machineid 直接读取</span></span><br><span class="line">    <span class="comment">#    （如果文件没有被挂载覆盖，在容器内读取到的就是容器 ID）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取原始机器ID（不包含应用标识）</span></span><br><span class="line">    machine_id = machineid.<span class="built_in">id</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 或者获取匿名化的哈希版本（推荐用于License场景）</span></span><br><span class="line">    <span class="comment"># 传入你的应用ID，确保不同应用获取不同的ID</span></span><br><span class="line">    hashed_id = machineid.hashed_id(<span class="string">&#x27;your_app_name&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Using direct machine ID from system&quot;</span>)</span><br><span class="line">    <span class="comment"># 返回SHA256哈希作为指纹</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.sha256(hashed_id.encode()).hexdigest()</span><br></pre></td></tr></table></figure>
+
+<p>技术人员可使用license_info_generate.py脚本在docker应用程序的宿主机上自动生成license_info.json文件，并用私钥private_key.pem生成对应的软件许可证license.lic颁发给用户。</p>
+<p>用户将license.lic文件放在相应目录后，每次FastAPI应用启动时都将使用public_key.pem对其解析并验证，验证过程中同样使用get_machine_fingerprint方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># license_info_generate.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> machineid</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用脚本所在目录</span></span><br><span class="line">script_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_machine_fingerprint</span>() -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="comment"># 同上省略</span></span><br><span class="line"></span><br><span class="line">machine_id = get_machine_fingerprint()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义数据</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;machine_id&quot;</span>: machine_id,</span><br><span class="line">    <span class="string">&quot;expire_days&quot;</span>: <span class="number">365</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入JSON文件</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&#x27;/license_info.json&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    json.dump(data, f, indent=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;license_info.json file generated&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="许可证颁发"><a href="#许可证颁发" class="headerlink" title="许可证颁发"></a>许可证颁发</h3><p>使用前面生成的私钥private_key.pem生成license.lic文件，用于后续的FastAPI应用许可验证。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># license_issue.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives <span class="keyword">import</span> hashes, serialization</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.asymmetric <span class="keyword">import</span> padding</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta, timezone</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用脚本所在目录</span></span><br><span class="line">script_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_license</span>(<span class="params">customer_machine_id: <span class="built_in">str</span>, expire_days: <span class="built_in">int</span> = <span class="number">365</span></span>):</span><br><span class="line">    <span class="comment"># 1. 加载你的私钥</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/private_key.pem&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        private_key = serialization.load_pem_private_key(f.read(), password=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 构建授权数据</span></span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">&quot;machine_id&quot;</span>: customer_machine_id,  <span class="comment"># 绑定的机器ID</span></span><br><span class="line">        <span class="string">&quot;expire&quot;</span>: (datetime.now(timezone.utc) + timedelta(days=expire_days)).isoformat(),</span><br><span class="line">        <span class="comment">#&quot;features&quot;: [&quot;basic&quot;, &quot;export&quot;]     # 可以控制开放的功能模块</span></span><br><span class="line">    &#125;</span><br><span class="line">    payload_bytes = json.dumps(payload).encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 用私钥签名</span></span><br><span class="line">    signature = private_key.sign(</span><br><span class="line">        payload_bytes,</span><br><span class="line">        padding.PKCS1v15(),</span><br><span class="line">        hashes.SHA256()</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 4. 组合数据并生成最终License字符串</span></span><br><span class="line">    license_data = base64.b64encode(payload_bytes).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    license_signature = base64.b64encode(signature).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    final_license = <span class="string">f&quot;<span class="subst">&#123;license_data&#125;</span>.<span class="subst">&#123;license_signature&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;This license string is provided to the customer:&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(final_license)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> final_license</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">write_license_simple</span>(<span class="params">license_content</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;最简单的写入方式&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/license.lic&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(license_content)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;License file created: license.lic&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取JSON配置文件</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&#x27;/license_info.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    config = json.load(f)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取参数到变量</span></span><br><span class="line">machine_id = config[<span class="string">&#x27;machine_id&#x27;</span>]</span><br><span class="line">expire_days = config[<span class="string">&#x27;expire_days&#x27;</span>]</span><br><span class="line"></span><br><span class="line">lic = generate_license(machine_id, expire_days)</span><br><span class="line">write_license_simple(lic)</span><br></pre></td></tr></table></figure>
+
+<h3 id="应用许可验证"><a href="#应用许可验证" class="headerlink" title="应用许可验证"></a>应用许可验证</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># server_validate.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> machineid</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timezone</span><br><span class="line"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, HTTPException</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives <span class="keyword">import</span> hashes, serialization</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.asymmetric <span class="keyword">import</span> padding</span><br><span class="line"></span><br><span class="line">app = FastAPI()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用脚本所在目录</span></span><br><span class="line">script_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载公钥 (你需要把生成的 public_key.pem 随代码一起提供给客户)</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/public_key.pem&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    PUBLIC_KEY = serialization.load_pem_public_key(f.read())</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> uuid</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_machine_fingerprint</span>() -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="comment"># 同上省略</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">verify_license</span>(<span class="params">license_str: <span class="built_in">str</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;验证License字符串是否有效、是否过期、是否匹配本机&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 1. 拆分数据和签名</span></span><br><span class="line">        data_b64, signature_b64 = license_str.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">        payload_bytes = base64.b64decode(data_b64)</span><br><span class="line">        signature = base64.b64decode(signature_b64)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 用公钥验证签名 (确保License未被篡改)</span></span><br><span class="line">        PUBLIC_KEY.verify(</span><br><span class="line">            signature,</span><br><span class="line">            payload_bytes,</span><br><span class="line">            padding.PKCS1v15(),</span><br><span class="line">            hashes.SHA256()</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 解析授权数据并验证有效期</span></span><br><span class="line">        payload = json.loads(payload_bytes)</span><br><span class="line">        expire_time = datetime.fromisoformat(payload[<span class="string">&quot;expire&quot;</span>])</span><br><span class="line">        <span class="keyword">if</span> expire_time &lt; datetime.now(timezone.utc):</span><br><span class="line">            <span class="keyword">raise</span> HTTPException(status_code=<span class="number">403</span>, detail=<span class="string">&quot;License is expired&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 4. 验证机器指纹</span></span><br><span class="line">        current_machine_id = get_machine_fingerprint()  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;current machine id:&quot;</span> + current_machine_id)</span><br><span class="line">        <span class="keyword">if</span> payload[<span class="string">&quot;machine_id&quot;</span>] != current_machine_id:</span><br><span class="line">            <span class="keyword">raise</span> HTTPException(status_code=<span class="number">403</span>, detail=<span class="string">&quot;The license does not match the current device&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> payload</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">403</span>, detail=<span class="string">f&quot;License validate failed: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载license</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(script_dir + <span class="string">&quot;/license.lic&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    lic = f.read()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;read content: &#x27;<span class="subst">&#123;lic&#125;</span>&#x27;&quot;</span>)</span><br><span class="line"></span><br><span class="line">res = verify_license(lic)</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker集成测试"><a href="#Docker集成测试" class="headerlink" title="Docker集成测试"></a>Docker集成测试</h2><p>demo目录结构如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker</span><br><span class="line">├─ Dockerfile</span><br><span class="line">├─ license.lic</span><br><span class="line">├─ public_key.pem</span><br><span class="line">├─ requirements.txt</span><br><span class="line">└─ server_validate.py</span><br></pre></td></tr></table></figure>
+
+<p>其中许可证书license.lic和公钥public_key.pem的生成方式如前文所述，不再赘述。</p>
+<p>requirements.txt包含FastAPI运行所需的依赖，本demo示例需要的依赖如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fastapi==0.104.1</span><br><span class="line">uvicorn==0.24.0</span><br><span class="line">cryptography==41.0.7</span><br><span class="line">pydantic==2.5.0</span><br><span class="line">python-multipart==0.0.6</span><br><span class="line">py-machineid==1.0.0</span><br></pre></td></tr></table></figure>
+
+<p>server_validate.py是一个简单的FastAPI示例，该应用会自动检查py-machineid依赖库是否加载成功，自动加载许可证书license.lic和公钥public_key.pem</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timezone</span><br><span class="line"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, Depends, HTTPException, Request</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives <span class="keyword">import</span> hashes, serialization</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.asymmetric <span class="keyword">import</span> padding</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用脚本所在目录</span></span><br><span class="line">script_dir = os.path.dirname(os.path.abspath(__file__))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入 py-machineid 库</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">import</span> machineid</span><br><span class="line">    MACHINEID_AVAILABLE = <span class="literal">True</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;✓ py-machineid 库加载成功&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> ImportError:</span><br><span class="line">    MACHINEID_AVAILABLE = <span class="literal">False</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;⚠️ py-machineid 库未安装，将使用备用方案&quot;</span>)</span><br><span class="line"></span><br><span class="line">app = FastAPI(title=<span class="string">&quot;License Validation Service&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载公钥</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">load_public_key</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;从文件加载公钥&quot;&quot;&quot;</span></span><br><span class="line">    public_key_path = script_dir + <span class="string">&quot;/public_key.pem&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(public_key_path, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            public_key = serialization.load_pem_public_key(f.read())</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;✓ 公钥加载成功&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> public_key</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;✗ 公钥加载失败: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">PUBLIC_KEY = load_public_key()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载License文件</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">load_license</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;从文件加载License&quot;&quot;&quot;</span></span><br><span class="line">    license_path = script_dir + <span class="string">&quot;/license.lic&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(license_path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            license_str = f.read().strip()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;✓ License文件加载成功&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> license_str</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;✗ License文件加载失败: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">LICENSE_STR = load_license()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_machine_fingerprint</span>() -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="comment"># 1. 优先从环境变量获取（适用于容器）</span></span><br><span class="line"></span><br><span class="line">    env_id = os.environ.get(<span class="string">&quot;HOST_MACHINE_ID&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> env_id:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Using machine ID from environment variable&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> env_id</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 备选：使用 py-machineid 直接读取</span></span><br><span class="line">    <span class="comment">#    （如果文件没有被挂载覆盖，在容器内读取到的就是容器 ID）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取原始机器ID（不包含应用标识）</span></span><br><span class="line">    machine_id = machineid.<span class="built_in">id</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 或者获取匿名化的哈希版本（推荐用于License场景）</span></span><br><span class="line">    <span class="comment"># 传入你的应用ID，确保不同应用获取不同的ID</span></span><br><span class="line">    hashed_id = machineid.hashed_id(<span class="string">&#x27;vv&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Using direct machine ID from system&quot;</span>)</span><br><span class="line">    <span class="comment"># 返回SHA256哈希作为指纹</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.sha256(hashed_id.encode()).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">verify_license</span>(<span class="params">license_str : <span class="built_in">str</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;验证License并返回授权信息&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> PUBLIC_KEY:</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="string">&quot;公钥未正确加载&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 1. 拆分License数据和签名</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;.&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> license_str:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;Invalid license format&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        data_b64, signature_b64 = license_str.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">        payload_bytes = base64.b64decode(data_b64)</span><br><span class="line">        signature = base64.b64decode(signature_b64)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 2. 验证签名</span></span><br><span class="line">        PUBLIC_KEY.verify(</span><br><span class="line">            signature,</span><br><span class="line">            payload_bytes,</span><br><span class="line">            padding.PKCS1v15(),</span><br><span class="line">            hashes.SHA256()</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 3. 解析授权数据</span></span><br><span class="line">        payload = json.loads(payload_bytes)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 4. 验证有效期</span></span><br><span class="line">        expire_time = datetime.fromisoformat(payload[<span class="string">&quot;expire&quot;</span>])</span><br><span class="line">        current_time = datetime.now(timezone.utc)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> expire_time &lt; current_time:</span><br><span class="line">            <span class="keyword">raise</span> HTTPException(status_code=<span class="number">403</span>, detail=<span class="string">&quot;License已过期&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 5. 验证机器指纹（关键步骤）</span></span><br><span class="line">        current_fingerprint = get_machine_fingerprint()</span><br><span class="line">        bound_fingerprint = payload.get(<span class="string">&quot;machine_id&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> bound_fingerprint <span class="keyword">and</span> current_fingerprint != bound_fingerprint:</span><br><span class="line">            <span class="keyword">raise</span> HTTPException(</span><br><span class="line">                status_code=<span class="number">403</span>, </span><br><span class="line">                detail=<span class="string">f&quot;License与当前设备不匹配\n期望: <span class="subst">&#123;bound_fingerprint[:<span class="number">32</span>]&#125;</span>...\n实际: <span class="subst">&#123;current_fingerprint[:<span class="number">32</span>]&#125;</span>...&quot;</span></span><br><span class="line">            )</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> payload</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">except</span> HTTPException:</span><br><span class="line">        <span class="keyword">raise</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">403</span>, detail=<span class="string">f&quot;License验证失败: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_current_license</span>(<span class="params">request: Request</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;从请求中获取并验证License&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 支持从Header或Query参数获取License</span></span><br><span class="line">    license_key = request.headers.get(<span class="string">&quot;X-License-Key&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> license_key:</span><br><span class="line">        license_key = request.query_params.get(<span class="string">&quot;license_key&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> license_key:</span><br><span class="line">        license_key = LICENSE_STR</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> license_key:</span><br><span class="line">    <span class="keyword">raise</span> HTTPException(status_code=<span class="number">401</span>, detail=<span class="string">&quot;请提供License (X-License-Key header 或 license_key参数)&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> verify_license(license_key)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ==================== API 路由 ====================</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">root</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;根路径&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;service&quot;</span>: <span class="string">&quot;License Validation Service&quot;</span>,</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="string">&quot;running&quot;</span>,</span><br><span class="line">        <span class="string">&quot;version&quot;</span>: <span class="string">&quot;2.0.0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;machineid_available&quot;</span>: MACHINEID_AVAILABLE</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/health&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">health_check</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;健康检查接口&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="string">&quot;healthy&quot;</span>,</span><br><span class="line">        <span class="string">&quot;public_key_loaded&quot;</span>: PUBLIC_KEY <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>,</span><br><span class="line">        <span class="string">&quot;license_loaded&quot;</span>: LICENSE_STR <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>,</span><br><span class="line">        <span class="string">&quot;machineid_available&quot;</span>: MACHINEID_AVAILABLE</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/machine-fingerprint&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">get_fingerprint</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;获取当前机器的指纹（用于生成License）&quot;&quot;&quot;</span></span><br><span class="line">    fingerprint = get_machine_fingerprint()</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;machine_fingerprint&quot;</span>: fingerprint,</span><br><span class="line">        <span class="string">&quot;machineid_available&quot;</span>: MACHINEID_AVAILABLE,</span><br><span class="line">        <span class="string">&quot;note&quot;</span>: <span class="string">&quot;请将此指纹提供给管理员以生成License&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/validate&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">validate_license</span>(<span class="params">license_info: <span class="built_in">dict</span> = Depends(<span class="params">get_current_license</span>)</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;验证License接口&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;valid&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;License验证通过&quot;</span>,</span><br><span class="line">        <span class="string">&quot;license_info&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;machine_id&quot;</span>: license_info.get(<span class="string">&quot;machine_id&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">            <span class="string">&quot;expire_days&quot;</span>: license_info.get(<span class="string">&quot;expire&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/protected&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">protected_endpoint</span>(<span class="params">license_info: <span class="built_in">dict</span> = Depends(<span class="params">get_current_license</span>)</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;受保护的API示例&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;message&quot;</span>: <span class="string">&quot;访问成功！&quot;</span>,</span><br><span class="line">        <span class="string">&quot;license_valid&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;expires_at&quot;</span>: license_info.get(<span class="string">&quot;expire&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">import</span> uvicorn</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">50</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;License Validation Service Starting...&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Public Key: <span class="subst">&#123;<span class="string">&#x27;✓ Loaded&#x27;</span> <span class="keyword">if</span> PUBLIC_KEY <span class="keyword">else</span> <span class="string">&#x27;✗ Failed&#x27;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;License: <span class="subst">&#123;<span class="string">&#x27;✓ Loaded&#x27;</span> <span class="keyword">if</span> LICENSE_STR <span class="keyword">else</span> <span class="string">&#x27;✗ Not found&#x27;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;py-machineid: <span class="subst">&#123;<span class="string">&#x27;✓ Available&#x27;</span> <span class="keyword">if</span> MACHINEID_AVAILABLE <span class="keyword">else</span> <span class="string">&#x27;✗ Not installed&#x27;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Machine Fingerprint: <span class="subst">&#123;get_machine_fingerprint()[:<span class="number">48</span>]&#125;</span>...&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">50</span>)</span><br><span class="line">    uvicorn.run(app, host=<span class="string">&quot;0.0.0.0&quot;</span>, port=<span class="number">8000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Dockerfile文件如下，使用命令<code>docker build -t your-image:latest .</code>以构建镜像，</p>
+<p>使用命令<code>docker run -d -e HOST_MACHINE_ID=&quot;your-actual-host-machine-id-here&quot; --name your-image -p 8000:8000 your-image:latest </code>以创建并运行容器，同时传入环境变量HOST_MACHINE_ID</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用官方Python镜像</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.11</span>-slim</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量</span></span><br><span class="line"><span class="keyword">ENV</span> PYTHONDONTWRITEBYTECODE=<span class="number">1</span> \</span><br><span class="line">    PYTHONUNBUFFERED=<span class="number">1</span> \</span><br><span class="line">    TZ=Asia/Shanghai</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装系统依赖（py-machineid 在某些系统上需要）</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    apt-get install -y --no-install-recommends \</span></span><br><span class="line"><span class="language-bash">    gcc \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制依赖文件</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> requirements.txt .</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装Python依赖</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制应用程序文件</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> server_validate.py .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> public_key.pem .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> license.lic .</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建非root用户运行应用</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> useradd -m -u 1000 appuser &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chown</span> -R appuser:appuser /app</span></span><br><span class="line"><span class="keyword">USER</span> appuser</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露端口</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 健康检查</span></span><br><span class="line"><span class="keyword">HEALTHCHECK</span><span class="language-bash"> --interval=30s --<span class="built_in">timeout</span>=3s --start-period=5s --retries=3 \</span></span><br><span class="line"><span class="language-bash">    CMD python -c <span class="string">&quot;import requests; requests.get(&#x27;http://localhost:8000/health&#x27;)&quot;</span> || <span class="built_in">exit</span> 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;uvicorn&quot;</span>, <span class="string">&quot;server_validate:app&quot;</span>, <span class="string">&quot;--host&quot;</span>, <span class="string">&quot;0.0.0.0&quot;</span>, <span class="string">&quot;--port&quot;</span>, <span class="string">&quot;8000&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+
+<p>使用curl命令<code>curl http://localhost:8000/machine-fingerprint</code>测试获取机器指纹(若容器启动时未添加环境变量，则获取的为容器的ID而非宿主机)。</p>
+<p>使用curl命令<code>curl http://localhost:8000/validate</code>测试校验许可证是否有效(许可证机器指纹与宿主机一致，且未过有效期)。</p>
+<p>也可以使用curl命令<code>curl http://localhost:8000/validate?license_key=&quot;your-license-key&quot; </code>从请求中获取并验证License。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2>
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Docker/">Docker</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Python/">Python</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Fast-API/">Fast API</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Asymmetric-Encryption/">Asymmetric Encryption</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2025/11/10/mongodb-usage/"
+                                   title="文档型数据库MongoDB使用介绍"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">文档型数据库MongoDB使用介绍</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E7%94%9F%E6%88%90%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-text">许可证生成架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-text">基本流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E9%92%A5%E4%B8%8E%E5%85%AC%E9%92%A5%E7%94%9F%E6%88%90"><span class="nav-text">私钥与公钥生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E4%BF%A1%E6%81%AF%E5%87%86%E5%A4%87"><span class="nav-text">许可证信息准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E9%A2%81%E5%8F%91"><span class="nav-text">许可证颁发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E8%AE%B8%E5%8F%AF%E9%AA%8C%E8%AF%81"><span class="nav-text">应用许可验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95"><span class="nav-text">Docker集成测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2026
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E7%94%9F%E6%88%90%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-text">许可证生成架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-text">基本流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E9%92%A5%E4%B8%8E%E5%85%AC%E9%92%A5%E7%94%9F%E6%88%90"><span class="nav-text">私钥与公钥生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E4%BF%A1%E6%81%AF%E5%87%86%E5%A4%87"><span class="nav-text">许可证信息准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81%E9%A2%81%E5%8F%91"><span class="nav-text">许可证颁发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E8%AE%B8%E5%8F%AF%E9%AA%8C%E8%AF%81"><span class="nav-text">应用许可验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95"><span class="nav-text">Docker集成测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
