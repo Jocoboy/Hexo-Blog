@@ -51,6 +51,30 @@ git回退到某一版本并提交
 
 `git commit -m [commit-id]`
 
+### stash
+
+保存修改并添加描述信息
+
+`git stash save "[stash-message]"`
+
+查看所有暂存的列表
+
+`git stash list`
+
+恢复最新的暂存并删除该暂存
+
+`git stash pop`
+
+恢复最新的暂存但保留该暂存
+
+`git stash apply`
+
+恢复指定的暂存
+
+`git stash apply stash@{[stash-id]}`
+
+`git stash pop stash@{[stash-id]}`
+
 ### others
 
 git获取远程分支内容
