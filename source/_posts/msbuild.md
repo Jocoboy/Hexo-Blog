@@ -89,8 +89,8 @@ set /p DUMMY=构建成功%successCount%个，失败%failCount%个，失败的模
 
 ## 参考文档
 
-[用于MSBuild命令和属性的常用宏](https://learn.microsoft.com/zh-cn/cpp/build/reference/common-macros-for-build-commands-and-properties)
+- [用于MSBuild命令和属性的常用宏](https://learn.microsoft.com/zh-cn/cpp/build/reference/common-macros-for-build-commands-and-properties)
 
-[MSBuild 属性说明](https://learn.microsoft.com/zh-cn/visualstudio/msbuild/msbuild-properties)
+- [MSBuild 属性说明](https://learn.microsoft.com/zh-cn/visualstudio/msbuild/msbuild-properties)
 
-[xcopy命令参数说明](https://learn.microsoft.com/zh-cn/windows-server/administration/windows-commands/xcopy)
+- [xcopy命令参数说明](https://learn.microsoft.com/zh-cn/windows-server/administration/windows-commands/xcopy)

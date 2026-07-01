@@ -6,7 +6,7 @@ categories:
 tags:
 - Ollama
 - MaxKB
-- RAG
+- Ngrok
 ---
 
 使用大模型部署和管理工具Ollama在本地部署AI大模型，并使用基于大语言模型和RAG的知识库问答系统MaxKB为大模型添加UI界面。

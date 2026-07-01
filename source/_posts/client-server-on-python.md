@@ -4,9 +4,9 @@ date: 2026-06-30 14:28:11
 categories:
 - Network-Protocol
 tags:
-- socket
-- python
-- tcl
+- Socket
+- Python
+- TCL
 ---
 
 基于python的HTTPServer实现一个客户端服务，并借助TCL脚本实现服务监听过程的可视化。
@@ -478,7 +478,7 @@ focus $main_window
 
 ## 实现效果
 
-切换到main.tcl目录下，使用命令`tclsh main.tcl`启动窗口，点击Start Sever启动客户端服务，运行使用命令`python client.py`模拟服务请求。
+切换到main.tcl目录下，使用命令`tclsh main.tcl`启动窗口，点击Start Server启动客户端服务，运行使用命令`python client.py`模拟服务请求。
 
 
 {% asset_img client-server-gui.png 客户端服务GUI界面 %}

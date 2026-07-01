@@ -2,9 +2,9 @@
 title: Oracle常用SQL、PL/SQL语句
 date: 2024-11-29 15:48:14
 categories:
-  - Database
+- Database
 tags:
-  - Oracle
+- Oracle
 ---
 
 Oracle数据库的适用场景，以及一些常用SQL、PL/SQL语句。

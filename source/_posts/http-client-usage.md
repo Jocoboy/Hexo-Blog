@@ -4,9 +4,11 @@ date: 2025-03-04 17:03:08
 categories:
 - Network-Protocol
 tags:
+- Socket
 - HttpClient
 - .NET
 - ASP.NET Core
+- C#
 ---
 
 .NET中使用HttpClient发送HTTP请求的方式介绍。

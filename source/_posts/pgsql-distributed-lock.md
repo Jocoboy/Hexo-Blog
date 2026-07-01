@@ -5,8 +5,9 @@ categories:
 - Database
 tags:
 - PostgreSQL
-- .NET
 - Concurrency Control
+- .NET
+- C#
 ---
 
 基于PGSQL咨询锁函数实现的一个分布式锁基础设施。

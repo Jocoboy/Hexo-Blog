@@ -6,6 +6,7 @@ categories:
 tags:
 - Wix Toolset
 - .NET
+- C#
 ---
 
 使用Wix Toolset和AutoUpdater.NET实现Windows桌面应用程序的打包与自动更新功能。

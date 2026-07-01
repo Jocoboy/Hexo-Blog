@@ -7,6 +7,7 @@ tags:
 - ABP
 - .NET
 - ASP.NET Core
+- C#
 ---
 
 领域驱动设计核心概念与ABP框架实践。
@@ -175,5 +176,7 @@ Configure<AbpClockOptions>(options =>
 ## 参考文档
 
 - [C# 9.0 新特性](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history#c-version-9)
+
 - [ABP官方文档](https://abp.io/docs/latest/)
+
 - [EFCore数据库迁移](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs)

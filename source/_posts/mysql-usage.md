@@ -2,9 +2,9 @@
 title: MySQL常用CLI命令及SQL语句
 date: 2024-11-29 14:43:02
 categories:
-  - Database
+- Database
 tags:
-  - MySQL
+- MySQL
 ---
 
 MySQL 数据库中的一些常用 SQL、CLI 命令，以及配置文件。

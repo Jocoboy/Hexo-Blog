@@ -2,9 +2,9 @@
 title: SQL Server常用SQL、T-SQL语句
 date: 2024-12-04 10:02:40
 categories:
-  - Database
+- Database
 tags:
-  - SQL Server
+- SQL Server
 ---
 
 SQL Server数据库的适用场景，以及一些常用SQL、T-SQL语句。

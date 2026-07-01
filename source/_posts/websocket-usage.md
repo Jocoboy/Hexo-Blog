@@ -6,6 +6,7 @@ categories:
 tags:
 - WebSocket
 - .NET
+- C#
 ---
 
 WebSocket的基本概念、应用场景，以及服务端和客户端在C#与.NET中的简单实现(包含心跳检测与自动重连)。

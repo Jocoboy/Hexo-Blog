@@ -5,9 +5,9 @@ categories:
 - Software-License
 tags:
 - Docker
-- Python
-- Fast API
 - Asymmetric Encryption
+- Fast API
+- Python
 ---
 
 为构建并部署在Docker容器中的FastAPI应用设计一个离线的软件许可证颁发方案。

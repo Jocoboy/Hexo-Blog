@@ -145,4 +145,4 @@ git在拉取或提交代码时，文件路径名过长会报错"filename too lon
 
 ## 参考文档
 
-[Git官方中文文档](https://git-scm.com/docs/git/zh_HANS-CN)
+- [Git官方中文文档](https://git-scm.com/docs/git/zh_HANS-CN)

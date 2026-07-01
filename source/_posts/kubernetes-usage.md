@@ -4,7 +4,7 @@ date: 2024-08-17 13:18:34
 categories:
 - Architecture
 tags:
-- kubernetes
+- Kubernetes
 ---
 
 kubernetes的核心组件、架构体系、环境搭建(minikube/k3s)，以及kubectl常用命令和可视化管理工具Portainer。

@@ -4,9 +4,10 @@ date: 2025-03-25 17:28:11
 categories:
 - Framework
 tags:
+- WinForm
 - .NET
 - ASP.NET Core
-- WinForm
+- C#
 ---
 
 基于.NET实现大文件的断点续传功能，包含上传与下载。其中上传部分包括分片上传与断点续传功能，并借助WinForm实现上传进度反馈、并行上传、分片大小动态调整等辅助功能。

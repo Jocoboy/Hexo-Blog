@@ -2,10 +2,10 @@
 title: 文档型数据库MongoDB使用介绍
 date: 2025-11-10 13:17:44
 categories:
-  - Database
+- Database
 tags:
-  - MongoDB
-  - NoSQL
+- MongoDB
+- NoSQL
 ---
 
 MongoDB文档型NoSQL数据库中的使用特性、适用场景，以及命令行工具Mongo Shell、操作符表达式等使用介绍。

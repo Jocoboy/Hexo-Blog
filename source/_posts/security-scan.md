@@ -5,6 +5,7 @@ categories:
 - Cyber-Security
 tags:
 - Security-Scan
+- C#
 ---
 
 三种常用的安全扫描技术原理、相关工具及应用场景。

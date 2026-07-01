@@ -314,4 +314,4 @@ DISCARD ALL;
 
 ## 参考文档
 
-[PGSQL官方文档](https://www.postgresql.org/docs/)
+- [PGSQL官方文档](https://www.postgresql.org/docs/)

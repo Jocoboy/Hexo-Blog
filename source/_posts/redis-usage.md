@@ -7,6 +7,7 @@ tags:
 - Redis
 - NoSQL
 - ABP
+- C#
 ---
 
 Redis数据库的使用场景、使用方法、重要概念，一些常用的CLI命令，以及应用场景。
@@ -403,7 +404,7 @@ public class RedisCacheManager :  ITransientDependency
            keys.Add(key);
         }
 
-        批量删除
+        // 批量删除
         if (keys.Count != 0)
         {
            await db.KeyDeleteAsync(keys.ToArray());
@@ -510,4 +511,4 @@ public class StudentAppService : ABPDemoAppService, IStudentAppService
 
 ## 参考文档
 
-[Redis CLI命令官方文档](https://redis.io/docs/latest/commands/)
+- [Redis CLI命令官方文档](https://redis.io/docs/latest/commands/)
