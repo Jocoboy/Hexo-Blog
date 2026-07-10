@@ -566,6 +566,10 @@ MYSQL_PASSWORD=root1234
 
 `export [environment-variable]="[your-environment-variable]"`
 
+将容器中的文件目录复制到宿主机上
+
+`docker cp [container-name]:/home/[source-folder] C:/[target-folder]`
+
 停止容器
 
 `docker stop [container-name]`
