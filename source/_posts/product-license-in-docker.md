@@ -141,7 +141,8 @@ machine_id = get_machine_fingerprint()
 # 定义数据
 data = {
     "machine_id": machine_id,
-    "expire_days": 365
+    "expire_days": 365,
+    "features": ["module1", "module2", "module3"]
 }
 
 # 写入JSON文件
@@ -161,6 +162,7 @@ print("license_info.json file generated")
 import json
 import base64
 import os
+from typing import List
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from datetime import datetime, timedelta, timezone
@@ -168,7 +170,7 @@ from datetime import datetime, timedelta, timezone
 # 使用脚本所在目录
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def generate_license(customer_machine_id: str, expire_days: int = 365):
+def generate_license(customer_machine_id: str, expire_days: int = 365, features: List[str] = []):
     # 1. 加载你的私钥
     with open(script_dir + "/private_key.pem", "rb") as f:
         private_key = serialization.load_pem_private_key(f.read(), password=None)
@@ -177,7 +179,7 @@ def generate_license(customer_machine_id: str, expire_days: int = 365):
     payload = {
         "machine_id": customer_machine_id,  # 绑定的机器ID
         "expire": (datetime.now(timezone.utc) + timedelta(days=expire_days)).isoformat(),
-        #"features": ["basic", "export"]     # 可以控制开放的功能模块
+        "features": features    # 可以控制开放的功能模块
     }
     payload_bytes = json.dumps(payload).encode('utf-8')
 
@@ -212,8 +214,9 @@ with open(script_dir + '/license_info.json', 'r') as f:
 # 提取参数到变量
 machine_id = config['machine_id']
 expire_days = config['expire_days']
+features = config['features']
 
-lic = generate_license(machine_id, expire_days)
+lic = generate_license(machine_id, expire_days, features)
 write_license_simple(lic)
 ```
 
@@ -507,7 +510,8 @@ async def validate_license(license_info: dict = Depends(get_current_license)):
         "message": "License验证通过",
         "license_info": {
             "machine_id": license_info.get("machine_id", ""),
-            "expire_days": license_info.get("expire")
+            "expire_days": license_info.get("expire"),
+            "features": license_info.get("features")
         }
     }
 
