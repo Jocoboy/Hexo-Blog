@@ -1,5 +1,5 @@
 ---
-title: FastAPI+Vue一体化部署与打包方案
+title: FastAPI+Vue+PyInstaller一体化部署与打包方案
 date: 2026-08-12 15:22:28
 categories:
 - Package-Tool
@@ -49,7 +49,11 @@ build: {
 然后修改app下的__init__.py文件，
 
 ```python
-app.mount("/", StaticFiles(directory="dist", html=True), name="vue-app")
+# 获取当前文件所在目录 (app 目录)
+CURRENT_DIR = Path(__file__).parent.absolute()
+PROJECT_ROOT = CURRENT_DIR.parent
+DIST_DIR = os.path.join(PROJECT_ROOT, "dist")
+app.mount("/", StaticFiles(directory=DIST_DIR, html=True), name="vue-app")
 ```
 
 若app中存在审计中间件，对于特定路径需要跳过审计。
@@ -222,6 +226,7 @@ a = Analysis(
         ('config.json', '.'),
         ('data', 'data'),
         ('dist', 'dist'),
+        ('app/algorithm/libs', 'app/algorithm/libs') if os.path.exists('app/algorithm/libs') else None, 
     ] + pyDOE3_datas,
     hiddenimports=[
         # FastAPI 和 Uvicorn
@@ -272,7 +277,15 @@ coll = COLLECT(
 )
 ```
 
-使用命令`pyinstaller main.spec --nocofirm`即可通过spec文件完成打包。
+使用命令`pyinstaller main.spec --noconfirm`即可通过spec文件完成打包。
+
+此外，通过添加`--distpath`参数可以更改默认的dist目录为指定目录, 例如`pyinstaller main.spec --distpath .\your-pyinstaller-dist --noconfirm`。
+
+注: 通过显示指定添加的py文件夹(如'app/algorithm/libs')，源码可能未被加密。
+
+可使用加密工具pyarmor对整个目录的py文件进行加密，使用命令'pyarmor gen -r -O ./your-pyarmor-dist app'即可输出加密文件到指定目录。
+
+其中生成的pyarmor_runtime_*文件夹是运行加密代码所必需的，不能删除。需要手动将它移动到与入口脚本相同的目录下(示例为app目录下)。
 
 ## 参考文档
 
