@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            基于python HTTPServer的客户端服务实现 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        基于python HTTPServer的客户端服务实现
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2026-06-30 14:28:11</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Fri Aug 14 2026 03:11:13 GMT+0000">2026-08-14 11:11:13</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Network-Protocol/">Network-Protocol</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Socket/">Socket</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Python/">Python</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/TCL/">TCL</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>58k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>3:30 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>基于python的HTTPServer实现一个客户端服务，并借助TCL脚本实现服务监听过程的可视化。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Python的http.server库是基于socket构建的，http.server模块中的核心类HTTPServer，实际上是socketserver.TCPServer的一个子类。TCPServer负责处理底层的TCP连接，因此http.server可以看作是对底层socket通信和HTTP协议解析的一个高层封装，借此可以方便地搭建一个Web服务器，而不必直接处理复杂的socket细节。</p>
+<p>TCL脚本语言(Tool Command Language)是一种简单、通用且可扩展的脚本语言，因其易于学习和强大的功能，被广泛应用于自动化测试、嵌入式系统、GUI开发等领域。Tcl在多个领域都有广泛应用：常用于编写自动化测试脚本，可以通过exec命令调用外部程序(如 Python 脚本)来协同完成复杂任务；常用于嵌入式系统与GUI开发，与Tk工具包一起使用，用于快速创建跨平台的图形用户界面。</p>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><h3 id="客户端服务"><a href="#客户端服务" class="headerlink" title="客户端服务"></a>客户端服务</h3><p>基于HTTPServer实现一个简单的python客户端服务，监听特定端口的特定请求。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># http_server.py</span></span><br><span class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> HTTPServer, BaseHTTPRequestHandler</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RequestHandler</span>(<span class="title class_ inherited__">BaseHTTPRequestHandler</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;自定义请求处理器&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 存储请求的类变量</span></span><br><span class="line">    requests_log = []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">log_request_info</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;记录请求信息&quot;&quot;&quot;</span></span><br><span class="line">        content_length = <span class="built_in">int</span>(<span class="variable language_">self</span>.headers.get(<span class="string">&#x27;Content-Length&#x27;</span>, <span class="number">0</span>))</span><br><span class="line">        body = <span class="variable language_">self</span>.rfile.read(content_length).decode(<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">if</span> content_length &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">        request_info = &#123;</span><br><span class="line">            <span class="string">&#x27;timestamp&#x27;</span>: datetime.now().isoformat(),</span><br><span class="line">            <span class="string">&#x27;method&#x27;</span>: <span class="variable language_">self</span>.command,</span><br><span class="line">            <span class="string">&#x27;path&#x27;</span>: <span class="variable language_">self</span>.path,</span><br><span class="line">            <span class="string">&#x27;headers&#x27;</span>: <span class="built_in">dict</span>(<span class="variable language_">self</span>.headers),</span><br><span class="line">            <span class="string">&#x27;body&#x27;</span>: body</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        RequestHandler.requests_log.append(request_info)</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\n[<span class="subst">&#123;datetime.now().strftime(<span class="string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>)&#125;</span>] 收到请求:&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;  方法: <span class="subst">&#123;self.command&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;  路径: <span class="subst">&#123;self.path&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> body:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;  数据: <span class="subst">&#123;body&#125;</span>&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> body</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">send_response_json</span>(<span class="params">self, data, status=<span class="number">200</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;发送JSON响应&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.send_response(status)</span><br><span class="line">        <span class="variable language_">self</span>.send_header(<span class="string">&#x27;Content-Type&#x27;</span>, <span class="string">&#x27;application/json&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.end_headers()</span><br><span class="line">        <span class="variable language_">self</span>.wfile.write(json.dumps(data, ensure_ascii=<span class="literal">False</span>).encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">do_POST</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;处理POST请求&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.path == <span class="string">&#x27;/push_parameters&#x27;</span>:</span><br><span class="line">            <span class="comment"># 获取请求体</span></span><br><span class="line">            body = <span class="variable language_">self</span>.log_request_info()</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 验证必要参数</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> body <span class="keyword">or</span> <span class="string">&#x27;parameters&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> body:</span><br><span class="line">                <span class="variable language_">self</span>.send_response_json(&#123;</span><br><span class="line">                    <span class="string">&#x27;code&#x27;</span>: <span class="number">400</span>,</span><br><span class="line">                    <span class="string">&#x27;message&#x27;</span>: <span class="string">&#x27;Missing required parameter: parameters&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;status&#x27;</span>: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">                &#125;, <span class="number">400</span>)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                <span class="comment"># 获取参数</span></span><br><span class="line">                data = json.loads(body)</span><br><span class="line">                parameters = data[<span class="string">&#x27;parameters&#x27;</span>]</span><br><span class="line">                <span class="built_in">id</span> = data[<span class="string">&#x27;id&#x27;</span>] </span><br><span class="line"></span><br><span class="line">                <span class="comment"># 处理其他业务逻辑</span></span><br><span class="line">                token = <span class="variable language_">self</span>.get_token()</span><br><span class="line">                path = Path(<span class="string">r&quot;C:\Users\Administrator\Documents&quot;</span>)</span><br><span class="line">                target_file = <span class="string">f&quot;<span class="subst">&#123;<span class="built_in">id</span>&#125;</span>.csv&quot;</span></span><br><span class="line">                file_path = path / target_file</span><br><span class="line">                <span class="variable language_">self</span>.upload_file(token, file_path)</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 返回成功响应（与前台期望的格式一致）</span></span><br><span class="line">                <span class="variable language_">self</span>.send_response_json(&#123;</span><br><span class="line">                    <span class="string">&#x27;code&#x27;</span>: <span class="number">200</span>,</span><br><span class="line">                    <span class="string">&#x27;message&#x27;</span>: <span class="string">&#x27;Parameters pushed successfully&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;status&#x27;</span>: <span class="string">&#x27;success&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;data&#x27;</span>: &#123;</span><br><span class="line">                        <span class="string">&#x27;parameters&#x27;</span>: parameters,</span><br><span class="line">                        <span class="string">&#x27;id&#x27;</span>: <span class="built_in">id</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                </span><br><span class="line">            <span class="keyword">except</span> ValueError <span class="keyword">as</span> e:</span><br><span class="line">                <span class="comment"># 参数格式错误</span></span><br><span class="line">                <span class="variable language_">self</span>.send_response_json(&#123;</span><br><span class="line">                    <span class="string">&#x27;code&#x27;</span>: <span class="number">400</span>,</span><br><span class="line">                    <span class="string">&#x27;message&#x27;</span>: <span class="string">f&#x27;Invalid parameter format: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;status&#x27;</span>: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">                &#125;, <span class="number">400</span>)</span><br><span class="line">                </span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                <span class="comment"># 其他服务端错误</span></span><br><span class="line">                <span class="variable language_">self</span>.send_response_json(&#123;</span><br><span class="line">                    <span class="string">&#x27;code&#x27;</span>: <span class="number">500</span>,</span><br><span class="line">                    <span class="string">&#x27;message&#x27;</span>: <span class="string">f&#x27;Internal server error: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&#x27;</span>,</span><br><span class="line">                    <span class="string">&#x27;status&#x27;</span>: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">                &#125;, <span class="number">500</span>)</span><br><span class="line">                </span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 路径不存在</span></span><br><span class="line">            <span class="variable language_">self</span>.send_response_json(&#123;</span><br><span class="line">                <span class="string">&#x27;code&#x27;</span>: <span class="number">404</span>,</span><br><span class="line">                <span class="string">&#x27;message&#x27;</span>: <span class="string">&#x27;Not found&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;status&#x27;</span>: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">            &#125;, <span class="number">404</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_token</span>():</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">upload_file</span>(<span class="params">token, file_path</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">run_server</span>(<span class="params">port=<span class="number">8080</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;启动服务器&quot;&quot;&quot;</span></span><br><span class="line">    server_address = (<span class="string">&#x27;&#x27;</span>, port)</span><br><span class="line">    httpd = HTTPServer(server_address, RequestHandler)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;服务器已启动，监听端口: <span class="subst">&#123;port&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;访问地址: http://localhost:<span class="subst">&#123;port&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\n可用端点:&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;  POST   /push_parameters- 接收参数&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\n按 Ctrl+C 停止服务\n&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        httpd.serve_forever()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\n服务已停止&quot;</span>)</span><br><span class="line">        httpd.server_close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    run_server(<span class="number">8777</span>)</span><br></pre></td></tr></table></figure>
+
+<p>客户端服务测试代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># client.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> httpx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 服务端地址</span></span><br><span class="line">BASE_URL = <span class="string">&#x27;http://localhost:8777&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 发送不同类型的请求</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        url = <span class="string">f&quot;<span class="subst">&#123;BASE_URL&#125;</span>/push_parameters&quot;</span></span><br><span class="line">        request_data = &#123;<span class="string">&quot;parameters&quot;</span>: &#123;&#125;&#125;</span><br><span class="line">        request_data[<span class="string">&quot;id&quot;</span>] = <span class="string">&quot;Test-1&quot;</span></span><br><span class="line"></span><br><span class="line">        response = httpx.post(url, json=request_data, timeout=<span class="number">300</span>)</span><br><span class="line">        response.raise_for_status()</span><br><span class="line">        result = response.json()</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Error: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="监听可视化"><a href="#监听可视化" class="headerlink" title="监听可视化"></a>监听可视化</h3><p>基于Tcl&#x2F;Tk脚本实现一个客户端服务监听过程的可视化界面。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.tcl</span></span><br><span class="line"></span><br><span class="line">package require Tk</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> ::SCRIPT_DIR [file <span class="built_in">dirname</span> [file normalize [info script]]]</span><br><span class="line"><span class="comment"># 切换到脚本目录（重要！）</span></span><br><span class="line"><span class="built_in">cd</span> $::SCRIPT_DIR</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建顶级窗口（作为子窗口，不影响宿主程序）</span></span><br><span class="line"><span class="built_in">set</span> main_window [toplevel .mywindow]</span><br><span class="line">wm title . <span class="string">&quot;Tcl/Tk File Selector&quot;</span></span><br><span class="line">wm geometry . <span class="string">&quot;800x800&quot;</span></span><br><span class="line">wm resizable <span class="variable">$main_window</span> 1 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置最小和最大尺寸（可选）</span></span><br><span class="line">wm minsize <span class="variable">$main_window</span> 800 800</span><br><span class="line">wm maxsize <span class="variable">$main_window</span> 800 800</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建框架用于布局</span></span><br><span class="line">frame <span class="variable">$main_window</span>.main -padx 10 -pady 10</span><br><span class="line">pack <span class="variable">$main_window</span>.main -fill both -<span class="built_in">expand</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建第一行按钮</span></span><br><span class="line">button <span class="variable">$main_window</span>.main.start_server_btn -text <span class="string">&quot;Start Server&quot;</span> -<span class="built_in">command</span> start_server_action -font &#123;Arial 10&#125;</span><br><span class="line">grid <span class="variable">$main_window</span>.main.start_server_btn -row 1 -column 0 -pady 10 -padx 5</span><br><span class="line">button <span class="variable">$main_window</span>.main.stop_server_btn -text <span class="string">&quot;Stop Server&quot;</span> -<span class="built_in">command</span> stop_server_action -font &#123;Arial 10&#125;</span><br><span class="line">grid <span class="variable">$main_window</span>.main.stop_server_btn -row 1 -column 1 -pady 10 -padx 5</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建显示消息的区域（用于显示操作结果）</span></span><br><span class="line">label <span class="variable">$main_window</span>.main.message_label -text <span class="string">&quot;Status Message:&quot;</span> -font &#123;Arial 10 bold&#125;</span><br><span class="line">text <span class="variable">$main_window</span>.main.message_text -width 70 -height 5 -wrap word -font &#123;Arial 10&#125; \</span><br><span class="line">    -yscrollcommand <span class="string">&quot;<span class="variable">$main_window</span>.main.scrollbar set&quot;</span> -state normal</span><br><span class="line">scrollbar <span class="variable">$main_window</span>.main.scrollbar -orient vertical -<span class="built_in">command</span> <span class="string">&quot;<span class="variable">$main_window</span>.main.message_text yview&quot;</span></span><br><span class="line"></span><br><span class="line">grid <span class="variable">$main_window</span>.main.message_label -row 3 -column 0 -columnspan 4 -sticky w -pady 10</span><br><span class="line">grid <span class="variable">$main_window</span>.main.message_text -row 4 -column 0 -columnspan 3 -sticky nsew -pady 5</span><br><span class="line">grid <span class="variable">$main_window</span>.main.scrollbar -row 4 -column 3 -sticky ns -pady 5</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建底部按钮框架</span></span><br><span class="line">frame <span class="variable">$main_window</span>.main.bottom_frame -pady 10</span><br><span class="line">grid <span class="variable">$main_window</span>.main.bottom_frame -row 5 -column 0 -columnspan 4 -sticky ew</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加关闭窗口按钮（销毁这个toplevel窗口）</span></span><br><span class="line">button <span class="variable">$main_window</span>.main.bottom_frame.close_btn -text <span class="string">&quot;Close Window&quot;</span> -<span class="built_in">command</span> close_window -font &#123;Arial 10 bold&#125; \</span><br><span class="line">    -<span class="built_in">bg</span> <span class="string">&quot;#ff6b6b&quot;</span> -activebackground <span class="string">&quot;#ff5252&quot;</span> -<span class="built_in">fg</span> white</span><br><span class="line">pack <span class="variable">$main_window</span>.main.bottom_frame.close_btn -side right -padx 5</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加&quot;清空所有&quot;按钮</span></span><br><span class="line">button <span class="variable">$main_window</span>.main.bottom_frame.clear_all_btn -text <span class="string">&quot;Clear All&quot;</span> -<span class="built_in">command</span> clear_all_action -font &#123;Arial 10&#125;</span><br><span class="line">pack <span class="variable">$main_window</span>.main.bottom_frame.clear_all_btn -side right -padx 5</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置网格权重，使组件可伸缩</span></span><br><span class="line">grid columnconfigure <span class="variable">$main_window</span>.main 1 -weight 1</span><br><span class="line">grid rowconfigure <span class="variable">$main_window</span>.main 4 -weight 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 全局变量</span></span><br><span class="line">global server_pipe server_pid</span><br><span class="line"></span><br><span class="line">proc start_server_action &#123;&#125; &#123;</span><br><span class="line">    <span class="built_in">set</span> start_server_btn <span class="string">&quot;.mywindow.main.start_server_btn&quot;</span></span><br><span class="line">    <span class="variable">$start_server_btn</span> configure -state disabled -text <span class="string">&quot;Server Running...&quot;</span></span><br><span class="line">    update idletasks</span><br><span class="line">    </span><br><span class="line">    after 100 &#123;</span><br><span class="line">        catch &#123;</span><br><span class="line">            <span class="keyword">if</span> &#123;[catch &#123;</span><br><span class="line">                <span class="built_in">set</span> SCRIPT_DIR [file <span class="built_in">dirname</span> [file normalize [info script]]]</span><br><span class="line">                add_message <span class="string">&quot;Script dir: <span class="variable">$SCRIPT_DIR</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="built_in">set</span> system_dir [file <span class="built_in">dirname</span> [file normalize [info library]]]</span><br><span class="line">                <span class="comment"># set py_exe [file join [file dirname [file dirname $system_dir]] &quot;python&quot; &quot;python.exe&quot;]</span></span><br><span class="line">                <span class="built_in">set</span> py_exe [file <span class="built_in">join</span> <span class="string">&quot;C:\\&quot;</span> <span class="string">&quot;Python312&quot;</span> <span class="string">&quot;python.exe&quot;</span>]</span><br><span class="line">                add_message <span class="string">&quot;Python dir: <span class="variable">$py_exe</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                add_message <span class="string">&quot;------------Start Http Server----------------&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="built_in">set</span> py_script_http_server [file <span class="built_in">join</span> <span class="variable">$SCRIPT_DIR</span> <span class="string">&quot;http_server.py&quot;</span>]</span><br><span class="line">                add_message <span class="string">&quot;Python script(http_server.py): <span class="variable">$py_script_http_server</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="built_in">set</span> py_exe [file normalize <span class="variable">$py_exe</span>]</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 使用 -u 参数禁用Python缓冲</span></span><br><span class="line">                <span class="built_in">set</span> cmd [list <span class="variable">$py_exe</span> -u <span class="variable">$py_script_http_server</span>]</span><br><span class="line">                add_message <span class="string">&quot;Command: <span class="variable">$cmd</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 使用管道启动</span></span><br><span class="line">                <span class="built_in">set</span> pipe [open <span class="string">&quot;|<span class="variable">$cmd</span>&quot;</span> r]</span><br><span class="line">                fconfigure <span class="variable">$pipe</span> -blocking 0 -buffering none -encoding gb2312 </span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 获取进程ID（Windows和Unix通用）</span></span><br><span class="line">                <span class="built_in">set</span> pid [pid <span class="variable">$pipe</span>]</span><br><span class="line">                add_message <span class="string">&quot;Server PID: <span class="variable">$pid</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 保存到全局变量</span></span><br><span class="line">                global server_pipe server_pid</span><br><span class="line">                <span class="built_in">set</span> server_pipe <span class="variable">$pipe</span></span><br><span class="line">                <span class="built_in">set</span> server_pid <span class="variable">$pid</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 设置文件事件读取输出</span></span><br><span class="line">                fileevent <span class="variable">$pipe</span> readable [list read_server_output <span class="variable">$pipe</span>]</span><br><span class="line">                </span><br><span class="line">                add_message <span class="string">&quot;HTTP Server started successfully (PID: <span class="variable">$pid</span>)&quot;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># 启动定时器检查输出（备用方案）</span></span><br><span class="line">                after 1000 [list check_server_output <span class="variable">$pipe</span>]</span><br><span class="line">                </span><br><span class="line">            &#125; err]&#125; &#123;</span><br><span class="line">                add_message <span class="string">&quot;Error: <span class="variable">$err</span>&quot;</span></span><br><span class="line">                <span class="keyword">if</span> &#123;[info exists errorInfo]&#125; &#123;</span><br><span class="line">                    add_message <span class="string">&quot;Error Details: <span class="variable">$errorInfo</span>&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; result</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取服务器输出</span></span><br><span class="line">proc read_server_output &#123;pipe&#125; &#123;</span><br><span class="line">    <span class="keyword">if</span> &#123;[eof <span class="variable">$pipe</span>]&#125; &#123;</span><br><span class="line">        fileevent <span class="variable">$pipe</span> readable &#123;&#125;</span><br><span class="line">        catch &#123;close <span class="variable">$pipe</span>&#125;</span><br><span class="line">        add_message <span class="string">&quot;Server process ended&quot;</span></span><br><span class="line">        global server_pipe server_pid</span><br><span class="line">        <span class="built_in">set</span> server_pipe <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="built_in">set</span> server_pid <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="built_in">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 尝试读取所有可用数据</span></span><br><span class="line">    <span class="keyword">while</span> &#123;[gets <span class="variable">$pipe</span> line] &gt;= 0&#125; &#123;</span><br><span class="line">        add_message <span class="string">&quot;Server: <span class="variable">$line</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 如果有错误输出，也读取</span></span><br><span class="line">    <span class="keyword">if</span> &#123;[catch &#123;gets <span class="variable">$pipe</span> line&#125; result]&#125; &#123;</span><br><span class="line">        <span class="keyword">if</span> &#123;<span class="variable">$result</span> &gt;= 0&#125; &#123;</span><br><span class="line">            add_message <span class="string">&quot;Server (stderr): <span class="variable">$line</span>&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 备用方案：定时检查输出</span></span><br><span class="line">proc check_server_output &#123;pipe&#125; &#123;</span><br><span class="line">    <span class="keyword">if</span> &#123;![info exists pipe] || <span class="variable">$pipe</span> eq <span class="string">&quot;&quot;</span>&#125; &#123;</span><br><span class="line">        <span class="built_in">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查管道是否还活着</span></span><br><span class="line">    <span class="keyword">if</span> &#123;[catch &#123;fileevent <span class="variable">$pipe</span> readable &#123;&#125;&#125;]&#125; &#123;</span><br><span class="line">        <span class="built_in">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 尝试读取数据</span></span><br><span class="line">    catch &#123;</span><br><span class="line">        <span class="keyword">while</span> &#123;[gets <span class="variable">$pipe</span> line] &gt;= 0&#125; &#123;</span><br><span class="line">            add_message <span class="string">&quot;Server (check): <span class="variable">$line</span>&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 继续检查</span></span><br><span class="line">    after 1000 [list check_server_output <span class="variable">$pipe</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 真正停止服务器</span></span><br><span class="line">proc stop_server_action &#123;&#125; &#123;</span><br><span class="line">    global server_pipe server_pid</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> &#123;[info exists server_pid] &amp;&amp; <span class="variable">$server_pid</span> ne <span class="string">&quot;&quot;</span>&#125; &#123;</span><br><span class="line">        add_message <span class="string">&quot;Stopping HTTP Server (PID: <span class="variable">$server_pid</span>)...&quot;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 根据操作系统选择终止方式</span></span><br><span class="line">        <span class="keyword">if</span> &#123;[string equal $::tcl_platform(platform) <span class="string">&quot;windows&quot;</span>]&#125; &#123;</span><br><span class="line">            <span class="comment"># Windows: 使用 taskkill 终止进程树</span></span><br><span class="line">            catch &#123;</span><br><span class="line">                <span class="built_in">exec</span> taskkill /F /T /PID <span class="variable">$server_pid</span></span><br><span class="line">                add_message <span class="string">&quot;Server process terminated (Windows)&quot;</span></span><br><span class="line">            &#125; err</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment"># Unix/Linux: 使用 kill</span></span><br><span class="line">            catch &#123;</span><br><span class="line">                <span class="built_in">exec</span> <span class="built_in">kill</span> -9 <span class="variable">$server_pid</span></span><br><span class="line">                add_message <span class="string">&quot;Server process terminated (Unix)&quot;</span></span><br><span class="line">            &#125; err</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 关闭管道</span></span><br><span class="line">        <span class="keyword">if</span> &#123;[info exists server_pipe] &amp;&amp; <span class="variable">$server_pipe</span> ne <span class="string">&quot;&quot;</span>&#125; &#123;</span><br><span class="line">            catch &#123;</span><br><span class="line">                close <span class="variable">$server_pipe</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">set</span> server_pipe <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="built_in">set</span> server_pid <span class="string">&quot;&quot;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 更新UI</span></span><br><span class="line">        <span class="built_in">set</span> start_server_btn <span class="string">&quot;.mywindow.main.start_server_btn&quot;</span></span><br><span class="line">        <span class="keyword">if</span> &#123;[winfo exists <span class="variable">$start_server_btn</span>]&#125; &#123;</span><br><span class="line">            <span class="variable">$start_server_btn</span> configure -state normal -text <span class="string">&quot;Start Server&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        add_message <span class="string">&quot;HTTP Server stopped&quot;</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        add_message <span class="string">&quot;No server running&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">    <span class="built_in">set</span> start_server_btn <span class="string">&quot;.mywindow.main.start_server_btn&quot;</span></span><br><span class="line">    <span class="variable">$start_server_btn</span> configure -state normal -text <span class="string">&quot;Start Server&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭窗口函数（只销毁toplevel，不影响宿主程序）</span></span><br><span class="line">proc close_window &#123;&#125; &#123;</span><br><span class="line">    <span class="comment"># 直接使用窗口路径，不依赖全局变量</span></span><br><span class="line">    <span class="built_in">set</span> window_path <span class="string">&quot;.mywindow&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 询问确认</span></span><br><span class="line">    <span class="built_in">set</span> result [tk_messageBox -title <span class="string">&quot;Confirm Exit&quot;</span> -message <span class="string">&quot;Are you sure to exit?&quot;</span> \</span><br><span class="line">                    -icon question -<span class="built_in">type</span> yesno -default no -parent <span class="variable">$window_path</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> &#123;<span class="variable">$result</span> == <span class="string">&quot;yes&quot;</span>&#125; &#123;</span><br><span class="line">        <span class="comment"># 只销毁toplevel窗口，不影响主解释器和宿主程序</span></span><br><span class="line">        <span class="keyword">if</span> &#123;[winfo exists <span class="variable">$window_path</span>]&#125; &#123;</span><br><span class="line">            destroy <span class="variable">$window_path</span></span><br><span class="line">            <span class="comment"># 可选：添加日志或通知宿主程序</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清空所有内容（输入框、文件选择、消息区域）</span></span><br><span class="line">proc clear_all_action &#123;&#125; &#123;</span><br><span class="line">    global selected_file</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">set</span> window_path <span class="string">&quot;.mywindow&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查窗口是否存在</span></span><br><span class="line">    <span class="keyword">if</span> &#123;![winfo exists <span class="variable">$window_path</span>]&#125; &#123;</span><br><span class="line">        <span class="built_in">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 清空消息区域</span></span><br><span class="line">    <span class="variable">$window_path</span>.main.message_text delete 1.0 end</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 添加清空完成消息</span></span><br><span class="line">    add_message <span class="string">&quot;All Content Cleared&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加消息到消息区域</span></span><br><span class="line">proc add_message &#123;msg&#125; &#123;</span><br><span class="line">    <span class="built_in">set</span> window_path <span class="string">&quot;.mywindow&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查窗口是否还存在</span></span><br><span class="line">    <span class="keyword">if</span> &#123;[winfo exists <span class="variable">$window_path</span>]&#125; &#123;</span><br><span class="line">        <span class="variable">$window_path</span>.main.message_text insert end <span class="string">&quot;[clock format [clock seconds] -format &#123;%H:%M:%S&#125;] <span class="variable">$msg</span>\n&quot;</span></span><br><span class="line">        <span class="variable">$window_path</span>.main.message_text see end</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绑定窗口关闭事件（点击窗口右上角的X按钮）</span></span><br><span class="line">wm protocol <span class="variable">$main_window</span> WM_DELETE_WINDOW &#123;</span><br><span class="line">    <span class="built_in">set</span> result [tk_messageBox -title <span class="string">&quot;Confirm Exit&quot;</span> -message <span class="string">&quot;Are you sure to exit?&quot;</span> \</span><br><span class="line">                    -icon question -<span class="built_in">type</span> yesno -default no -parent .mywindow]</span><br><span class="line">    <span class="keyword">if</span> &#123;<span class="variable">$result</span> == <span class="string">&quot;yes&quot;</span>&#125; &#123;</span><br><span class="line">        <span class="keyword">if</span> &#123;[winfo exists .mywindow]&#125; &#123;</span><br><span class="line">            destroy .mywindow</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动主循环</span></span><br><span class="line"><span class="comment"># 判断是否在独立运行还是在嵌入环境</span></span><br><span class="line"><span class="keyword">if</span> &#123;[info exists ::argv0] &amp;&amp; [file <span class="built_in">tail</span> $::argv0] == [file <span class="built_in">tail</span> [info script]]&#125; &#123;</span><br><span class="line">    <span class="comment"># 独立运行，启动事件循环</span></span><br><span class="line">    vwait forever</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment"># 嵌入环境，只更新一次界面</span></span><br><span class="line">    update</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 确保窗口显示在最前</span></span><br><span class="line">raise <span class="variable">$main_window</span></span><br><span class="line">focus <span class="variable">$main_window</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h2><p>切换到main.tcl目录下，使用命令<code>tclsh main.tcl</code>启动窗口，点击Start Server启动客户端服务，运行使用命令<code>python client.py</code>模拟服务请求。</p>
+<img   src="/Hexo-Blog/2026/06/30/client-server-on-python/client-server-gui.png"  class="" title="客户端服务GUI界面">
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://www.tcl-lang.org/doc/" >Tcl&#x2F;Tk官方文档<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Socket/">Socket</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Python/">Python</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/TCL/">TCL</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/Hexo-Blog/2026/08/12/integrated-deployment-with-pyinstaller/"
+                                   title="FastAPI+Vue+PyInstaller一体化部署与打包方案"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">FastAPI+Vue+PyInstaller一体化部署与打包方案</span>
+                                        <span class="post-nav-item">Prev posts</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2026/05/14/product-license-in-docker/"
+                                   title="基于Docker的应用软件离线许可证颁发方案"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">基于Docker的应用软件离线许可证颁发方案</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-text">实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1"><span class="nav-text">客户端服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-text">监听可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="nav-text">实现效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2026
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-text">实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1"><span class="nav-text">客户端服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-text">监听可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="nav-text">实现效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

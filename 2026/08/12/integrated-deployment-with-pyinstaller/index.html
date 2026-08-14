@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Jocoboy">
+    
+    <title>
+        
+            FastAPI+Vue+PyInstaller一体化部署与打包方案 |
+        
+        Jocoboy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/Hexo-Blog/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/Hexo-Blog/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/Hexo-Blog/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"jocoboy.github.io","root":"/Hexo-Blog/","language":"en","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Jocoboy's Blog","author":"Jocoboy","avatar":"/images/avatar.jpg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/                        || fa-solid fa-home","archives":"/archives            || fa-solid fa-box-archive","tags":"/tags                    || fa-solid fa-tags","categories":"/categories        || fa-solid fa-layer-group"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/jocoboy","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:jocoboy@outlook.com"}},"scroll":{"progress_bar":true,"percent":false,"hide_header":false},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":false,"expand_all":true,"init_open":true,"layout":"left"},"website_count":{"busuanzi_count":{"enable":false,"site_uv":false,"site_pv":false,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":true},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2019,"word_count":false,"site_deploy":{"enable":true,"provider":"github","url":null},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"/Hexo-Blog","source_data":{},"version":"4.2.5"}
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"}
+    KEEP.language_code_block = {"copy":"Copy code","copied":"Copied","fold":"Fold code block","folded":"Folded"}
+    KEEP.language_copy_copyright = {"copy":"Copy copyright info","copied":"Copied","title":"Original post title","author":"Original post author","link":"Original post link"}
+  </script>
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/Hexo-Blog/Hexo-Blog/atom.xml" title="Jocoboy's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/Hexo-Blog/">
+                    <img src="/Hexo-Blog/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/Hexo-Blog/">
+               Jocoboy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-home"></i>
+                                
+                                HOME
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/archives">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                
+                                ARCHIVES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/tags">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-tags"></i>
+                                
+                                TAGS
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/Hexo-Blog/categories">
+                                
+                                    <i class="menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                
+                                CATEGORIES
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-home"></i>
+                                </span>
+                            
+                            HOME
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/archives">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-box-archive"></i>
+                                </span>
+                            
+                            ARCHIVES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/tags">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-tags"></i>
+                                </span>
+                            
+                            TAGS
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/Hexo-Blog/categories">
+                            
+                                <span class="menu-icon-wrap border-box flex-center">
+                                    <i class="drawer-menu-text-color menu-icon fa-solid fa-layer-group"></i>
+                                </span>
+                            
+                            CATEGORIES
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        FastAPI+Vue+PyInstaller一体化部署与打包方案
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/Hexo-Blog/images/avatar.jpg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Jocoboy</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2026-08-12 15:22:28</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Fri Aug 14 2026 03:11:13 GMT+0000">2026-08-14 11:11:13</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/Hexo-Blog/categories/Package-Tool/">Package-Tool</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Python/">Python</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Vue/">Vue</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/Fast-API/">Fast API</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/Hexo-Blog/tags/PyInstaller/">PyInstaller</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>28k Words</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>1:43 Mins</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <p>实现FastAPI + Vue一体化部署(跳过HTTP代理服务器)，并使用PyInstaller打包。</p>
+<span id="more"></span>
+
+<h2 id="FastAPI-Vue一体化部署"><a href="#FastAPI-Vue一体化部署" class="headerlink" title="FastAPI + Vue一体化部署"></a>FastAPI + Vue一体化部署</h2><p>使用Fast API后端可以代替HTTP服务器(如Nignx)托管前端Vue dist包，这样前端页面和后台接口就在同一个地址和端口上，既解决了跨域问题，也方便一体化部署。</p>
+<p>项目目录结构如下，</p>
+<p>my-app&#x2F;<br>├── app<br>│   ├─ _<em>init</em>_.py<br>│   └─ …<br>│<br>├── dist&#x2F;<br>│   ├── assets<br>│   ├── resource<br>│   ├── index.html<br>│   └── …<br>├── vite.config.js<br>├── run.py<br>└── …</p>
+<p>首先修改vite.config.js文件，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="attr">build</span>: &#123;</span><br><span class="line">    <span class="comment">// outDir: OUTPUT_DIR || &#x27;dist&#x27;,</span></span><br><span class="line">    <span class="attr">outDir</span>: <span class="string">&#x27;../dist&#x27;</span>,</span><br><span class="line">    ...</span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>然后修改app下的__init__.py文件，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取当前文件所在目录 (app 目录)</span></span><br><span class="line">CURRENT_DIR = Path(__file__).parent.absolute()</span><br><span class="line">PROJECT_ROOT = CURRENT_DIR.parent</span><br><span class="line">DIST_DIR = os.path.join(PROJECT_ROOT, <span class="string">&quot;dist&quot;</span>)</span><br><span class="line">app.mount(<span class="string">&quot;/&quot;</span>, StaticFiles(directory=DIST_DIR, html=<span class="literal">True</span>), name=<span class="string">&quot;vue-app&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>若app中存在审计中间件，对于特定路径需要跳过审计。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义需要跳过审计的路径前缀</span></span><br><span class="line">SKIP_PATHS = [<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;/assets/&#x27;</span>, <span class="string">&#x27;/resource/&#x27;</span>, <span class="string">&#x27;/favicon.ico&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">after_request</span>(<span class="params">self, request: Request, response: Response, process_time: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="comment"># 检查是否应该跳过审计</span></span><br><span class="line">    path = request.url.path</span><br><span class="line">    <span class="keyword">for</span> skip_path <span class="keyword">in</span> <span class="variable language_">self</span>.SKIP_PATHS:</span><br><span class="line">        <span class="keyword">if</span> path.startswith(skip_path):</span><br><span class="line">            <span class="keyword">return</span>  <span class="comment"># 直接返回，不记录审计日志</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="PyInstaller"><a href="#PyInstaller" class="headerlink" title="PyInstaller"></a>PyInstaller</h2><p>PyInstaller是一个将Python程序打包成独立可执行文件的工具，让你的程序能在没有Python环境的电脑上直接运行。它通过分析你的代码，将Python解释器、依赖库和脚本代码打包在一起，生成一个可执行文件或文件夹。</p>
+<h3 id="简单打包-以FastAPI应用为例"><a href="#简单打包-以FastAPI应用为例" class="headerlink" title="简单打包(以FastAPI应用为例)"></a>简单打包(以FastAPI应用为例)</h3><p>对于一个最简单的FastAPI应用，如main.py:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py</span></span><br><span class="line"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI</span><br><span class="line"><span class="keyword">import</span> uvicorn</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line">app = FastAPI()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">root</span>():</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;message&quot;</span>: <span class="string">&quot;Hello World&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    multiprocessing.freeze_support()  <span class="comment"># &lt;-- 关键！防止Windows上启动多个进程</span></span><br><span class="line">    uvicorn.run(app, host=<span class="string">&quot;0.0.0.0&quot;</span>, port=<span class="number">8000</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用命令<code>pyinstaller main.py --nocofirm</code>即可完成打包，打包结果会生成在dist目录内(单独的exe文件)。</p>
+<p>上述命令默认使用<code>--onedir</code>单目录打包方式，也可以使用<code>--onefile</code>单文件打包方式。</p>
+<h3 id="进阶打包-指定spec文件"><a href="#进阶打包-指定spec文件" class="headerlink" title="进阶打包(指定spec文件)"></a>进阶打包(指定spec文件)</h3><p>.spec文件是PyInstaller的核心配置文件，它用Python语法定义了打包的全部规则，相当于一个可编程的打包说明书。当你有复杂需求（如添加资源文件、处理动态导入）时，直接修改这个文件会比在命令行输入一长串参数要清晰、可控得多。</p>
+<p>一个标准的 .spec 文件主要由以下几个部分构成，它们共同协作完成打包：</p>
+<ul>
+<li>Analysis：这是最核心的分析与配置阶段。它会扫描主脚本，分析所有的依赖项，并允许你自定义需要包含的二进制文件（binaries）、数据文件（datas）、隐藏导入（hiddenimports）以及需要排除的模块（excludes）。</li>
+<li>PYZ：一个压缩包，将Analysis阶段收集到的所有Python字节码文件打包进去，以减少磁盘占用。</li>
+<li>EXE：定义最终生成的.exe可执行文件的配置，比如输出文件名、图标（icon）、是否显示控制台（console）以及是否启用UPX压缩（upx）等。</li>
+<li>COLLECT：只有在单文件夹模式（默认模式）下才会使用。它的作用是把EXE和Analysis阶段收集到的所有依赖文件（.dll、.pyd、数据文件等）复制到最终的输出文件夹dist里。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- mode: python ; coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> site</span><br><span class="line"><span class="keyword">import</span> importlib</span><br><span class="line"><span class="keyword">import</span> pkgutil</span><br><span class="line"><span class="keyword">from</span> PyInstaller.utils.hooks <span class="keyword">import</span> collect_data_files, collect_submodules, collect_all</span><br><span class="line"></span><br><span class="line">block_cipher = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ============ 递归收集子模块函数 ============</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">collect_submodules_recursive</span>(<span class="params">package_name, exclude_patterns=<span class="literal">None</span>, max_depth=<span class="number">10</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    递归收集包的所有子模块（包括多层嵌套）</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        package_name: 包名，如 &#x27;app&#x27;</span></span><br><span class="line"><span class="string">        exclude_patterns: 排除的模式列表，如 [&#x27;*.tests&#x27;, &#x27;*.sanic&#x27;]</span></span><br><span class="line"><span class="string">        max_depth: 最大递归深度</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        list: 所有子模块名称列表</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">import</span> fnmatch</span><br><span class="line">    </span><br><span class="line">    modules = []</span><br><span class="line">    seen = <span class="built_in">set</span>()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> exclude_patterns <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exclude_patterns = [<span class="string">&#x27;*.tests&#x27;</span>, <span class="string">&#x27;*.test&#x27;</span>, <span class="string">&#x27;*.examples&#x27;</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">should_exclude</span>(<span class="params">module_name</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;检查模块是否应该被排除&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> pattern <span class="keyword">in</span> exclude_patterns:</span><br><span class="line">            <span class="keyword">if</span> fnmatch.fnmatch(module_name, pattern):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_collect</span>(<span class="params">pkg_name, pkg_path, depth=<span class="number">0</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;递归收集子模块&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> depth &gt; max_depth:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;达到最大深度 <span class="subst">&#123;max_depth&#125;</span>，停止递归 <span class="subst">&#123;pkg_name&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        </span><br><span class="line">        indent = <span class="string">&quot;  &quot;</span> * depth</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 添加当前包</span></span><br><span class="line">        <span class="keyword">if</span> pkg_name <span class="keyword">not</span> <span class="keyword">in</span> seen <span class="keyword">and</span> <span class="keyword">not</span> should_exclude(pkg_name):</span><br><span class="line">            seen.add(pkg_name)</span><br><span class="line">            modules.append(pkg_name)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;indent&#125;</span> 收集包: <span class="subst">&#123;pkg_name&#125;</span>&quot;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 迭代子模块</span></span><br><span class="line">            <span class="keyword">for</span> module_info <span class="keyword">in</span> pkgutil.iter_modules([pkg_path]):</span><br><span class="line">                module_name = <span class="string">f&quot;<span class="subst">&#123;pkg_name&#125;</span>.<span class="subst">&#123;module_info.name&#125;</span>&quot;</span></span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span> should_exclude(module_name):</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;indent&#125;</span>  跳过: <span class="subst">&#123;module_name&#125;</span>&quot;</span>)</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span> module_name <span class="keyword">not</span> <span class="keyword">in</span> seen:</span><br><span class="line">                    seen.add(module_name)</span><br><span class="line">                    modules.append(module_name)</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;indent&#125;</span>  收集模块: <span class="subst">&#123;module_name&#125;</span>&quot;</span>)</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># 如果是包，递归收集</span></span><br><span class="line">                    <span class="keyword">if</span> module_info.ispkg:</span><br><span class="line">                        <span class="keyword">try</span>:</span><br><span class="line">                            sub_module = importlib.import_module(module_name)</span><br><span class="line">                            <span class="keyword">if</span> <span class="built_in">hasattr</span>(sub_module, <span class="string">&#x27;__path__&#x27;</span>):</span><br><span class="line">                                sub_path = sub_module.__path__[<span class="number">0</span>]</span><br><span class="line">                                _collect(module_name, sub_path, depth + <span class="number">1</span>)</span><br><span class="line">                        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;indent&#125;</span> 无法导入子包 <span class="subst">&#123;module_name&#125;</span>: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">                            </span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;indent&#125;</span> 迭代 <span class="subst">&#123;pkg_name&#125;</span> 时出错: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        pkg = importlib.import_module(package_name)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">hasattr</span>(pkg, <span class="string">&#x27;__path__&#x27;</span>):</span><br><span class="line">            package_path = pkg.__path__[<span class="number">0</span>]</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;\n开始递归收集 <span class="subst">&#123;package_name&#125;</span> (路径: <span class="subst">&#123;package_path&#125;</span>)&quot;</span>)</span><br><span class="line">            _collect(package_name, package_path)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;收集完成，共 <span class="subst">&#123;<span class="built_in">len</span>(modules)&#125;</span> 个模块\n&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;package_name&#125;</span> 不是包&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;无法导入 <span class="subst">&#123;package_name&#125;</span>: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> modules</span><br><span class="line"></span><br><span class="line"><span class="comment"># datas示例：收集 pyDOE3 的所有数据文件（orthogonal_arrays/*.oa 等，打包后运行时按 __file__ 相对路径读取）</span></span><br><span class="line">pyDOE3_datas = collect_data_files(<span class="string">&#x27;pyDOE3&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># hiddenimports示例：收集 app 的所有子模块</span></span><br><span class="line">app_modules = collect_submodules_recursive(</span><br><span class="line">    <span class="string">&#x27;app&#x27;</span>, </span><br><span class="line">    exclude_patterns=[<span class="string">&#x27;*.tests&#x27;</span>, <span class="string">&#x27;*.test&#x27;</span>, <span class="string">&#x27;*.pyc&#x27;</span>]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ============ Analysis 配置 ============</span></span><br><span class="line">a = Analysis(</span><br><span class="line">    [<span class="string">&#x27;main.py&#x27;</span>],</span><br><span class="line">    pathex=[],</span><br><span class="line">    binaries=[],</span><br><span class="line">    datas=[</span><br><span class="line">        (<span class="string">&#x27;config.json&#x27;</span>, <span class="string">&#x27;.&#x27;</span>),</span><br><span class="line">        (<span class="string">&#x27;data&#x27;</span>, <span class="string">&#x27;data&#x27;</span>),</span><br><span class="line">        (<span class="string">&#x27;dist&#x27;</span>, <span class="string">&#x27;dist&#x27;</span>),</span><br><span class="line">        (<span class="string">&#x27;app/algorithm/libs&#x27;</span>, <span class="string">&#x27;app/algorithm/libs&#x27;</span>) <span class="keyword">if</span> os.path.exists(<span class="string">&#x27;app/algorithm/libs&#x27;</span>) <span class="keyword">else</span> <span class="literal">None</span>, </span><br><span class="line">    ] + pyDOE3_datas,</span><br><span class="line">    hiddenimports=[</span><br><span class="line">        <span class="comment"># FastAPI 和 Uvicorn</span></span><br><span class="line">        <span class="string">&#x27;uvicorn&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;uvicorn.logging&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;uvicorn.loops.auto&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;uvicorn.protocols.http&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;uvicorn.protocols.http.auto&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;fastapi&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;fastapi.routing&#x27;</span>,</span><br><span class="line">    ] + app_modules,</span><br><span class="line">    hookspath=[],</span><br><span class="line">    hooksconfig=&#123;&#125;,</span><br><span class="line">    runtime_hooks=[],</span><br><span class="line">    excludes=[],</span><br><span class="line">    noarchive=<span class="literal">False</span>,</span><br><span class="line">    optimize=<span class="number">0</span>,</span><br><span class="line">)</span><br><span class="line"><span class="comment"># ============ 生成 PYZ ============</span></span><br><span class="line">pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ========== 单目录模式 ==========</span></span><br><span class="line">exe = EXE(</span><br><span class="line">    pyz,</span><br><span class="line">    a.scripts,</span><br><span class="line">    [],</span><br><span class="line">    exclude_binaries=<span class="literal">True</span>,</span><br><span class="line">    name=<span class="string">&#x27;main&#x27;</span>,</span><br><span class="line">    debug=<span class="literal">False</span>,</span><br><span class="line">    bootloader_ignore_signals=<span class="literal">False</span>,</span><br><span class="line">    strip=<span class="literal">False</span>,</span><br><span class="line">    upx=<span class="literal">True</span>,</span><br><span class="line">    console=<span class="literal">True</span>,</span><br><span class="line">    disable_windowed_traceback=<span class="literal">False</span>,</span><br><span class="line">    argv_emulation=<span class="literal">False</span>,</span><br><span class="line">    target_arch=<span class="literal">None</span>,</span><br><span class="line">    codesign_identity=<span class="literal">None</span>,</span><br><span class="line">    entitlements_file=<span class="literal">None</span>,</span><br><span class="line">)</span><br><span class="line">coll = COLLECT(</span><br><span class="line">    exe,</span><br><span class="line">    a.binaries,</span><br><span class="line">    a.datas,</span><br><span class="line">    strip=<span class="literal">False</span>,</span><br><span class="line">    upx=<span class="literal">True</span>,</span><br><span class="line">    upx_exclude=[],</span><br><span class="line">    name=<span class="string">&#x27;main&#x27;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>使用命令<code>pyinstaller main.spec --noconfirm</code>即可通过spec文件完成打包。</p>
+<p>此外，通过添加<code>--distpath</code>参数可以更改默认的dist目录为指定目录, 例如<code>pyinstaller main.spec --distpath .\your-pyinstaller-dist --noconfirm</code>。</p>
+<p>注: 通过显示指定添加的py文件夹(如’app&#x2F;algorithm&#x2F;libs’)，源码可能未被加密。</p>
+<p>可使用加密工具pyarmor对整个目录的py文件进行加密，使用命令<code>pyarmor gen -r -O ./your-pyarmor-dist app</code>即可输出加密文件到指定目录。</p>
+<p>其中生成的pyarmor_runtime_*文件夹是运行加密代码所必需的，不能删除。需要手动将它移动到与入口脚本相同的目录下(示例为app目录下)。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://pyinstaller.org/en/stable/" >PyInstaller官方文档<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+
+                    
+                </div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Python/">Python</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Vue/">Vue</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/Fast-API/">Fast API</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/Hexo-Blog/tags/PyInstaller/">PyInstaller</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/Hexo-Blog/2026/06/30/client-server-on-python/"
+                                   title="基于python HTTPServer的客户端服务实现"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">基于python HTTPServer的客户端服务实现</span>
+                                        <span class="post-nav-item">Next posts</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FastAPI-Vue%E4%B8%80%E4%BD%93%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="nav-text">FastAPI + Vue一体化部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyInstaller"><span class="nav-text">PyInstaller</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%89%93%E5%8C%85-%E4%BB%A5FastAPI%E5%BA%94%E7%94%A8%E4%B8%BA%E4%BE%8B"><span class="nav-text">简单打包(以FastAPI应用为例)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E6%89%93%E5%8C%85-%E6%8C%87%E5%AE%9Aspec%E6%96%87%E4%BB%B6"><span class="nav-text">进阶打包(指定spec文件)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2019</span>&nbsp;-&nbsp;2026
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/Hexo-Blog/">Jocoboy</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        Powered by&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;&&nbsp;Theme&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+            This site is deployed on <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/Hexo-Blog/images/brands/github.png"></span>
+            
+        </div>
+    
+
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/Hexo-Blog/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FastAPI-Vue%E4%B8%80%E4%BD%93%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="nav-text">FastAPI + Vue一体化部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyInstaller"><span class="nav-text">PyInstaller</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%89%93%E5%8C%85-%E4%BB%A5FastAPI%E5%BA%94%E7%94%A8%E4%B8%BA%E4%BE%8B"><span class="nav-text">简单打包(以FastAPI应用为例)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E6%89%93%E5%8C%85-%E6%8C%87%E5%AE%9Aspec%E6%96%87%E4%BB%B6"><span class="nav-text">进阶打包(指定spec文件)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-text">参考文档</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/Hexo-Blog/js/utils.js"></script>
+
+<script src="/Hexo-Blog/js/header-shrink.js"></script>
+
+<script src="/Hexo-Blog/js/back2top.js"></script>
+
+<script src="/Hexo-Blog/js/toggle-theme.js"></script>
+
+<script src="/Hexo-Blog/js/code-block.js"></script>
+
+<script src="/Hexo-Blog/js/main.js"></script>
+
+<script src="/Hexo-Blog/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/Hexo-Blog/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/Hexo-Blog/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/Hexo-Blog/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
