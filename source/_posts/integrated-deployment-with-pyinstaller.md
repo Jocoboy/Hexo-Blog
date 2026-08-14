@@ -283,7 +283,7 @@ coll = COLLECT(
 
 注: 通过显示指定添加的py文件夹(如'app/algorithm/libs')，源码可能未被加密。
 
-可使用加密工具pyarmor对整个目录的py文件进行加密，使用命令'pyarmor gen -r -O ./your-pyarmor-dist app'即可输出加密文件到指定目录。
+可使用加密工具pyarmor对整个目录的py文件进行加密，使用命令`pyarmor gen -r -O ./your-pyarmor-dist app`即可输出加密文件到指定目录。
 
 其中生成的pyarmor_runtime_*文件夹是运行加密代码所必需的，不能删除。需要手动将它移动到与入口脚本相同的目录下(示例为app目录下)。
 
