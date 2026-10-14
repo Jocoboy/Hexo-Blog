@@ -23,6 +23,7 @@ tags:
 my-app/
 ├── app
 │   ├─ \__init__.py
+│   ├─ license  
 │   └─ ...
 │
 ├── dist/
@@ -32,6 +33,7 @@ my-app/
 │   └── ...
 ├── vite.config.js
 ├── run.py
+├── config.yml
 └── ...
 
 首先修改vite.config.js文件，
@@ -49,12 +51,94 @@ build: {
 然后修改app下的__init__.py文件，
 
 ```python
+import mimetypes
+import sys
+import os
+...
+
+# 必须在挂载 StaticFiles 之前执行，强制覆盖 .js 和 .mjs 的 MIME 类型映射
+if sys.platform == "win32":
+    mimetypes.add_type("application/javascript", ".js")
+    mimetypes.add_type("application/javascript", ".mjs")
+
 # 获取当前文件所在目录 (app 目录)
 CURRENT_DIR = Path(__file__).parent.absolute()
 PROJECT_ROOT = CURRENT_DIR.parent
 DIST_DIR = os.path.join(PROJECT_ROOT, "dist")
 app.mount("/", StaticFiles(directory=DIST_DIR, html=True), name="vue-app")
 ```
+
+可将上述修改进一步优化，引入config.yml配置文件，对开发环境与打包环境作区分：
+```yml
+# 运行环境配置
+env:
+  # 环境标识：0-开发环境(默认)，1-打包环境
+  profile: 1
+```
+
+app下的__init__.py文件对应代码修改为：
+```python
+import mimetypes
+import sys
+import os
+...
+
+def resource_path(relative_path):
+    """获取资源绝对路径，兼容开发环境和 PyInstaller 打包环境"""
+    if getattr(sys, 'frozen', False):
+        # 运行于 PyInstaller 打包环境：使用sys.executable(exe 所在目录)
+        base_path = os.path.dirname(sys.executable)
+    else:
+        # 运行于普通 Python 开发环境：使用根目录
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        base_path = os.path.abspath(os.path.join(project_root, os.pardir)) 
+    return os.path.join(base_path, relative_path) if relative_path else base_path
+
+# 必须在挂载 StaticFiles 之前执行，强制覆盖 .js 和 .mjs 的 MIME 类型映射
+if sys.platform == "win32":
+    mimetypes.add_type("application/javascript", ".js")
+    mimetypes.add_type("application/javascript", ".mjs")
+
+# 获取当前文件所在目录 (app 目录)
+CURRENT_DIR = Path(__file__).parent.absolute()
+PROJECT_ROOT = CURRENT_DIR.parent
+
+# 在你的配置加载逻辑中，使用 resource_path 来获取路径
+config_path = resource_path('config.yml')
+# 然后用 config_path 去打开文件
+with open(config_path, "r", encoding="utf-8") as f:
+    _config = yaml.safe_load(f)
+PROFILE = _config.get("env", {}).get("profile", 0)
+IS_PRODUCTION = PROFILE == 1
+
+# 只有打包环境才挂载 Vue 的静态文件
+if IS_PRODUCTION:
+    DIST_DIR = os.path.join(PROJECT_ROOT, "dist")
+    app.mount("/", StaticFiles(directory=DIST_DIR, html=True), name="vue-app")
+```
+
+若要在app目录下引入license/license.lic验证，需要区分parent_dir目录的获取方式。
+注：与config.yml文件类似，license目录同样不能通过spec的datas添加，否则已经构建好的exe内部归档并不会自动更新（读取的永远是打包时的快照）。
+
+```python
+def get_parent_dir():
+    """
+    获取持久化的基础目录（证书应从外部读取，不走 _MEIPASS）
+    - 打包后:   exe 所在目录
+    - 源码运行: 当前文件所在目录
+    """
+    if getattr(sys, 'frozen', False):
+        # 打包后：sys.executable 是 exe 的真实路径
+        exe_dir = os.path.dirname(sys.executable)
+        return os.path.join(exe_dir, "app")
+    else:
+        # 源码运行
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        return os.path.abspath(os.path.join(script_dir, ".."))
+
+parent_dir = get_parent_dir()
+```
+
 
 若app中存在审计中间件，对于特定路径需要跳过审计。
 
@@ -223,10 +307,10 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('config.json', '.'),
-        ('data', 'data'),
         ('dist', 'dist'),
-        ('app/algorithm/libs', 'app/algorithm/libs') if os.path.exists('app/algorithm/libs') else None, 
+        ('app/algorithm/libs', 'app/algorithm/libs') if os.path.exists('app/algorithm/libs') else None
+        # 将数据文件打包到根目录，对应命令行方式为：pyinstaller --add-data "your_data_file;." main.py  
+        # 注：Windows下源文件与目标路径之间用分号 ";" 分隔，目标路径写 "." 表示将文件放在打包根目录下
     ] + pyDOE3_datas,
     hiddenimports=[
         # FastAPI 和 Uvicorn
